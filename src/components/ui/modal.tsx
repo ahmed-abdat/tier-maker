@@ -6,7 +6,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useLocale } from "next-intl";
 import { cn } from "@/lib/utils";
 
 interface ModalProps {
@@ -26,9 +25,6 @@ export const Modal: React.FC<ModalProps> = ({
   onClose,
   children,
 }) => {
-  const locale = useLocale();
-  const isRTL = locale === "ar";
-
   const onChange = (open: boolean) => {
     if (!open) {
       onClose();
@@ -37,31 +33,16 @@ export const Modal: React.FC<ModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onChange}>
-      <DialogContent
-        className={cn(
-          "sm:max-w-[425px]",
-          isRTL && "rtl",
-          className
-        )}
-      >
+      <DialogContent className={cn("sm:max-w-[425px]", className)}>
         <DialogHeader>
-          <DialogTitle
-            className={cn("text-xl font-semibold", isRTL && "text-right")}
-          >
-            {title}
-          </DialogTitle>
+          <DialogTitle className="text-xl font-semibold">{title}</DialogTitle>
           {description && (
-            <DialogDescription
-              className={cn(
-                "text-sm text-muted-foreground",
-                isRTL && "text-right"
-              )}
-            >
+            <DialogDescription className="text-sm text-muted-foreground">
               {description}
             </DialogDescription>
           )}
         </DialogHeader>
-        <div className={cn(isRTL && "text-right")}>{children}</div>
+        <div>{children}</div>
       </DialogContent>
     </Dialog>
   );

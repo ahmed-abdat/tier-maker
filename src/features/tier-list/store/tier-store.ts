@@ -6,29 +6,44 @@ import { TierItem, TierRow, TierList, DragState } from "../index";
 
 interface TierStore {
   // State
-  currentList: TierList | null;
+  tierLists: TierList[]; // All saved tier lists
+  currentListId: string | null; // Currently editing list
   dragState: DragState;
 
-  // List Actions
-  createList: (title: string) => void;
+  // Computed
+  getCurrentList: () => TierList | null;
+
+  // List Management Actions
+  createList: (title: string) => string; // Returns the new list ID
+  duplicateList: (id: string) => string | null;
+  deleteList: (id: string) => void;
+  selectList: (id: string) => void;
   updateList: (updates: Partial<TierList>) => void;
-  deleteList: () => void;
+  clearCurrentList: () => void;
 
   // Tier Actions
   addTier: (level: TierLevel) => void;
+  addCustomTier: (name: string, color: string) => void;
   updateTier: (id: string, updates: Partial<Omit<TierRow, "id">>) => void;
   deleteTier: (id: string) => void;
+  clearTierItems: (id: string) => void;
   reorderTiers: (sourceIndex: number, destinationIndex: number) => void;
 
   // Item Actions
   addItem: (item: Omit<TierItem, "id" | "createdAt" | "updatedAt">) => void;
+  addItemToTier: (
+    tierId: string,
+    item: Omit<TierItem, "id" | "createdAt" | "updatedAt">
+  ) => void;
   updateItem: (id: string, updates: Partial<Omit<TierItem, "id">>) => void;
   deleteItem: (id: string) => void;
   moveItem: (
     itemId: string,
     sourceTierId: string | null,
-    targetTierId: string | null
+    targetTierId: string | null,
+    targetIndex?: number
   ) => void;
+  clearAllItems: () => void;
 
   // Drag State Actions
   setDragState: (state: Partial<DragState>) => void;
@@ -42,46 +57,97 @@ const initialDragState: DragState = {
   targetRowId: undefined,
 };
 
+// Helper to create a new tier list
+const createNewTierList = (title: string): TierList => ({
+  id: uuidv4(),
+  title,
+  rows: TIER_LEVELS.map((level) => ({
+    id: uuidv4(),
+    level,
+    color: TIER_COLORS[level],
+    items: [],
+    name: level,
+  })),
+  unassignedItems: [],
+  createdBy: "local-user",
+  isPublic: false,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+});
+
 export const useTierStore = create<TierStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       // Initial State
-      currentList: null,
+      tierLists: [],
+      currentListId: null,
       dragState: initialDragState,
 
-      // List Actions
-      createList: (title) =>
-        set({
-          currentList: {
-            id: uuidv4(),
-            title,
-            rows: TIER_LEVELS.map((level) => ({
-              id: uuidv4(),
-              level,
-              color: TIER_COLORS[level],
-              items: [],
-              name: level,
-            })),
-            createdBy: "user", // TODO: Replace with actual user ID
-            isPublic: false,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-        }),
+      // Computed - Get current list
+      getCurrentList: () => {
+        const { tierLists, currentListId } = get();
+        if (!currentListId) return null;
+        return tierLists.find((list) => list.id === currentListId) || null;
+      },
 
-      updateList: (updates) =>
+      // List Management Actions
+      createList: (title) => {
+        const newList = createNewTierList(title);
         set((state) => ({
-          currentList: state.currentList
-            ? { ...state.currentList, ...updates, updatedAt: new Date() }
-            : null,
+          tierLists: [newList, ...state.tierLists],
+          currentListId: newList.id,
+        }));
+        return newList.id;
+      },
+
+      duplicateList: (id) => {
+        const { tierLists } = get();
+        const listToDuplicate = tierLists.find((list) => list.id === id);
+        if (!listToDuplicate) return null;
+
+        const newList: TierList = {
+          ...JSON.parse(JSON.stringify(listToDuplicate)),
+          id: uuidv4(),
+          title: `${listToDuplicate.title} (Copy)`,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+
+        set((state) => ({
+          tierLists: [newList, ...state.tierLists],
+          currentListId: newList.id,
+        }));
+        return newList.id;
+      },
+
+      deleteList: (id) =>
+        set((state) => ({
+          tierLists: state.tierLists.filter((list) => list.id !== id),
+          currentListId:
+            state.currentListId === id ? null : state.currentListId,
         })),
 
-      deleteList: () => set({ currentList: null }),
+      selectList: (id) => set({ currentListId: id }),
+
+      clearCurrentList: () => set({ currentListId: null }),
+
+      updateList: (updates) =>
+        set((state) => {
+          if (!state.currentListId) return state;
+
+          return {
+            tierLists: state.tierLists.map((list) =>
+              list.id === state.currentListId
+                ? { ...list, ...updates, updatedAt: new Date() }
+                : list
+            ),
+          };
+        }),
 
       // Tier Actions
       addTier: (level) =>
         set((state) => {
-          if (!state.currentList) return state;
+          if (!state.currentListId) return state;
 
           const newTier: TierRow = {
             id: uuidv4(),
@@ -92,63 +158,141 @@ export const useTierStore = create<TierStore>()(
           };
 
           return {
-            currentList: {
-              ...state.currentList,
-              rows: [...state.currentList.rows, newTier],
-              updatedAt: new Date(),
-            },
+            tierLists: state.tierLists.map((list) =>
+              list.id === state.currentListId
+                ? {
+                    ...list,
+                    rows: [...list.rows, newTier],
+                    updatedAt: new Date(),
+                  }
+                : list
+            ),
+          };
+        }),
+
+      addCustomTier: (name, color) =>
+        set((state) => {
+          if (!state.currentListId) return state;
+
+          const newTier: TierRow = {
+            id: uuidv4(),
+            level: "C" as TierLevel, // Default level
+            color,
+            items: [],
+            name,
+          };
+
+          return {
+            tierLists: state.tierLists.map((list) =>
+              list.id === state.currentListId
+                ? {
+                    ...list,
+                    rows: [...list.rows, newTier],
+                    updatedAt: new Date(),
+                  }
+                : list
+            ),
           };
         }),
 
       updateTier: (id, updates) =>
         set((state) => {
-          if (!state.currentList) return state;
+          if (!state.currentListId) return state;
 
           return {
-            currentList: {
-              ...state.currentList,
-              rows: state.currentList.rows.map((row) =>
-                row.id === id ? { ...row, ...updates } : row
-              ),
-              updatedAt: new Date(),
-            },
+            tierLists: state.tierLists.map((list) =>
+              list.id === state.currentListId
+                ? {
+                    ...list,
+                    rows: list.rows.map((row) =>
+                      row.id === id ? { ...row, ...updates } : row
+                    ),
+                    updatedAt: new Date(),
+                  }
+                : list
+            ),
           };
         }),
 
       deleteTier: (id) =>
         set((state) => {
-          if (!state.currentList) return state;
+          if (!state.currentListId) return state;
+
+          const currentList = state.tierLists.find(
+            (l) => l.id === state.currentListId
+          );
+          if (!currentList) return state;
+
+          const tierToDelete = currentList.rows.find((row) => row.id === id);
+          const itemsToMove = tierToDelete?.items || [];
 
           return {
-            currentList: {
-              ...state.currentList,
-              rows: state.currentList.rows.filter((row) => row.id !== id),
-              updatedAt: new Date(),
-            },
+            tierLists: state.tierLists.map((list) =>
+              list.id === state.currentListId
+                ? {
+                    ...list,
+                    rows: list.rows.filter((row) => row.id !== id),
+                    unassignedItems: [...list.unassignedItems, ...itemsToMove],
+                    updatedAt: new Date(),
+                  }
+                : list
+            ),
+          };
+        }),
+
+      clearTierItems: (id) =>
+        set((state) => {
+          if (!state.currentListId) return state;
+
+          const currentList = state.tierLists.find(
+            (l) => l.id === state.currentListId
+          );
+          if (!currentList) return state;
+
+          const tierToClear = currentList.rows.find((row) => row.id === id);
+          const itemsToMove = tierToClear?.items || [];
+
+          return {
+            tierLists: state.tierLists.map((list) =>
+              list.id === state.currentListId
+                ? {
+                    ...list,
+                    rows: list.rows.map((row) =>
+                      row.id === id ? { ...row, items: [] } : row
+                    ),
+                    unassignedItems: [...list.unassignedItems, ...itemsToMove],
+                    updatedAt: new Date(),
+                  }
+                : list
+            ),
           };
         }),
 
       reorderTiers: (sourceIndex, destinationIndex) =>
         set((state) => {
-          if (!state.currentList) return state;
-
-          const newRows = [...state.currentList.rows];
-          const [removed] = newRows.splice(sourceIndex, 1);
-          newRows.splice(destinationIndex, 0, removed);
+          if (!state.currentListId) return state;
 
           return {
-            currentList: {
-              ...state.currentList,
-              rows: newRows,
-              updatedAt: new Date(),
-            },
+            tierLists: state.tierLists.map((list) => {
+              if (list.id !== state.currentListId) return list;
+
+              const newRows = [...list.rows];
+              const [removed] = newRows.splice(sourceIndex, 1);
+              newRows.splice(destinationIndex, 0, removed);
+
+              return {
+                ...list,
+                rows: newRows,
+                updatedAt: new Date(),
+              };
+            }),
           };
         }),
 
       // Item Actions
       addItem: (item) =>
         set((state) => {
-          if (!state.currentList) return state;
+          if (!state.currentListId) return state;
 
           const newItem: TierItem = {
             id: uuidv4(),
@@ -158,92 +302,199 @@ export const useTierStore = create<TierStore>()(
           };
 
           return {
-            currentList: {
-              ...state.currentList,
-              rows: state.currentList.rows.map((row) => ({
-                ...row,
-                items: [...row.items, newItem],
-              })),
-              updatedAt: new Date(),
-            },
+            tierLists: state.tierLists.map((list) =>
+              list.id === state.currentListId
+                ? {
+                    ...list,
+                    unassignedItems: [...list.unassignedItems, newItem],
+                    updatedAt: new Date(),
+                  }
+                : list
+            ),
+          };
+        }),
+
+      addItemToTier: (tierId, item) =>
+        set((state) => {
+          if (!state.currentListId) return state;
+
+          const newItem: TierItem = {
+            id: uuidv4(),
+            ...item,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          };
+
+          return {
+            tierLists: state.tierLists.map((list) =>
+              list.id === state.currentListId
+                ? {
+                    ...list,
+                    rows: list.rows.map((row) =>
+                      row.id === tierId
+                        ? { ...row, items: [...row.items, newItem] }
+                        : row
+                    ),
+                    updatedAt: new Date(),
+                  }
+                : list
+            ),
           };
         }),
 
       updateItem: (id, updates) =>
         set((state) => {
-          if (!state.currentList) return state;
+          if (!state.currentListId) return state;
 
           return {
-            currentList: {
-              ...state.currentList,
-              rows: state.currentList.rows.map((row) => ({
-                ...row,
-                items: row.items.map((item) =>
-                  item.id === id
-                    ? { ...item, ...updates, updatedAt: new Date() }
-                    : item
-                ),
-              })),
-              updatedAt: new Date(),
-            },
+            tierLists: state.tierLists.map((list) => {
+              if (list.id !== state.currentListId) return list;
+
+              const inUnassigned = list.unassignedItems.some(
+                (item) => item.id === id
+              );
+
+              if (inUnassigned) {
+                return {
+                  ...list,
+                  unassignedItems: list.unassignedItems.map((item) =>
+                    item.id === id
+                      ? { ...item, ...updates, updatedAt: new Date() }
+                      : item
+                  ),
+                  updatedAt: new Date(),
+                };
+              }
+
+              return {
+                ...list,
+                rows: list.rows.map((row) => ({
+                  ...row,
+                  items: row.items.map((item) =>
+                    item.id === id
+                      ? { ...item, ...updates, updatedAt: new Date() }
+                      : item
+                  ),
+                })),
+                updatedAt: new Date(),
+              };
+            }),
           };
         }),
 
       deleteItem: (id) =>
         set((state) => {
-          if (!state.currentList) return state;
+          if (!state.currentListId) return state;
 
           return {
-            currentList: {
-              ...state.currentList,
-              rows: state.currentList.rows.map((row) => ({
-                ...row,
-                items: row.items.filter((item) => item.id !== id),
-              })),
-              updatedAt: new Date(),
-            },
+            tierLists: state.tierLists.map((list) =>
+              list.id === state.currentListId
+                ? {
+                    ...list,
+                    unassignedItems: list.unassignedItems.filter(
+                      (item) => item.id !== id
+                    ),
+                    rows: list.rows.map((row) => ({
+                      ...row,
+                      items: row.items.filter((item) => item.id !== id),
+                    })),
+                    updatedAt: new Date(),
+                  }
+                : list
+            ),
           };
         }),
 
-      moveItem: (itemId, sourceTierId, targetTierId) =>
+      moveItem: (itemId, sourceTierId, targetTierId, targetIndex) =>
         set((state) => {
-          if (!state.currentList) return state;
+          if (!state.currentListId) return state;
 
-          let itemToMove: TierItem | undefined;
-
-          // Remove item from source tier
-          const updatedRows = state.currentList.rows.map((row) => {
-            if (row.id === sourceTierId) {
-              const [item] = row.items.filter((i) => i.id === itemId);
-              itemToMove = item;
-              return {
-                ...row,
-                items: row.items.filter((i) => i.id !== itemId),
-              };
-            }
-            return row;
-          });
-
-          if (!itemToMove) return state;
-
-          // Add item to target tier
           return {
-            currentList: {
-              ...state.currentList,
-              rows: updatedRows.map((row) =>
-                row.id === targetTierId
-                  ? { ...row, items: [...row.items, itemToMove!] }
-                  : row
-              ),
-              updatedAt: new Date(),
-            },
+            tierLists: state.tierLists.map((list) => {
+              if (list.id !== state.currentListId) return list;
+
+              let itemToMove: TierItem | undefined;
+              let newUnassignedItems = [...list.unassignedItems];
+              let newRows = [...list.rows];
+
+              // Find and remove item from source
+              if (sourceTierId === null) {
+                itemToMove = newUnassignedItems.find((i) => i.id === itemId);
+                newUnassignedItems = newUnassignedItems.filter(
+                  (i) => i.id !== itemId
+                );
+              } else {
+                newRows = newRows.map((row) => {
+                  if (row.id === sourceTierId) {
+                    itemToMove = row.items.find((i) => i.id === itemId);
+                    return {
+                      ...row,
+                      items: row.items.filter((i) => i.id !== itemId),
+                    };
+                  }
+                  return row;
+                });
+              }
+
+              if (!itemToMove) return list;
+
+              // Add item to target
+              if (targetTierId === null) {
+                if (targetIndex !== undefined) {
+                  newUnassignedItems.splice(targetIndex, 0, itemToMove);
+                } else {
+                  newUnassignedItems.push(itemToMove);
+                }
+              } else {
+                newRows = newRows.map((row) => {
+                  if (row.id === targetTierId) {
+                    const newItems = [...row.items];
+                    if (targetIndex !== undefined) {
+                      newItems.splice(targetIndex, 0, itemToMove!);
+                    } else {
+                      newItems.push(itemToMove!);
+                    }
+                    return { ...row, items: newItems };
+                  }
+                  return row;
+                });
+              }
+
+              return {
+                ...list,
+                rows: newRows,
+                unassignedItems: newUnassignedItems,
+                updatedAt: new Date(),
+              };
+            }),
+          };
+        }),
+
+      clearAllItems: () =>
+        set((state) => {
+          if (!state.currentListId) return state;
+
+          return {
+            tierLists: state.tierLists.map((list) =>
+              list.id === state.currentListId
+                ? {
+                    ...list,
+                    rows: list.rows.map((row) => ({
+                      ...row,
+                      items: [],
+                    })),
+                    unassignedItems: [],
+                    updatedAt: new Date(),
+                  }
+                : list
+            ),
           };
         }),
 
       // Drag State Actions
-      setDragState: (state) =>
+      setDragState: (dragState) =>
         set((prev) => ({
-          dragState: { ...prev.dragState, ...state },
+          dragState: { ...prev.dragState, ...dragState },
         })),
 
       resetDragState: () =>
@@ -253,8 +504,10 @@ export const useTierStore = create<TierStore>()(
     }),
     {
       name: "tier-list-storage",
-      // Only persist the currentList, not the dragState
-      partialize: (state) => ({ currentList: state.currentList }),
+      partialize: (state) => ({
+        tierLists: state.tierLists,
+        currentListId: state.currentListId,
+      }),
     }
   )
 );

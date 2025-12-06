@@ -70,3 +70,6 @@ next-env.d.ts
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# npm cache
+.npm/

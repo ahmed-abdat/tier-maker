@@ -20,12 +20,13 @@ export interface TierRow {
   description?: string;
 }
 
-// Represents the complete tier list
+// Represents the complete tier list with an unassigned pool
 export interface TierList {
   id: string;
   title: string;
   description?: string;
   rows: TierRow[];
+  unassignedItems: TierItem[]; // Items not yet placed in any tier
   createdBy: string;
   isPublic: boolean;
   createdAt: Date;
@@ -37,8 +38,8 @@ export interface TierList {
 export interface DragState {
   isDragging: boolean;
   draggedItemId?: string;
-  sourceRowId?: string;
-  targetRowId?: string;
+  sourceRowId?: string; // null means from unassigned pool
+  targetRowId?: string; // null means to unassigned pool
 }
 
 // Configuration options for a tier list
@@ -57,3 +58,9 @@ export type TierListError =
   | "UNAUTHORIZED"
   | "NOT_FOUND"
   | "NETWORK_ERROR";
+
+// Re-export store
+export { useTierStore } from "./store";
+
+// Re-export constants
+export { TIER_LEVELS, TIER_COLORS, type TierLevel } from "./constants";
