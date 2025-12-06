@@ -1,15 +1,13 @@
 "use client";
 
 import { ThemeToggle } from "@/components/theme-toggle";
-import { HeroSection } from "@/components/landing/HeroSection";
-import { BackgroundGlow } from "@/components/ui/background-glow";
+import { TierListGallery } from "@/features/tier-list/components";
 import { Layers } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-export default function Home() {
+export default function TiersPage() {
   return (
-    <BackgroundGlow variant="tier" className="bg-background">
+    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
       {/* Header */}
       <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-lg supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto max-w-6xl flex h-16 items-center justify-between px-4">
@@ -23,17 +21,14 @@ export default function Home() {
             </div>
           </Link>
           <div className="flex items-center gap-3">
-            <Button variant="ghost" asChild>
-              <Link href="/tiers">My Tier Lists</Link>
-            </Button>
             <ThemeToggle />
           </div>
         </div>
       </header>
 
-      {/* Main Content - Landing Hero */}
-      <main className="container mx-auto px-4 max-w-6xl">
-        <HeroSection />
+      {/* Main Content */}
+      <main className="container mx-auto px-4 py-8 max-w-6xl">
+        <TierListGallery />
       </main>
 
       {/* Footer */}
@@ -44,6 +39,6 @@ export default function Home() {
           </p>
         </div>
       </footer>
-    </BackgroundGlow>
+    </div>
   );
 }
