@@ -8,8 +8,26 @@ import { roboto } from "./font";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://tier-maker-nine.vercel.app"),
+  title: "Tier Maker - Create Beautiful Tier Lists",
+  description:
+    "Rank anything with customizable tier lists. Upload images, drag to organize, and export to share with friends.",
   icons: {
     icon: "/favicon.ico",
+    apple: "/tier_list_logo.webp",
+  },
+  openGraph: {
+    title: "Tier Maker - Create Beautiful Tier Lists",
+    description:
+      "Rank anything with customizable tier lists. Upload images, drag to organize, and export to share with friends.",
+    images: ["/tier_list_logo.webp"],
+  },
+  twitter: {
+    card: "summary",
+    title: "Tier Maker - Create Beautiful Tier Lists",
+    description:
+      "Rank anything with customizable tier lists. Upload images, drag to organize, and export to share with friends.",
+    images: ["/tier_list_logo.webp"],
   },
 };
 
