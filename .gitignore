@@ -73,3 +73,6 @@ Thumbs.db
 
 # npm cache
 .npm/
+
+# Claude Code local settings
+.claude/settings.local.json

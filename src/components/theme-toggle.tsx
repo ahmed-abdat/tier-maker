@@ -32,15 +32,28 @@ export function ThemeToggle({
   const [mounted, setMounted] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
+  // Helper to apply theme change
+  const applyTheme = useCallback((newIsDark: boolean) => {
+    setIsDark(newIsDark);
+    if (newIsDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+    localStorage.setItem("theme", newIsDark ? "dark" : "light");
+  }, []);
+
   useEffect(() => {
     setMounted(true);
-    const updateTheme = () => {
+    // Initialize from localStorage or system preference
+    const stored = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDarkMode = stored === "dark" || (!stored && prefersDark);
+    setIsDark(isDarkMode);
+
+    const observer = new MutationObserver(() => {
       setIsDark(document.documentElement.classList.contains("dark"));
-    };
-
-    updateTheme();
-
-    const observer = new MutationObserver(updateTheme);
+    });
     observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ["class"],
@@ -52,22 +65,18 @@ export function ThemeToggle({
   const toggleTheme = useCallback(async () => {
     if (!buttonRef.current) return;
 
+    const newTheme = !isDark;
+
     // Check if View Transitions API is supported
     if (!document.startViewTransition) {
       // Fallback for browsers without View Transitions API
-      const newTheme = !isDark;
-      setIsDark(newTheme);
-      document.documentElement.classList.toggle("dark");
-      localStorage.setItem("theme", newTheme ? "dark" : "light");
+      applyTheme(newTheme);
       return;
     }
 
     await document.startViewTransition(() => {
       flushSync(() => {
-        const newTheme = !isDark;
-        setIsDark(newTheme);
-        document.documentElement.classList.toggle("dark");
-        localStorage.setItem("theme", newTheme ? "dark" : "light");
+        applyTheme(newTheme);
       });
     }).ready;
 
@@ -93,7 +102,7 @@ export function ThemeToggle({
         pseudoElement: "::view-transition-new(root)",
       }
     );
-  }, [isDark, duration]);
+  }, [isDark, duration, applyTheme]);
 
   // Prevent hydration mismatch
   if (!mounted) {

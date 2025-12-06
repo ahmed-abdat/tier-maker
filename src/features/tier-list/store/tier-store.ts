@@ -43,6 +43,7 @@ interface TierStore {
     targetTierId: string | null,
     targetIndex?: number
   ) => void;
+  reorderItemsInContainer: (containerId: string | null, items: TierItem[]) => void;
   clearAllItems: () => void;
 
   // Drag State Actions
@@ -105,10 +106,28 @@ export const useTierStore = create<TierStore>()(
         const listToDuplicate = tierLists.find((list) => list.id === id);
         if (!listToDuplicate) return null;
 
+        // Deep clone with new IDs to avoid reference issues
         const newList: TierList = {
-          ...JSON.parse(JSON.stringify(listToDuplicate)),
           id: uuidv4(),
           title: `${listToDuplicate.title} (Copy)`,
+          rows: listToDuplicate.rows.map((row) => ({
+            ...row,
+            id: uuidv4(),
+            items: row.items.map((item) => ({
+              ...item,
+              id: uuidv4(),
+              createdAt: new Date(item.createdAt),
+              updatedAt: new Date(),
+            })),
+          })),
+          unassignedItems: listToDuplicate.unassignedItems.map((item) => ({
+            ...item,
+            id: uuidv4(),
+            createdAt: new Date(item.createdAt),
+            updatedAt: new Date(),
+          })),
+          createdBy: listToDuplicate.createdBy,
+          isPublic: listToDuplicate.isPublic,
           createdAt: new Date(),
           updatedAt: new Date(),
         };
@@ -464,6 +483,35 @@ export const useTierStore = create<TierStore>()(
                 ...list,
                 rows: newRows,
                 unassignedItems: newUnassignedItems,
+                updatedAt: new Date(),
+              };
+            }),
+          };
+        }),
+
+      reorderItemsInContainer: (containerId, items) =>
+        set((state) => {
+          if (!state.currentListId) return state;
+
+          return {
+            tierLists: state.tierLists.map((list) => {
+              if (list.id !== state.currentListId) return list;
+
+              if (containerId === null) {
+                // Reorder unassigned items
+                return {
+                  ...list,
+                  unassignedItems: items,
+                  updatedAt: new Date(),
+                };
+              }
+
+              // Reorder tier items
+              return {
+                ...list,
+                rows: list.rows.map((row) =>
+                  row.id === containerId ? { ...row, items } : row
+                ),
                 updatedAt: new Date(),
               };
             }),

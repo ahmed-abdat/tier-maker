@@ -60,6 +60,7 @@ export function TierListEditor() {
     clearAllItems,
     moveItem,
     reorderTiers,
+    reorderItemsInContainer,
     addCustomTier,
   } = useTierStore();
 
@@ -266,46 +267,14 @@ export function TierListEditor() {
         if (activeIndex !== -1 && activeIndex !== targetIndex) {
           // Reorder within the same container
           const newItems = arrayMove(containerItems, activeIndex, targetIndex);
-
-          // Update the store with reordered items
-          if (sourceContainerId === null) {
-            // Reorder unassigned items
-            useTierStore.setState((state) => ({
-              tierLists: state.tierLists.map((list) =>
-                list.id === state.currentListId
-                  ? {
-                      ...list,
-                      unassignedItems: newItems,
-                      updatedAt: new Date(),
-                    }
-                  : list
-              ),
-            }));
-          } else {
-            // Reorder tier items
-            useTierStore.setState((state) => ({
-              tierLists: state.tierLists.map((list) =>
-                list.id === state.currentListId
-                  ? {
-                      ...list,
-                      rows: list.rows.map((row) =>
-                        row.id === sourceContainerId
-                          ? { ...row, items: newItems }
-                          : row
-                      ),
-                      updatedAt: new Date(),
-                    }
-                  : list
-              ),
-            }));
-          }
+          reorderItemsInContainer(sourceContainerId, newItems);
         }
       } else if (sourceContainerId !== targetContainerId) {
         // Move between containers
         moveItem(activeId, sourceContainerId, targetContainerId, targetIndex);
       }
     },
-    [currentList, activeDragType, findContainer, getContainerItems, moveItem, reorderTiers]
+    [currentList, activeDragType, findContainer, getContainerItems, moveItem, reorderTiers, reorderItemsInContainer]
   );
 
   const handleDragCancel = useCallback(() => {
@@ -467,17 +436,24 @@ export function TierListEditor() {
           variant="outline"
           className="w-full border-dashed border-2 gap-2 hover:border-primary hover:bg-primary/5 transition-all group py-3"
           onClick={() => {
-            const tierNames = ["S", "A", "B", "C", "D", "E", "F"];
-            const colors = ["#FF7F7F", "#FFBF7F", "#FFFF7F", "#7FFF7F", "#7FBFFF", "#7F7FFF", "#FF7FFF"];
+            const TIER_DEFAULTS = [
+              { name: "S", color: "#FF7F7F" },
+              { name: "A", color: "#FFBF7F" },
+              { name: "B", color: "#FFFF7F" },
+              { name: "C", color: "#7FFF7F" },
+              { name: "D", color: "#7FBFFF" },
+              { name: "E", color: "#7F7FFF" },
+              { name: "F", color: "#FF7FFF" },
+            ];
             const existingNames = currentList.rows.map(r => r.name);
-            const nextIndex = currentList.rows.length % tierNames.length;
-            let newName = tierNames[nextIndex];
+            const nextIndex = currentList.rows.length % TIER_DEFAULTS.length;
+            let newName = TIER_DEFAULTS[nextIndex].name;
             let counter = 1;
             while (existingNames.includes(newName)) {
-              newName = `${tierNames[nextIndex]}${counter}`;
+              newName = `${TIER_DEFAULTS[nextIndex].name}${counter}`;
               counter++;
             }
-            addCustomTier(newName, colors[nextIndex]);
+            addCustomTier(newName, TIER_DEFAULTS[nextIndex].color);
             toast.success(`Added tier "${newName}"`);
           }}
         >

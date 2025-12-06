@@ -79,19 +79,37 @@ export function ImageUpload({ className }: ImageUploadProps) {
       setIsProcessing(true);
       const toastId = toast.loading(`Processing ${acceptedFiles.length} image(s)...`);
 
-      try {
-        for (const file of acceptedFiles) {
+      const failedFiles: { name: string; error: string }[] = [];
+      let successCount = 0;
+
+      for (const file of acceptedFiles) {
+        try {
           const base64 = await processImage(file);
           const name = file.name.replace(/\.[^/.]+$/, ""); // Remove extension
           addItem({ name, imageUrl: base64 });
+          successCount++;
+        } catch (error) {
+          console.error(`Error processing image "${file.name}":`, error);
+          failedFiles.push({
+            name: file.name,
+            error: error instanceof Error ? error.message : "Unknown error",
+          });
         }
-        toast.success(`Added ${acceptedFiles.length} image(s)`, { id: toastId });
-      } catch (error) {
-        console.error("Error processing images:", error);
-        toast.error("Failed to process some images", { id: toastId });
-      } finally {
-        setIsProcessing(false);
       }
+
+      if (failedFiles.length === 0) {
+        toast.success(`Added ${successCount} image(s)`, { id: toastId });
+      } else if (successCount > 0) {
+        toast.warning(
+          `Added ${successCount} image(s), ${failedFiles.length} failed`,
+          { id: toastId }
+        );
+      } else {
+        const errorDetails = failedFiles.map((f) => f.name).join(", ");
+        toast.error(`Failed to process: ${errorDetails}`, { id: toastId });
+      }
+
+      setIsProcessing(false);
     },
     [addItem, getCurrentList]
   );
