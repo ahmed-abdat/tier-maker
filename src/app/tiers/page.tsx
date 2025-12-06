@@ -2,7 +2,7 @@
 
 import { ThemeToggle } from "@/components/theme-toggle";
 import { TierListGallery } from "@/features/tier-list/components";
-import { Layers } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 export default function TiersPage() {
@@ -12,13 +12,14 @@ export default function TiersPage() {
       <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-lg supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto max-w-6xl flex h-16 items-center justify-between px-4">
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-primary shadow-lg shadow-primary/25 group-hover:shadow-primary/40 transition-shadow">
-              <Layers className="h-5 w-5 text-white" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xl font-bold tracking-tight">Tier Maker</span>
-              <span className="text-[10px] text-muted-foreground -mt-1 hidden sm:block">Rank anything beautifully</span>
-            </div>
+            <Image
+              src="/tier_list_logo.webp"
+              alt="Tier Maker Logo"
+              width={36}
+              height={36}
+              className="rounded-lg shadow-lg group-hover:shadow-xl transition-shadow"
+            />
+            <span className="text-xl font-bold tracking-tight">Tier Maker</span>
           </Link>
           <div className="flex items-center gap-3">
             <ThemeToggle />
