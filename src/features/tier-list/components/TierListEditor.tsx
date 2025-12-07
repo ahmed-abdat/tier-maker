@@ -438,17 +438,17 @@ export function TierListEditor() {
                 placeholder="Tier List Title"
               />
             ) : (
-              <>
+              <button
+                onClick={handleEditTitle}
+                className="w-full text-left flex items-center justify-between cursor-text hover:bg-black/5 -mx-2 px-2 -my-1 py-1 rounded transition-colors"
+                title="Click to edit title"
+              >
                 <h2 className="font-bold text-lg">{currentList.title || "Untitled Tier List"}</h2>
-                <button
-                  onClick={handleEditTitle}
+                <Pencil
                   data-edit-button
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-md opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100 hover:bg-black/10 transition-all"
-                  title="Edit title"
-                >
-                  <Pencil className="h-4 w-4 text-muted-foreground" />
-                </button>
-              </>
+                  className="h-4 w-4 text-muted-foreground opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-60 transition-opacity shrink-0 ml-2"
+                />
+              </button>
             )}
           </div>
 
