@@ -61,6 +61,13 @@ export function ExportButton({
           if (clonedElement) {
             (clonedElement as HTMLElement).style.transform = "none";
           }
+          // Show the title for export
+          const exportTitle = clonedDoc.body.querySelector(
+            "[data-export-title]"
+          );
+          if (exportTitle) {
+            exportTitle.classList.remove("hidden");
+          }
         },
       });
 
