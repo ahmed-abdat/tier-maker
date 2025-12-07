@@ -74,7 +74,7 @@ export function ExportButton({
             "[data-export-title]"
           );
           if (exportTitle) {
-            exportTitle.classList.remove("hidden");
+            (exportTitle as HTMLElement).style.display = "block";
           }
           // Hide drag handles during export
           const dragHandles = clonedDoc.body.querySelectorAll(
