@@ -9,12 +9,12 @@ export function Header() {
         <Link href="/" className="flex items-center gap-2">
           <Image
             src="/tier_list_logo.png"
-            alt="Tier Maker Logo"
+            alt="Tier List Logo"
             width={40}
             height={40}
             className="rounded-lg"
           />
-          <h1 className="text-xl font-bold">Tier Maker</h1>
+          <h1 className="text-xl font-bold">Tier List</h1>
         </Link>
         <div className="flex items-center gap-4">
           <ThemeToggle />

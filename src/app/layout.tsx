@@ -9,7 +9,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://tier-maker-nine.vercel.app"),
-  title: "Tier Maker - Create Beautiful Tier Lists",
+  title: "Tier List - Create Beautiful Tier Lists",
   description:
     "Rank anything with customizable tier lists. Upload images, drag to organize, and export to share with friends.",
   icons: {
@@ -17,14 +17,14 @@ export const metadata: Metadata = {
     apple: "/tier_list_logo.png",
   },
   openGraph: {
-    title: "Tier Maker - Create Beautiful Tier Lists",
+    title: "Tier List - Create Beautiful Tier Lists",
     description:
       "Rank anything with customizable tier lists. Upload images, drag to organize, and export to share with friends.",
     images: ["/tier_list_logo.png"],
   },
   twitter: {
     card: "summary",
-    title: "Tier Maker - Create Beautiful Tier Lists",
+    title: "Tier List - Create Beautiful Tier Lists",
     description:
       "Rank anything with customizable tier lists. Upload images, drag to organize, and export to share with friends.",
     images: ["/tier_list_logo.png"],

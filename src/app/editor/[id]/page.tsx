@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { ArrowLeft, Home, Layers } from "lucide-react";
+import { ArrowLeft, Home } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { TierListEditor } from "@/features/tier-list/components";
@@ -48,10 +49,14 @@ export default function EditorPage() {
         <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <div className="container mx-auto max-w-6xl flex h-14 items-center justify-between px-4">
             <Link href="/" className="flex items-center gap-2">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary">
-                <Layers className="h-4 w-4 text-white" />
-              </div>
-              <h1 className="text-xl font-bold">Tier Maker</h1>
+              <Image
+                src="/tier_list_logo.png"
+                alt="Tier List Logo"
+                width={40}
+                height={40}
+                className="rounded-lg"
+              />
+              <h1 className="text-xl font-bold">Tier List</h1>
             </Link>
             <ThemeToggle />
           </div>
@@ -62,8 +67,14 @@ export default function EditorPage() {
             animate={{ opacity: 1, y: 0 }}
             className="text-center space-y-4"
           >
-            <div className="w-16 h-16 mx-auto rounded-full bg-muted flex items-center justify-center">
-              <Layers className="w-8 h-8 text-muted-foreground" />
+            <div className="w-16 h-16 mx-auto flex items-center justify-center">
+              <Image
+                src="/tier_list_logo.png"
+                alt="Tier List Logo"
+                width={64}
+                height={64}
+                className="rounded-lg opacity-50"
+              />
             </div>
             <h2 className="text-2xl font-bold">Tier List Not Found</h2>
             <p className="text-muted-foreground max-w-md">
@@ -93,10 +104,14 @@ export default function EditorPage() {
               <ArrowLeft className="h-4 w-4" />
             </Button>
             <Link href="/" className="flex items-center gap-2">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary">
-                <Layers className="h-4 w-4 text-white" />
-              </div>
-              <span className="font-semibold hidden sm:inline">Tier Maker</span>
+              <Image
+                src="/tier_list_logo.png"
+                alt="Tier List Logo"
+                width={40}
+                height={40}
+                className="rounded-lg"
+              />
+              <span className="font-semibold hidden sm:inline">Tier List</span>
             </Link>
           </div>
           <div className="flex items-center gap-4">

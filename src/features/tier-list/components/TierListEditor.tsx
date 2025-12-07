@@ -336,7 +336,7 @@ export function TierListEditor() {
           <Input
             value={currentList.title}
             onChange={(e) => updateList({ title: e.target.value })}
-            className="text-xl sm:text-2xl font-bold border-none bg-transparent px-0 focus-visible:ring-0 focus-visible:ring-offset-0 h-auto hover:bg-muted/50 rounded-lg transition-colors -ml-2 pl-2"
+            className="text-2xl sm:text-3xl font-bold border-none bg-transparent px-0 focus-visible:ring-0 focus-visible:ring-offset-0 h-auto hover:bg-muted/50 rounded-lg transition-colors -ml-2 pl-2"
             placeholder="Tier List Title"
           />
           <p className="text-xs sm:text-sm text-muted-foreground mt-1 ml-0.5">

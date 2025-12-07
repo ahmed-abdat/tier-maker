@@ -14,12 +14,12 @@ export default function TiersPage() {
           <Link href="/" className="flex items-center gap-2.5 group">
             <Image
               src="/tier_list_logo.png"
-              alt="Tier Maker Logo"
+              alt="Tier List Logo"
               width={44}
               height={44}
               className="rounded-lg shadow-lg group-hover:shadow-xl transition-shadow"
             />
-            <span className="text-xl font-bold tracking-tight">Tier Maker</span>
+            <span className="text-xl font-bold tracking-tight">Tier List</span>
           </Link>
           <div className="flex items-center gap-3">
             <ThemeToggle />
