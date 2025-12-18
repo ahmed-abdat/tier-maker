@@ -47,11 +47,13 @@ This project adheres to a [Code of Conduct](CODE_OF_CONDUCT.md). By participatin
 ### Installation
 
 1. Install dependencies:
+
    ```bash
    pnpm install
    ```
 
 2. Start the development server:
+
    ```bash
    pnpm dev
    ```
@@ -60,12 +62,12 @@ This project adheres to a [Code of Conduct](CODE_OF_CONDUCT.md). By participatin
 
 ### Available Scripts
 
-| Command | Description |
-|---------|-------------|
-| `pnpm dev` | Start development server with Turbopack |
-| `pnpm build` | Build for production |
-| `pnpm start` | Start production server |
-| `pnpm lint` | Run ESLint |
+| Command      | Description                             |
+| ------------ | --------------------------------------- |
+| `pnpm dev`   | Start development server with Turbopack |
+| `pnpm build` | Build for production                    |
+| `pnpm start` | Start production server                 |
+| `pnpm lint`  | Run ESLint                              |
 
 ## Project Structure
 
@@ -107,6 +109,7 @@ src/
 ### Development Workflow
 
 1. Keep your branch updated:
+
    ```bash
    git fetch upstream
    git rebase upstream/main
@@ -115,6 +118,7 @@ src/
 2. Make your changes in small, logical commits
 
 3. Run linting before committing:
+
    ```bash
    pnpm lint
    ```
@@ -141,16 +145,16 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/) for commi
 
 ### Types
 
-| Type | Description |
-|------|-------------|
-| `feat` | A new feature |
-| `fix` | A bug fix |
-| `docs` | Documentation changes |
-| `style` | Code style changes (formatting, semicolons, etc.) |
-| `refactor` | Code refactoring without feature changes |
-| `perf` | Performance improvements |
-| `test` | Adding or updating tests |
-| `chore` | Maintenance tasks |
+| Type       | Description                                       |
+| ---------- | ------------------------------------------------- |
+| `feat`     | A new feature                                     |
+| `fix`      | A bug fix                                         |
+| `docs`     | Documentation changes                             |
+| `style`    | Code style changes (formatting, semicolons, etc.) |
+| `refactor` | Code refactoring without feature changes          |
+| `perf`     | Performance improvements                          |
+| `test`     | Adding or updating tests                          |
+| `chore`    | Maintenance tasks                                 |
 
 ### Examples
 
@@ -164,6 +168,7 @@ refactor(store): extract moveItem logic to helper
 ### Scope
 
 Common scopes for this project:
+
 - `editor` - Tier list editor
 - `gallery` - Gallery page
 - `store` - Zustand store
@@ -182,23 +187,28 @@ Common scopes for this project:
    - Link to related issue(s)
 
 3. **PR Template**:
+
    ```markdown
    ## Summary
+
    Brief description of changes
 
    ## Type of Change
+
    - [ ] Bug fix
    - [ ] New feature
    - [ ] Breaking change
    - [ ] Documentation update
 
    ## Testing
+
    - [ ] Tested drag-and-drop functionality
    - [ ] Tested localStorage persistence
    - [ ] Tested light/dark themes
    - [ ] Tested mobile responsiveness
 
    ## Screenshots
+
    (If applicable)
 
    Closes #(issue number)
@@ -312,6 +322,7 @@ When reporting bugs, please include:
 A clear description of what the bug is.
 
 **To Reproduce**
+
 1. Go to '...'
 2. Click on '...'
 3. Drag '...'
@@ -324,6 +335,7 @@ What you expected to happen.
 If applicable, add screenshots.
 
 **Environment:**
+
 - Browser: [e.g., Chrome 120]
 - OS: [e.g., Windows 11]
 - Device: [e.g., Desktop]
@@ -360,6 +372,7 @@ Any other context or screenshots about the feature request.
 ## Questions?
 
 If you have questions:
+
 - Check existing issues and discussions
 - Open a new discussion for general questions
 - Open an issue for specific bugs or features

@@ -8,13 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - Open-source documentation (CONTRIBUTING.md, CODE_OF_CONDUCT.md, CHANGELOG.md)
 - Improved package.json metadata
 
 ### Changed
+
 - Removed unused dependencies for smaller bundle size
 
 ### Fixed
+
 - N/A
 
 ## [1.0.0] - 2024-12-18
@@ -22,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 #### Core Features
+
 - **Tier List Editor**: Full-featured editor with drag-and-drop functionality
   - Create and manage tier lists with S, A, B, C, D, F tiers
   - Customize tier names (click to edit)
@@ -62,6 +66,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - No account required
 
 #### UI/UX
+
 - **Theming**: Dark and light mode support
   - System preference detection
   - Manual toggle in header
@@ -82,6 +87,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Visual cues for drag-and-drop zones
 
 ### Technical
+
 - Next.js 15 with App Router and Turbopack
 - React 19 with latest features
 - TypeScript in strict mode
@@ -91,6 +97,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Framer Motion for animations
 
 ### Dependencies
+
 - @dnd-kit/core, @dnd-kit/sortable for drag-and-drop
 - html2canvas for image export
 - react-dropzone for file uploads
@@ -101,9 +108,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
-| Version | Date | Description |
-|---------|------|-------------|
-| 1.0.0 | 2024-12-18 | Initial public release |
+| Version | Date       | Description            |
+| ------- | ---------- | ---------------------- |
+| 1.0.0   | 2024-12-18 | Initial public release |
 
 [Unreleased]: https://github.com/ahmed-abdat/tier-maker/compare/v1.0.0...HEAD
 [1.0.0]: https://github.com/ahmed-abdat/tier-maker/releases/tag/v1.0.0
