@@ -27,7 +27,7 @@ import {
   ArrowDown,
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useTierStore, useTemporalStore } from "../store";
+import { useTierStore, useTemporalStore, useCurrentList } from "../store";
 import { useSettingsStore } from "../store/settings-store";
 import { TIER_DEFAULTS, MAX_TITLE_LENGTH } from "../constants";
 import { TierRow } from "./TierRow";
@@ -35,6 +35,7 @@ import { TierItem } from "./TierItem";
 import { ItemPool } from "./ItemPool";
 import { ImageUpload } from "./ImageUpload";
 import { ExportButton } from "./ExportButton";
+import { ExportJSONButton } from "./ExportJSONButton";
 import { FloatingActionBar } from "./FloatingActionBar";
 
 // Code split SettingsDialog - only load when user opens settings
@@ -74,8 +75,10 @@ import { toast } from "sonner";
 export function TierListEditor() {
   const exportRef = useRef<HTMLDivElement>(null);
 
-  // Optimize: actions-only selector to prevent re-renders on state changes
-  const getCurrentList = useTierStore((state) => state.getCurrentList);
+  // Use proper reactive selector for current list
+  const currentList = useCurrentList();
+
+  // Action selectors (stable references, won't cause re-renders)
   const updateList = useTierStore((state) => state.updateList);
   const clearAllItems = useTierStore((state) => state.clearAllItems);
   const moveItem = useTierStore((state) => state.moveItem);
@@ -84,7 +87,6 @@ export function TierListEditor() {
   const addCustomTier = useTierStore((state) => state.addCustomTier);
 
   const settings = useSettingsStore((state) => state.settings);
-  const currentList = getCurrentList();
 
   const {
     activeItem,
@@ -398,6 +400,7 @@ export function TierListEditor() {
             filename={currentList.title.toLowerCase().replace(/\s+/g, "-")}
             hasItems={currentList.rows.some((row) => row.items.length > 0)}
           />
+          <ExportJSONButton tierList={currentList} />
           <SettingsDialog />
           <DropdownMenu>
             <Tooltip>

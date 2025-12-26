@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Plus, Layers, Upload, Move, Palette, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ImportJSONButton } from "./ImportJSONButton";
 
 interface EmptyStateProps {
   onCreateNew: () => void;
@@ -97,8 +98,8 @@ export function EmptyState({ onCreateNew }: EmptyStateProps) {
         </p>
       </motion.div>
 
-      {/* CTA Button */}
-      <motion.div variants={itemVariants}>
+      {/* CTA Buttons */}
+      <motion.div variants={itemVariants} className="flex flex-col items-center gap-3">
         <Button
           size="lg"
           onClick={onCreateNew}
@@ -107,6 +108,10 @@ export function EmptyState({ onCreateNew }: EmptyStateProps) {
           <Plus className="h-5 w-5 transition-transform duration-300 group-hover:rotate-90" />
           Get Started
         </Button>
+        <div className="flex items-center gap-3 text-sm text-muted-foreground">
+          <span>or</span>
+          <ImportJSONButton />
+        </div>
       </motion.div>
 
       {/* Feature hints */}

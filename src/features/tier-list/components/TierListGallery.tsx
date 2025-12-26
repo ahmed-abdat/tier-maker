@@ -7,6 +7,7 @@ import { Plus, Search, SortAsc, LayoutGrid } from "lucide-react";
 import { useTierStore, useTierLists } from "../store";
 import { EmptyState } from "./EmptyState";
 import { TierListCard } from "./TierListCard";
+import { ImportJSONButton } from "./ImportJSONButton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -142,13 +143,16 @@ export function TierListGallery() {
               : `You have ${tierLists.length} tier lists`}
           </p>
         </div>
-        <Button
-          onClick={handleCreateNew}
-          className="group h-11 w-full gap-2 shadow-lg transition-all hover:shadow-xl hover:shadow-primary/20 sm:h-10 sm:w-auto"
-        >
-          <Plus className="h-4 w-4 transition-transform duration-200 group-hover:rotate-90" />
-          Create New
-        </Button>
+        <div className="flex w-full gap-2 sm:w-auto">
+          <ImportJSONButton />
+          <Button
+            onClick={handleCreateNew}
+            className="group h-11 flex-1 gap-2 shadow-lg transition-all hover:shadow-xl hover:shadow-primary/20 sm:h-10 sm:flex-none"
+          >
+            <Plus className="h-4 w-4 transition-transform duration-200 group-hover:rotate-90" />
+            Create New
+          </Button>
+        </div>
       </motion.div>
 
       {/* Search and Filter Bar */}

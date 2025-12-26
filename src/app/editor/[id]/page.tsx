@@ -20,6 +20,7 @@ export default function EditorPage() {
   const listExists = useTierStore((state) =>
     state.tierLists.some((list) => list.id === (params.id as string))
   );
+  const currentListId = useTierStore((state) => state.currentListId);
   const selectList = useTierStore((state) => state.selectList);
   const id = params.id as string;
 
@@ -31,7 +32,10 @@ export default function EditorPage() {
     }
   }, [id, selectList]);
 
-  // Show loading state
+  // Ensure list is selected before rendering editor
+  const isListSelected = currentListId === id;
+
+  // Show loading state until mounted
   if (!mounted) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -43,7 +47,7 @@ export default function EditorPage() {
     );
   }
 
-  // Show not found state
+  // Show not found state (check before isListSelected to avoid infinite loading)
   if (!listExists) {
     return (
       <div className="flex min-h-screen flex-col">
@@ -76,6 +80,19 @@ export default function EditorPage() {
             </Button>
           </motion.div>
         </main>
+      </div>
+    );
+  }
+
+  // Wait for list to be selected before rendering editor
+  // This prevents race condition where tier actions fail because currentListId is null
+  if (!isListSelected) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="flex flex-col items-center gap-2">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          <p className="text-muted-foreground">Loading editor...</p>
+        </div>
       </div>
     );
   }

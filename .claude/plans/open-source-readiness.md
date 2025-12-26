@@ -1,8 +1,8 @@
 # Tier Maker - Open Source Readiness Plan
 
-> **Status**: In Progress
+> **Status**: Core Complete, Future Features In Progress
 > **Created**: 2024-12-18
-> **Last Updated**: 2024-12-18
+> **Last Updated**: 2025-12-26
 
 ---
 
@@ -21,7 +21,10 @@ This plan tracks the work needed to prepare Tier Maker for open-source release. 
 | Phase 3: Code Quality           | ✅ Complete | 6/6      |
 | Phase 4: Refactoring            | ✅ Complete | 5/5      |
 | Phase 5: CI/CD & Automation     | ✅ Complete | 4/4      |
-| Future Features                 | Backlog     | 0/8      |
+| Future Features - Sprint 1      | ✅ Complete | 2/2      |
+| Future Features - Sprint 2      | ✅ Complete | 1/1      |
+| Future Features - Sprint 3      | ⏳ Pending  | 0/1      |
+| Future Features - Backlog       | Deprioritized | 0/4   |
 
 ---
 
@@ -207,40 +210,45 @@ After research, **Vitest + React Testing Library** is recommended:
 
 ## Future Features (Backlog)
 
-> **Status**: Validated & Prioritized
+> **Status**: Sprint 1 Complete, Sprint 2-3 Pending
 > **Full Details**: See `.claude/features/README.md`
-> **Last Updated**: 2024-12-18
+> **Last Updated**: 2025-12-26
 
 ### Priority Order (Based on Competitor Research)
 
-| Sprint | Feature                | Effort   | Validated        |
+| Sprint | Feature                | Effort   | Status           |
 | ------ | ---------------------- | -------- | ---------------- |
-| 1      | F1: Undo/Redo          | 3-4 days | ✅ zundo v2.3.0  |
-| 1      | F2: Keyboard Nav Docs  | 1 day    | ✅ Sensor exists |
-| 2      | F4: JSON Import/Export | 2-3 days | ✅ Feasible      |
-| 3      | F3: Templates          | 3-5 days | ✅ Feasible      |
+| 1      | F1: Undo/Redo          | 3-4 days | ✅ Complete      |
+| 1      | F2: Keyboard Nav Docs  | 1 day    | ✅ Complete      |
+| 2      | F4: JSON Import/Export | 2-3 days | ✅ Complete      |
+| 3      | F3: Templates          | 3-5 days | ⏳ Pending       |
 | -      | F5-F8                  | Backlog  | Deprioritized    |
 
-### Sprint 1: Core UX
+### Sprint 1: Core UX ✅ COMPLETE
 
-- [ ] **F1: Undo/Redo System** ⭐ HIGH PRIORITY
-  - Library: `zundo` (Zustand undo middleware, <700 bytes)
-  - Keyboard: Ctrl+Z / Ctrl+Shift+Z
-  - Files: `tier-store.ts`
-  - [Detailed Spec](./../features/undo-redo.md)
+- [x] **F1: Undo/Redo System** ✅
+  - Library: `zundo` v2.3.0 integrated
+  - Keyboard: Ctrl+Z / Ctrl+Shift+Z (Cmd on Mac)
+  - 50-step history limit, pauses during drag
+  - Toggle in Settings (disabled by default)
+  - Files: `tier-store.ts`, `TierListEditor.tsx`, `SettingsDialog.tsx`
 
-- [ ] **F2: Keyboard Navigation Documentation**
-  - KeyboardSensor already configured!
-  - Just needs help text update
-  - Files: `TierListEditor.tsx` help section
+- [x] **F2: Keyboard Navigation** ✅
+  - KeyboardSensor with custom coordinate getter
+  - Arrow keys navigate between tiers/items
+  - Space/Enter to pick/drop items
+  - Help text in editor footer
+  - Toggle in Settings, E2E tested
+  - Files: `TierListEditor.tsx`, `tierListKeyboardCoordinates.ts`
 
-### Sprint 2: Data Portability
+### Sprint 2: Data Portability ✅ COMPLETE
 
-- [ ] **F4: JSON Import/Export** ⭐ HIGH PRIORITY
-  - Export: Download tier list as `.json`
-  - Import: File upload with validation
-  - **Prerequisite**: Fix Phase 4.4 (Date serialization)
-  - Differentiator: No competitor offers this!
+- [x] **F4: JSON Import/Export** ✅
+  - Export: Download tier list as `.tierlist.json`
+  - Import: File upload with full validation
+  - Schema v1 with version field for future migrations
+  - New UUIDs generated on import (no conflicts)
+  - Files: `json-export.ts`, `json-import.ts`, `ExportJSONButton.tsx`, `ImportJSONButton.tsx`
 
 ### Sprint 3: Quick Start
 

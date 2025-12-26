@@ -19,6 +19,7 @@ interface TierStore {
   // List Management Actions
   createList: (title: string) => string; // Returns the new list ID
   duplicateList: (id: string) => string | null;
+  importList: (tierListData: Omit<TierList, "id">) => string; // Returns new list ID
   deleteList: (id: string) => void;
   selectList: (id: string) => void;
   updateList: (updates: Partial<TierList>) => void;
@@ -134,6 +135,20 @@ export const useTierStore = create<TierStore>()(
             tierLists: [newList, ...state.tierLists],
             currentListId: newList.id,
           }));
+          return newList.id;
+        },
+
+        importList: (tierListData) => {
+          const newList: TierList = {
+            ...tierListData,
+            id: uuidv4(),
+          };
+
+          set((state) => ({
+            tierLists: [newList, ...state.tierLists],
+            currentListId: newList.id,
+          }));
+
           return newList.id;
         },
 
@@ -707,3 +722,13 @@ export const useTierActions = () =>
  * Computation is done in the consuming component with useMemo
  */
 export const useTierLists = () => useTierStore((state) => state.tierLists);
+
+/**
+ * Current list selector - properly subscribes to both tierLists and currentListId
+ * This triggers re-renders when the current list changes
+ */
+export const useCurrentList = () =>
+  useTierStore((state) => {
+    if (!state.currentListId) return null;
+    return state.tierLists.find((list) => list.id === state.currentListId) || null;
+  });

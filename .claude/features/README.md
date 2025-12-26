@@ -9,7 +9,7 @@
 | F1  | Undo/Redo System        | HIGH     | ✅ Validated        | ✅ Done | [undo-redo.md](./undo-redo.md)                   |
 | F2  | Keyboard Navigation     | HIGH     | ✅ Validated        | ✅ Done | [keyboard-nav.md](./keyboard-nav.md)             |
 | F3  | Template System         | HIGH     | ✅ Validated        | Planned | [templates.md](./templates.md)                   |
-| F4  | JSON Import/Export      | HIGH     | ✅ Validated        | Planned | [json-import-export.md](./json-import-export.md) |
+| F4  | JSON Import/Export      | HIGH     | ✅ Validated        | ✅ Done | [json-import-export.md](./json-import-export.md) |
 | F5  | Image Crop/Resize       | LOW      | ⚠️ Needs validation | Backlog | -                                                |
 | F6  | Color Presets           | LOW      | ✅ Easy             | Backlog | -                                                |
 | F7  | Multiple Export Formats | LOW      | ✅ Easy             | Backlog | -                                                |
@@ -17,21 +17,20 @@
 
 ---
 
-## High Priority Features (Sprint 1-3)
+## High Priority Features (Sprint 1 ✅, Sprint 2-3 Pending)
 
-### F1: Undo/Redo System ⭐
+### F1: Undo/Redo System ✅ COMPLETE
 
 **Problem:** Users accidentally move items and can't undo
 **Solution:** Add history tracking with Ctrl+Z / Ctrl+Shift+Z
-**Effort:** 3-4 days
-**Dependencies:** zundo library
+**Implementation:** zundo v2.3.0, 50-step history, pauses during drag
 **[Full Spec →](./undo-redo.md)**
 
-### F2: Keyboard Navigation
+### F2: Keyboard Navigation ✅ COMPLETE
 
 **Problem:** Drag-and-drop is mouse-only, accessibility issue
-**Solution:** Document existing KeyboardSensor, add help text
-**Effort:** 1 day (sensor already exists!)
+**Solution:** Custom KeyboardSensor with arrow key navigation
+**Implementation:** Space/Enter to grab, arrows to move, help text in footer
 **[Full Spec →](./keyboard-nav.md)**
 
 ### F3: Template System
@@ -42,12 +41,11 @@
 **Categories:** Games, Anime, Movies, Music, Food
 **[Full Spec →](./templates.md)**
 
-### F4: JSON Import/Export
+### F4: JSON Import/Export ✅ COMPLETE
 
 **Problem:** Can't transfer tier lists between devices
 **Solution:** Export as JSON file, import from file
-**Effort:** 2-3 days
-**Prerequisite:** Fix Date serialization (Phase 4.4)
+**Implementation:** Schema v1, full validation, new UUIDs on import
 **[Full Spec →](./json-import-export.md)**
 
 ---
@@ -134,13 +132,13 @@
 
 ---
 
-## Competitor Features We Don't Have
+## Competitor Features Comparison
 
-| Feature          | TierMaker | Canva | Us  | Priority                    |
+| Feature          | TierMaker | Canva | Us  | Status                      |
 | ---------------- | --------- | ----- | --- | --------------------------- |
-| 1M+ Templates    | ✅        | ✅    | ❌  | HIGH (F3)                   |
-| Undo/Redo        | Limited   | ✅    | ❌  | HIGH (F1)                   |
-| JSON Export      | ❌        | ❌    | ❌  | HIGH (F4) - Differentiator! |
+| 1M+ Templates    | ✅        | ✅    | ❌  | Planned (F3)                |
+| Undo/Redo        | Limited   | ✅    | ✅  | ✅ Done!                    |
+| JSON Export      | ❌        | ❌    | ✅  | ✅ Done! (Unique!)          |
 | Real-time Collab | ❌        | ✅    | ❌  | Not planned                 |
 | Ads              | ✅        | ❌    | ❌  | Never!                      |
 
@@ -161,19 +159,18 @@ Things we do better than competitors:
 
 ## Implementation Order
 
-### Sprint 1: Core UX
+### Sprint 1: Core UX ✅ COMPLETE
 
-1. F1: Undo/Redo
-2. F2: Keyboard Nav Documentation
+1. ~~F1: Undo/Redo~~ ✅ Done
+2. ~~F2: Keyboard Navigation~~ ✅ Done
 
-### Sprint 2: Data Portability
+### Sprint 2: Data Portability ✅ COMPLETE
 
-3. F4: JSON Import/Export
-4. Fix Phase 4.4 (Date serialization)
+3. ~~F4: JSON Import/Export~~ ✅ Done
 
 ### Sprint 3: Quick Start
 
-5. F3: Templates (5 starter templates)
+4. F3: Templates (5 starter templates)
 
 ### Backlog
 
