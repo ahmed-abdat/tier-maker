@@ -44,8 +44,8 @@ export function ExportButton({
     let html2canvas;
     try {
       // Dynamic import html2canvas (4.1MB) - only load when user exports
-      const module = await import("html2canvas");
-      html2canvas = module.default;
+      const html2canvasModule = await import("html2canvas");
+      html2canvas = html2canvasModule.default;
     } catch (importError) {
       console.error("Failed to load export library:", importError);
       toast.error("Failed to load export feature. Check your connection.", {
