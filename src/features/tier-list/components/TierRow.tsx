@@ -4,10 +4,7 @@ import { useState, useRef, useEffect, memo } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import {
-  SortableContext,
-  horizontalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 import {
   GripVertical,
   Settings2,
@@ -148,7 +145,7 @@ export const TierRow = memo(function TierRow({
         </div>
 
         {/* Tier Content */}
-        <div className="flex min-h-[5rem] flex-1 flex-wrap content-start items-start gap-2 bg-muted/20 p-2">
+        <div className="grid min-h-[5rem] flex-1 grid-cols-[repeat(auto-fill,72px)] content-start items-start gap-2 bg-muted/20 p-2">
           {row.items.map((item) => (
             <div
               key={item.id}
@@ -356,11 +353,11 @@ export const TierRow = memo(function TierRow({
       {/* Tier Content (Droppable Area) */}
       <div
         ref={setDroppableRef}
-        className="flex min-h-[5rem] flex-1 flex-wrap content-start items-start gap-2 bg-muted/20 p-2"
+        className="grid min-h-[5rem] flex-1 grid-cols-[repeat(auto-fill,72px)] content-start items-start gap-2 bg-muted/20 p-2"
       >
         <SortableContext
           items={itemIds}
-          strategy={horizontalListSortingStrategy}
+          strategy={rectSortingStrategy}
         >
           {row.items.map((item) => (
             <TierItem key={item.id} item={item} containerId={row.id} />
