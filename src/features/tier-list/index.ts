@@ -18,7 +18,6 @@ export interface TierRow {
   items: TierItem[];
   name?: string;
   description?: string;
-  labelFontSize?: number; // Font size for tier label (default: 16)
 }
 
 // Represents the complete tier list with an unassigned pool
@@ -33,7 +32,6 @@ export interface TierList {
   createdAt: Date;
   updatedAt: Date;
   tags?: string[];
-  titleFontSize?: number; // Font size for tier list title (default: 24)
 }
 
 // State for drag and drop operations
@@ -43,23 +41,6 @@ export interface DragState {
   sourceRowId?: string; // null means from unassigned pool
   targetRowId?: string; // null means to unassigned pool
 }
-
-// Configuration options for a tier list
-export interface TierListConfig {
-  allowCustomTiers: boolean;
-  maxItemsPerTier: number;
-  allowReordering: boolean;
-  allowImageUpload: boolean;
-  allowPublicSharing: boolean;
-}
-
-// Error types for tier list operations
-export type TierListError =
-  | "TIER_FULL"
-  | "INVALID_TIER"
-  | "UNAUTHORIZED"
-  | "NOT_FOUND"
-  | "NETWORK_ERROR";
 
 // Re-export store
 export { useTierStore } from "./store";

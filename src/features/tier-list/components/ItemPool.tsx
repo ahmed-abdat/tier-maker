@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 import { Package } from "lucide-react";
@@ -12,8 +13,8 @@ interface ItemPoolProps {
   isOver?: boolean;
 }
 
-export function ItemPool({ items, isOver: isOverProp }: ItemPoolProps) {
-  const { setNodeRef, isOver: isDroppableOver } = useDroppable({
+export const ItemPool = memo(function ItemPool({ items }: ItemPoolProps) {
+  const { setNodeRef } = useDroppable({
     id: "unassigned-pool",
     data: {
       type: "pool",
@@ -22,7 +23,6 @@ export function ItemPool({ items, isOver: isOverProp }: ItemPoolProps) {
   });
 
   const itemIds = items.map((item) => item.id);
-  const showDropHighlight = isOverProp || isDroppableOver;
 
   return (
     <div className="space-y-3">
@@ -40,10 +40,7 @@ export function ItemPool({ items, isOver: isOverProp }: ItemPoolProps) {
       <div
         ref={setNodeRef}
         className={cn(
-          "min-h-[5rem] rounded-xl border-2 border-dashed p-4 transition-all duration-200",
-          showDropHighlight
-            ? "scale-[1.01] border-primary bg-primary/10 ring-2 ring-primary/30"
-            : "border-muted-foreground/20 bg-muted/20",
+          "min-h-[5rem] rounded-xl border-2 border-dashed border-muted-foreground/20 bg-muted/20 p-4",
           items.length === 0 && "flex items-center justify-center"
         )}
       >
@@ -54,10 +51,6 @@ export function ItemPool({ items, isOver: isOverProp }: ItemPoolProps) {
                 <TierItem key={item.id} item={item} containerId={null} />
               ))}
             </div>
-          ) : showDropHighlight ? (
-            <p className="animate-pulse text-sm font-medium text-primary">
-              Drop here to unassign
-            </p>
           ) : (
             <p className="text-sm text-muted-foreground/50">
               Upload images below to get started
@@ -67,4 +60,4 @@ export function ItemPool({ items, isOver: isOverProp }: ItemPoolProps) {
       </div>
     </div>
   );
-}
+});

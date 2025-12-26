@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, memo } from "react";
 import { motion } from "framer-motion";
 import {
   MoreVertical,
@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
-import { TierList } from "../index";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -32,15 +31,25 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
+export interface TierListMetadata {
+  id: string;
+  title: string;
+  createdAt: number;
+  updatedAt: number;
+  itemCount: number;
+  rowCount: number;
+  previewColors: string[];
+}
+
 interface TierListCardProps {
-  tierList: TierList;
+  tierList: TierListMetadata;
   index: number;
   onSelect: () => void;
   onDuplicate: () => void;
   onDelete: () => void;
 }
 
-export function TierListCard({
+export const TierListCard = memo(function TierListCard({
   tierList,
   index,
   onSelect,
@@ -50,23 +59,11 @@ export function TierListCard({
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
-  // Calculate total items
-  const totalItems =
-    tierList.rows.reduce((acc, row) => acc + row.items.length, 0) +
-    tierList.unassignedItems.length;
+  // Use precomputed metadata
+  const totalItems = tierList.itemCount;
 
-  // Get preview images (first 4 items with images)
-  const previewImages = tierList.rows
-    .flatMap((row) => row.items)
-    .concat(tierList.unassignedItems)
-    .filter((item) => item.imageUrl)
-    .slice(0, 4);
-
-  // Format the date
-  const updatedAt =
-    tierList.updatedAt instanceof Date
-      ? tierList.updatedAt
-      : new Date(tierList.updatedAt);
+  // Format the date (updatedAt is a timestamp)
+  const updatedAt = new Date(tierList.updatedAt);
   const timeAgo = formatDistanceToNow(updatedAt, { addSuffix: true });
 
   return (
@@ -89,62 +86,21 @@ export function TierListCard({
             "active:scale-[0.98]"
           )}
         >
-          {/* Preview Section */}
+          {/* Preview Section - Tier Colors */}
           <div className="relative h-36 overflow-hidden rounded-t-xl bg-gradient-to-br from-muted/50 to-muted">
-            {previewImages.length > 0 ? (
-              <div className="absolute inset-0 grid grid-cols-2 gap-0.5 overflow-hidden rounded-t-xl">
-                {previewImages.map((item, i) => (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="flex h-full w-full flex-col gap-1 p-2">
+                {tierList.previewColors.map((color, i) => (
                   <motion.div
-                    key={item.id}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
+                    key={i}
+                    style={{ backgroundColor: color }}
+                    className="flex-1 rounded transition-all hover:scale-[1.02]"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.05 + i * 0.05 }}
-                    className={cn(
-                      "relative overflow-hidden",
-                      previewImages.length === 1 &&
-                        "col-span-2 row-span-2 rounded-t-xl",
-                      previewImages.length === 2 && "row-span-2",
-                      previewImages.length === 2 && i === 0 && "rounded-tl-xl",
-                      previewImages.length === 2 && i === 1 && "rounded-tr-xl",
-                      previewImages.length >= 3 &&
-                        i === 0 &&
-                        "row-span-2 rounded-tl-xl",
-                      previewImages.length >= 3 && i === 1 && "rounded-tr-xl"
-                    )}
-                  >
-                    <img
-                      src={item.imageUrl}
-                      alt={item.name}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                    {/* Gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
-                  </motion.div>
+                  />
                 ))}
               </div>
-            ) : (
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground/40">
-                <ImageIcon className="mb-2 h-12 w-12" />
-                <span className="text-sm">No images yet</span>
-              </div>
-            )}
-
-            {/* Tier preview strip at bottom */}
-            <div className="absolute bottom-0 left-0 right-0 flex h-6 overflow-hidden">
-              {tierList.rows.slice(0, 5).map((row) => (
-                <motion.div
-                  key={row.id}
-                  style={{ backgroundColor: row.color }}
-                  className="flex min-w-[2rem] flex-1 items-center justify-center"
-                  initial={{ y: 24 }}
-                  animate={{ y: isHovered ? 0 : 24 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <span className="truncate px-1 text-[10px] font-bold text-black/70">
-                    {row.name || row.level}
-                  </span>
-                </motion.div>
-              ))}
             </div>
           </div>
 
@@ -169,33 +125,20 @@ export function TierListCard({
               </div>
             </div>
 
-            {/* Tier summary */}
+            {/* Tier indicators */}
             <div className="flex gap-1">
-              {tierList.rows.map((row) => {
-                const itemCount = row.items.length;
-                return (
-                  <div
-                    key={row.id}
-                    className="group/tier relative"
-                    title={`${row.name || row.level}: ${itemCount} ${itemCount === 1 ? "item" : "items"}`}
-                  >
-                    <div
-                      className={cn(
-                        "h-2 rounded-full transition-all duration-300",
-                        itemCount > 0 ? "min-w-[1rem]" : "w-2"
-                      )}
-                      style={{
-                        backgroundColor: row.color,
-                        width:
-                          itemCount > 0
-                            ? `${Math.min(itemCount * 8 + 8, 48)}px`
-                            : undefined,
-                        opacity: itemCount > 0 ? 1 : 0.3,
-                      }}
-                    />
-                  </div>
-                );
-              })}
+              {tierList.previewColors.map((color, i) => (
+                <div
+                  key={i}
+                  className="h-2 w-6 rounded-full transition-all duration-300"
+                  style={{ backgroundColor: color }}
+                />
+              ))}
+              {tierList.rowCount > tierList.previewColors.length && (
+                <span className="text-xs text-muted-foreground">
+                  +{tierList.rowCount - tierList.previewColors.length}
+                </span>
+              )}
             </div>
           </div>
 
@@ -268,4 +211,4 @@ export function TierListCard({
       </AlertDialog>
     </>
   );
-}
+});

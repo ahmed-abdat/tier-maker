@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Search, SortAsc, LayoutGrid } from "lucide-react";
-import { useTierStore } from "../store";
+import { useTierStore, useTierLists } from "../store";
 import { EmptyState } from "./EmptyState";
 import { TierListCard } from "./TierListCard";
 import { Button } from "@/components/ui/button";
@@ -25,14 +25,31 @@ export function TierListGallery() {
   const [sortBy, setSortBy] = useState<SortOption>("updated");
   const [mounted, setMounted] = useState(false);
 
-  const {
-    tierLists,
-    createList,
-    selectList,
-    duplicateList,
-    deleteList,
-    clearCurrentList,
-  } = useTierStore();
+  // Get tierLists from store
+  const rawTierLists = useTierLists();
+
+  // Compute metadata outside selector to avoid infinite loops
+  const tierLists = useMemo(
+    () =>
+      rawTierLists.map((list) => ({
+        id: list.id,
+        title: list.title,
+        createdAt: list.createdAt.getTime(),
+        updatedAt: list.updatedAt.getTime(),
+        itemCount:
+          list.rows.reduce((acc, r) => acc + r.items.length, 0) +
+          list.unassignedItems.length,
+        rowCount: list.rows.length,
+        previewColors: list.rows.slice(0, 4).map((r) => r.color),
+      })),
+    [rawTierLists]
+  );
+
+  const createList = useTierStore((state) => state.createList);
+  const selectList = useTierStore((state) => state.selectList);
+  const duplicateList = useTierStore((state) => state.duplicateList);
+  const deleteList = useTierStore((state) => state.deleteList);
+  const clearCurrentList = useTierStore((state) => state.clearCurrentList);
 
   // Handle hydration
   useEffect(() => {
@@ -40,27 +57,24 @@ export function TierListGallery() {
     clearCurrentList();
   }, [clearCurrentList]);
 
-  // Filter and sort tier lists
-  const filteredAndSortedLists = tierLists
-    .filter((list) =>
-      list.title.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    .sort((a, b) => {
-      switch (sortBy) {
-        case "updated":
-          return (
-            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-          );
-        case "created":
-          return (
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-          );
-        case "name":
-          return a.title.localeCompare(b.title);
-        default:
-          return 0;
-      }
-    });
+  // Filter and sort tier lists - memoized for performance
+  const filteredAndSortedLists = useMemo(() => {
+    const lowerQuery = searchQuery.toLowerCase();
+    return tierLists
+      .filter((list) => list.title.toLowerCase().includes(lowerQuery))
+      .sort((a, b) => {
+        switch (sortBy) {
+          case "updated":
+            return b.updatedAt - a.updatedAt;
+          case "created":
+            return b.createdAt - a.createdAt;
+          case "name":
+            return a.title.localeCompare(b.title);
+          default:
+            return 0;
+        }
+      });
+  }, [tierLists, searchQuery, sortBy]);
 
   const handleCreateNew = () => {
     const id = createList("Untitled Tier List");

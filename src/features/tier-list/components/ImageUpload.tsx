@@ -74,7 +74,7 @@ export function ImageUpload({ className }: ImageUploadProps) {
   const getCurrentList = useTierStore((state) => state.getCurrentList);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Check if an image already exists in the tier list
+  // Check if an image already exists in the tier list - optimized with Set for O(1) lookup
   const checkForDuplicate = useCallback(
     (
       base64: string,
@@ -83,27 +83,33 @@ export function ImageUpload({ className }: ImageUploadProps) {
       const currentList = getCurrentList();
       if (!currentList) return { isDuplicate: false };
 
-      // Check all items (in tiers and unassigned)
-      const allItems = [
-        ...currentList.unassignedItems,
-        ...currentList.rows.flatMap((row) => row.items),
-      ];
+      // Build Sets for O(1) lookups (single pass through items)
+      const existingBase64Set = new Set<string>();
+      const lowerNameToOriginal = new Map<string, string>();
 
-      // Compare base64 data (ignoring minor compression differences by comparing a hash-like portion)
-      for (const item of allItems) {
+      const processItem = (item: { name: string; imageUrl?: string }) => {
         if (item.imageUrl) {
-          // Compare the actual image data portion (skip the data:image/... prefix for more reliable comparison)
-          const existingData = item.imageUrl.split(",")[1] || "";
-          const newData = base64.split(",")[1] || "";
-
-          // If the data matches or file names match, it's likely a duplicate
-          if (
-            existingData === newData ||
-            item.name.toLowerCase() === fileName.toLowerCase()
-          ) {
-            return { isDuplicate: true, existingName: item.name };
-          }
+          const data = item.imageUrl.split(",")[1] || "";
+          existingBase64Set.add(data);
         }
+        lowerNameToOriginal.set(item.name.toLowerCase(), item.name);
+      };
+
+      currentList.unassignedItems.forEach(processItem);
+      currentList.rows.forEach((row) => row.items.forEach(processItem));
+
+      // O(1) lookups
+      const newData = base64.split(",")[1] || "";
+      const lowerFileName = fileName.toLowerCase();
+
+      if (existingBase64Set.has(newData)) {
+        return { isDuplicate: true, existingName: fileName };
+      }
+      if (lowerNameToOriginal.has(lowerFileName)) {
+        return {
+          isDuplicate: true,
+          existingName: lowerNameToOriginal.get(lowerFileName),
+        };
       }
 
       return { isDuplicate: false };
@@ -197,7 +203,7 @@ export function ImageUpload({ className }: ImageUploadProps) {
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
+    onDrop: (files) => void onDrop(files),
     accept: {
       "image/*": [".png", ".jpg", ".jpeg", ".gif", ".webp"],
     },
@@ -213,7 +219,7 @@ export function ImageUpload({ className }: ImageUploadProps) {
       aria-label="Upload images by dropping files or clicking to browse"
       aria-busy={isProcessing}
       className={cn(
-        "group relative cursor-pointer overflow-hidden rounded-xl border-2 border-dashed p-8 text-center transition-all duration-200",
+        "group relative cursor-pointer overflow-hidden rounded-xl border-2 border-dashed p-4 sm:p-8 text-center transition-all duration-200",
         isDragActive
           ? "scale-[1.02] border-primary bg-primary/10"
           : "border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/30",
