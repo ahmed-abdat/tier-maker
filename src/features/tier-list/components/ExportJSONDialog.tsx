@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo, useRef, useEffect } from "react";
+import { useState, useCallback, useMemo } from "react";
 import {
   FileJson,
   HardDrive,
@@ -27,19 +27,16 @@ import {
 } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { toast } from "sonner";
 import type { TierList } from "../index";
 import {
-  downloadTierListAsJSON,
-  downloadShareableTierListAsJSON,
   formatFileSize,
   getItemsWithBase64Images,
   createTierListExport,
 } from "../utils/json-export";
-import { uploadImages, type BatchUploadProgress } from "@/lib/services/imgbb";
-
-type ExportMode = "backup" | "shareable";
-type ExportState = "idle" | "uploading" | "success" | "error";
+import {
+  useShareableExport,
+  type ExportMode,
+} from "../hooks/useShareableExport";
 
 interface ExportJSONDialogProps {
   tierList: TierList | null;
@@ -51,28 +48,23 @@ export function ExportJSONDialog({
   isMobile = false,
 }: ExportJSONDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [exportMode, setExportMode] = useState<ExportMode>("backup");
-  const [exportState, setExportState] = useState<ExportState>("idle");
-  const [uploadProgress, setUploadProgress] =
-    useState<BatchUploadProgress | null>(null);
-  const [currentImageName, setCurrentImageName] = useState<string>("");
-  const [shareableEnabled, setShareableEnabled] = useState<boolean | null>(null);
-  const [isExportingSimple, setIsExportingSimple] = useState(false);
-  const abortRef = useRef(false);
 
-  // Check if shareable export is available (API key configured)
-  useEffect(() => {
-    async function checkConfig() {
-      try {
-        const res = await fetch("/api/upload/config");
-        const data = await res.json();
-        setShareableEnabled(data.shareableEnabled);
-      } catch {
-        setShareableEnabled(false);
-      }
-    }
-    void checkConfig();
-  }, []);
+  const {
+    exportMode,
+    setExportMode,
+    exportState,
+    uploadProgress,
+    currentImageName,
+    shareableEnabled,
+    handleExport,
+    handleSimpleExport,
+    handleCancel,
+    resetState,
+    isExportingSimple,
+  } = useShareableExport({
+    tierList,
+    onSuccess: () => setIsOpen(false),
+  });
 
   // Calculate estimated file sizes
   const fileSizeEstimate = useMemo(() => {
@@ -99,144 +91,6 @@ export function ExportJSONDialog({
     };
   }, [tierList]);
 
-  // Simple export (no dialog) - used when shareable is not available
-  const handleSimpleExport = useCallback(() => {
-    if (!tierList) {
-      toast.error("No tier list to export");
-      return;
-    }
-
-    setIsExportingSimple(true);
-
-    try {
-      const result = downloadTierListAsJSON(tierList);
-      if (result.success) {
-        const sizeStr = formatFileSize(result.fileSizeBytes);
-        if (result.fileSizeBytes > 1024 * 1024) {
-          toast.success(
-            `Exported! (${sizeStr} - large file due to embedded images)`
-          );
-        } else {
-          toast.success(`Tier list exported (${sizeStr})`);
-        }
-      }
-    } catch (error) {
-      console.error("Export error:", error);
-      toast.error("Failed to export tier list");
-    } finally {
-      setIsExportingSimple(false);
-    }
-  }, [tierList]);
-
-  // Full export with options (used when shareable is available)
-  const handleExport = useCallback(async () => {
-    if (!tierList) {
-      toast.error("No tier list to export");
-      return;
-    }
-
-    abortRef.current = false;
-    setExportState("uploading");
-
-    try {
-      if (exportMode === "backup") {
-        const result = downloadTierListAsJSON(tierList);
-        if (result.success) {
-          setExportState("success");
-          const sizeStr = formatFileSize(result.fileSizeBytes);
-          toast.success(`Backup exported successfully (${sizeStr})`);
-          setTimeout(() => {
-            setIsOpen(false);
-            setExportState("idle");
-          }, 1000);
-        }
-      } else {
-        const itemsWithImages = getItemsWithBase64Images(tierList);
-
-        if (itemsWithImages.length === 0) {
-          const result = downloadShareableTierListAsJSON(tierList, new Map());
-          if (result.success) {
-            setExportState("success");
-            toast.success(
-              `Exported! (${formatFileSize(result.fileSizeBytes)})`
-            );
-            setTimeout(() => {
-              setIsOpen(false);
-              setExportState("idle");
-            }, 1000);
-          }
-          return;
-        }
-
-        setUploadProgress({
-          current: 0,
-          total: itemsWithImages.length,
-          completed: [],
-        });
-
-        const imageUrlMap = await uploadImages(itemsWithImages, (p) => {
-          if (abortRef.current) return;
-          setUploadProgress(p);
-          const currentItem = itemsWithImages[p.current - 1];
-          if (currentItem) {
-            setCurrentImageName(currentItem.name);
-          }
-        });
-
-        if (abortRef.current) {
-          setExportState("idle");
-          setUploadProgress(null);
-          toast.info("Export cancelled");
-          return;
-        }
-
-        const failedCount = itemsWithImages.length - imageUrlMap.size;
-
-        if (imageUrlMap.size === 0) {
-          setExportState("error");
-          toast.error(
-            "All image uploads failed. Check your internet connection."
-          );
-          return;
-        }
-
-        const result = downloadShareableTierListAsJSON(tierList, imageUrlMap);
-
-        if (result.success) {
-          setExportState("success");
-          const sizeStr = formatFileSize(result.fileSizeBytes);
-          if (failedCount > 0) {
-            toast.success(
-              `Exported! (${sizeStr}) - ${failedCount} image(s) kept as base64`
-            );
-          } else {
-            toast.success(`Shareable export complete! (${sizeStr})`);
-          }
-          setTimeout(() => {
-            setIsOpen(false);
-            setExportState("idle");
-          }, 1500);
-        }
-      }
-    } catch (error) {
-      console.error("Export error:", error);
-      setExportState("error");
-      toast.error("Failed to export tier list");
-    } finally {
-      if (exportState !== "success") {
-        setUploadProgress(null);
-        setCurrentImageName("");
-      }
-    }
-  }, [tierList, exportMode, exportState]);
-
-  const handleCancel = useCallback(() => {
-    abortRef.current = true;
-    setExportState("idle");
-    setUploadProgress(null);
-    setCurrentImageName("");
-  }, []);
-
   const handleOpenChange = useCallback(
     (open: boolean) => {
       if (!open && exportState === "uploading") {
@@ -244,12 +98,10 @@ export function ExportJSONDialog({
       }
       setIsOpen(open);
       if (!open) {
-        setExportState("idle");
-        setUploadProgress(null);
-        setCurrentImageName("");
+        resetState();
       }
     },
-    [exportState]
+    [exportState, resetState]
   );
 
   const hasContent = tierList !== null;
@@ -387,11 +239,7 @@ export function ExportJSONDialog({
               )}
             </div>
 
-            <Button
-              variant="outline"
-              onClick={handleCancel}
-              className="w-full"
-            >
+            <Button variant="outline" onClick={handleCancel} className="w-full">
               Cancel
             </Button>
           </div>
@@ -415,7 +263,7 @@ export function ExportJSONDialog({
                 Please check your internet connection and try again.
               </p>
             </div>
-            <Button onClick={() => setExportState("idle")} className="w-full">
+            <Button onClick={resetState} className="w-full">
               Try Again
             </Button>
           </div>
@@ -510,11 +358,7 @@ export function ExportJSONDialog({
               </label>
             </RadioGroup>
 
-            <Button
-              onClick={() => void handleExport()}
-              disabled={exportState !== "idle"}
-              className="w-full"
-            >
+            <Button onClick={() => void handleExport()} className="w-full">
               <FileJson className="mr-2 h-4 w-4" />
               Export {exportMode === "backup" ? "Backup" : "Shareable"}
             </Button>

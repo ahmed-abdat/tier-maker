@@ -22,8 +22,11 @@ export async function POST(request: Request) {
 
     if (!apiKey) {
       return NextResponse.json(
-        { success: false, error: { message: "API key not configured", code: 500 } },
-        { status: 500 }
+        {
+          success: false,
+          error: { message: "Image upload service not configured", code: 503 },
+        },
+        { status: 503 }
       );
     }
 
