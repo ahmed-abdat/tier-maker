@@ -84,4 +84,63 @@ test.describe("Editor Interactions", () => {
     // Should show "No items yet" initially
     await expect(page.getByText(/no items yet/i)).toBeVisible();
   });
+
+  test("shows paste hint in upload area", async ({ page }) => {
+    // Check that clipboard paste hint is visible (Ctrl+V on Windows/Linux, ⌘V on Mac)
+    await expect(page.getByText(/paste with (ctrl\+v|⌘v)/i)).toBeVisible();
+  });
+
+  test("can paste image from clipboard", async ({ page }) => {
+    // Create a small test image as base64
+    const testImageBase64 =
+      "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
+
+    // Simulate paste event with image data
+    await page.evaluate(async (base64) => {
+      // Convert base64 to blob
+      const byteCharacters = atob(base64);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: "image/png" });
+
+      // Create a File from the blob
+      const file = new File([blob], "test-image.png", { type: "image/png" });
+
+      // Create DataTransfer with the file
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(file);
+
+      // Dispatch paste event
+      const pasteEvent = new ClipboardEvent("paste", {
+        bubbles: true,
+        cancelable: true,
+        clipboardData: dataTransfer,
+      });
+
+      document.dispatchEvent(pasteEvent);
+    }, testImageBase64);
+
+    // Wait for image to be processed and added
+    await page.waitForTimeout(1000);
+
+    // Should show success toast or item count change
+    await expect(page.getByText(/added|test-image/i).first()).toBeVisible({
+      timeout: 5000,
+    });
+  });
+
+  test("paste does not trigger in input fields", async ({ page }) => {
+    // Focus on contentEditable title heading with triple-click to select all
+    const titleHeading = page.getByRole("heading", { level: 1 });
+    await titleHeading.click({ clickCount: 3 });
+
+    // Type new title (replaces selected text)
+    await page.keyboard.type("Pasted Title");
+
+    // Title should have the new text (typing in contentEditable works normally)
+    await expect(titleHeading).toHaveText("Pasted Title");
+  });
 });

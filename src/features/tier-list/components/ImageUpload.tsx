@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { Upload, Image as ImageIcon, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -73,6 +73,14 @@ export function ImageUpload({ className }: ImageUploadProps) {
   const addItem = useTierStore((state) => state.addItem);
   const getCurrentList = useTierStore((state) => state.getCurrentList);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isMac, setIsMac] = useState(false);
+
+  // Detect Mac for keyboard shortcut display
+  useEffect(() => {
+    setIsMac(
+      typeof navigator !== "undefined" && navigator.platform.includes("Mac")
+    );
+  }, []);
 
   // Check if an image already exists in the tier list - optimized with Set for O(1) lookup
   const checkForDuplicate = useCallback(
@@ -202,6 +210,40 @@ export function ImageUpload({ className }: ImageUploadProps) {
     [addItem, getCurrentList, checkForDuplicate]
   );
 
+  // Handle clipboard paste globally
+  useEffect(() => {
+    const handlePaste = (e: ClipboardEvent) => {
+      // Skip if pasting into input/textarea
+      const target = e.target as HTMLElement;
+      if (
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.isContentEditable
+      ) {
+        return;
+      }
+
+      const items = e.clipboardData?.items;
+      if (!items) return;
+
+      const imageFiles: File[] = [];
+      for (const item of Array.from(items)) {
+        if (item.type.startsWith("image/")) {
+          const file = item.getAsFile();
+          if (file) imageFiles.push(file);
+        }
+      }
+
+      if (imageFiles.length > 0) {
+        e.preventDefault();
+        void onDrop(imageFiles);
+      }
+    };
+
+    document.addEventListener("paste", handlePaste);
+    return () => document.removeEventListener("paste", handlePaste);
+  }, [onDrop]);
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (files) => void onDrop(files),
     accept: {
@@ -219,7 +261,7 @@ export function ImageUpload({ className }: ImageUploadProps) {
       aria-label="Upload images by dropping files or clicking to browse"
       aria-busy={isProcessing}
       className={cn(
-        "group relative cursor-pointer overflow-hidden rounded-xl border-2 border-dashed p-4 sm:p-8 text-center transition-all duration-200",
+        "group relative cursor-pointer overflow-hidden rounded-xl border-2 border-dashed p-4 text-center transition-all duration-200 sm:p-8",
         isDragActive
           ? "scale-[1.02] border-primary bg-primary/10"
           : "border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/30",
@@ -270,7 +312,8 @@ export function ImageUpload({ className }: ImageUploadProps) {
                 Drop images here or click to upload
               </p>
               <p className="text-xs text-muted-foreground">
-                PNG, JPG, GIF, WebP supported
+                PNG, JPG, GIF, WebP supported. Paste with{" "}
+                {isMac ? "⌘V" : "Ctrl+V"}
               </p>
             </div>
           </>
