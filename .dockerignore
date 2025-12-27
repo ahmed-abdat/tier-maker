@@ -1,0 +1,41 @@
+# Dependencies
+node_modules
+.pnpm-store
+
+# Build outputs
+.next
+out
+dist
+build
+
+# Dev/test files
+.git
+.gitignore
+*.md
+LICENSE
+.env*
+.eslintcache
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Testing
+coverage
+e2e
+*.spec.ts
+*.test.ts
+playwright-report
+test-results
+
+# Docker
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# Misc
+.DS_Store
+*.log
+.claude

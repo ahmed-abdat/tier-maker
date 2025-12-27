@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Enable standalone output for Docker deployments
+  output: "standalone",
   // Note: Tier items use standard <img> tags with Base64 data URLs
   // No remote patterns needed since we don't use next/image for external images
   // Add stale times configuration for client-side router cache
