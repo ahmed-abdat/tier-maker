@@ -35,7 +35,7 @@ import { TierItem } from "./TierItem";
 import { ItemPool } from "./ItemPool";
 import { ImageUpload } from "./ImageUpload";
 import { ExportButton } from "./ExportButton";
-import { ExportJSONButton } from "./ExportJSONButton";
+import { ExportJSONDialog } from "./ExportJSONDialog";
 import { FloatingActionBar } from "./FloatingActionBar";
 
 // Code split SettingsDialog - only load when user opens settings
@@ -400,7 +400,7 @@ export function TierListEditor() {
             filename={currentList.title.toLowerCase().replace(/\s+/g, "-")}
             hasItems={currentList.rows.some((row) => row.items.length > 0)}
           />
-          <ExportJSONButton tierList={currentList} />
+          <ExportJSONDialog tierList={currentList} />
           <SettingsDialog />
           <DropdownMenu>
             <Tooltip>
