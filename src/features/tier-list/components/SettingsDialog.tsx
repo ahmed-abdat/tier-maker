@@ -70,7 +70,13 @@ async function validateApiKey(apiKey: string): Promise<ValidationResponse> {
   }
 }
 
-function SettingsContent({ onClose }: { onClose?: () => void }) {
+function SettingsContent({
+  onClose,
+  isMobile = false,
+}: {
+  onClose?: () => void;
+  isMobile?: boolean;
+}) {
   const { settings, updateSettings, resetToDefaults } = useSettingsStore();
   const [showApiKey, setShowApiKey] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- Defensive for corrupted localStorage
@@ -149,22 +155,24 @@ function SettingsContent({ onClose }: { onClose?: () => void }) {
   return (
     <>
       <div className="space-y-6 px-1 py-4">
-        {/* Keyboard Navigation */}
-        <div className="flex items-center justify-between">
-          <div className="space-y-0.5">
-            <Label htmlFor="keyboard-nav" className="text-base">
-              Keyboard Navigation
-            </Label>
-            <p className="text-muted-foreground text-sm">
-              Use arrow keys and Space to move items
-            </p>
+        {/* Keyboard Navigation - desktop only (not useful on mobile) */}
+        {!isMobile && (
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label htmlFor="keyboard-nav" className="text-base">
+                Keyboard Navigation
+              </Label>
+              <p className="text-muted-foreground text-sm">
+                Use arrow keys and Space to move items
+              </p>
+            </div>
+            <Switch
+              id="keyboard-nav"
+              checked={enableKeyboardNavigation}
+              onCheckedChange={handleKeyboardNavToggle}
+            />
           </div>
-          <Switch
-            id="keyboard-nav"
-            checked={enableKeyboardNavigation}
-            onCheckedChange={handleKeyboardNavToggle}
-          />
-        </div>
+        )}
 
         {/* Undo/Redo */}
         <div className="flex items-center justify-between">
@@ -415,7 +423,7 @@ export function SettingsDialog({
             </DrawerDescription>
           </DrawerHeader>
           <div className="px-4 pb-4">
-            <SettingsContent onClose={() => setOpen(false)} />
+            <SettingsContent onClose={() => setOpen(false)} isMobile />
           </div>
         </DrawerContent>
       </Drawer>
