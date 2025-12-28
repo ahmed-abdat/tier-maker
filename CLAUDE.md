@@ -1,173 +1,136 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with this codebase.
-
 ## Project Overview
 
-Tier Maker is a modern web application for creating and sharing tier-based rankings with drag-and-drop functionality. Users can upload images, organize them into customizable tiers (S, A, B, C, D, F), and export their tier lists as images.
+Tier Maker is a client-side web app for creating and sharing tier-based rankings. Users can:
+- Upload images via drag-and-drop or file picker
+- Organize items into customizable tiers (S, A, B, C, D, F)
+- Add text-only items without images
+- Reorder tiers and customize tier names/colors
+- Export as PNG image
+- Share via URL (compressed) or JSON export
+- Undo/redo actions
 
-**Current Status**: MVP - Fully functional client-side tier maker with no backend required.
+**Status**: MVP - Fully functional, no backend required. Uses localStorage for persistence.
 
 ## Tech Stack
 
-- **Framework**: Next.js 16 with App Router and Turbopack
+- **Framework**: Next.js 16 (App Router, Turbopack)
 - **Language**: TypeScript (strict mode)
-- **Styling**: Tailwind CSS with shadcn/ui components
-- **State Management**: Zustand with persist middleware (localStorage)
-- **Drag and Drop**: DND Kit (@dnd-kit/core, @dnd-kit/sortable)
+- **State**: Zustand + Zundo (undo/redo) + persist middleware (localStorage with pako compression)
+- **DnD**: @dnd-kit/core, @dnd-kit/sortable
+- **Styling**: Tailwind CSS + shadcn/ui components
 - **Animations**: Framer Motion
-- **Theming**: next-themes (dark/light mode)
-- **Image Processing**: Client-side Base64 compression
-- **Export**: html2canvas for PNG export
-- **Form Handling**: React Hook Form with Zod validation
+- **Export**: html2canvas (PNG)
+- **Image Hosting**: imgbb API (for shareable JSON exports)
 - **Testing**: Vitest + React Testing Library (unit), Playwright (E2E)
 
 ## Commands
 
 ```bash
-pnpm dev          # Start development server with Turbopack
-pnpm build        # Build for production
-pnpm start        # Start production server
-pnpm lint         # Run ESLint (with caching)
-pnpm lint:fix     # Run ESLint and auto-fix issues
-pnpm lint:strict  # Run ESLint with zero warnings (for CI)
-pnpm format       # Format code with Prettier
-pnpm test         # Run unit tests (watch mode)
-pnpm test:run     # Run unit tests once
-pnpm test:e2e     # Run E2E tests (Playwright)
-pnpm test:e2e:ui  # Run E2E tests with UI
+pnpm dev           # Dev server with Turbopack (assume already running)
+pnpm build         # Production build
+pnpm lint          # ESLint with caching
+pnpm lint:fix      # Auto-fix lint issues
+pnpm lint:strict   # Zero warnings (CI mode)
+pnpm format        # Format with Prettier
+pnpm test          # Unit tests (watch mode)
+pnpm test:run      # Unit tests once
+pnpm test:e2e      # E2E tests (Playwright)
+pnpm test:e2e:ui   # E2E tests with UI
 ```
 
 ## Project Structure
 
 ```
-├── e2e/                    # Playwright E2E tests
-│   ├── navigation.spec.ts  # Navigation tests
-│   ├── tier-list.spec.ts   # Tier list creation tests
-│   ├── editor.spec.ts      # Editor interaction tests
-│   ├── gallery.spec.ts     # Gallery management tests
-│   └── persistence.spec.ts # localStorage persistence tests
-├── src/
-│   ├── app/                    # Next.js App Router pages
-│   │   ├── page.tsx            # Landing page with hero section
-│   │   ├── editor/[id]/        # Dynamic tier list editor route
-│   │   │   └── page.tsx        # Editor page component
-│   │   ├── tiers/              # Tier lists gallery
-│   │   │   └── page.tsx        # Gallery page component
-│   │   ├── layout.tsx          # Root layout with providers
-│   │   ├── globals.css         # Global styles
-│   │   └── not-found.tsx       # 404 page
-│   ├── features/               # Feature-based modules
-│   │   └── tier-list/          # Tier list feature
-│   │       ├── components/     # Feature components
-│   │       │   ├── TierListEditor.tsx  # Main editor with DND context
-│   │       │   ├── TierListGallery.tsx # Gallery of saved tier lists
-│   │       │   ├── TierListCard.tsx    # Card for gallery display
-│   │       │   ├── TierRow.tsx         # Tier row (droppable)
-│   │       │   ├── TierItem.tsx        # Draggable item
-│   │       │   ├── ItemPool.tsx        # Unassigned items pool
-│   │       │   ├── ImageUpload.tsx     # Drag & drop image upload
-│   │       │   ├── ExportButton.tsx    # Export to PNG
-│   │       │   └── EmptyState.tsx      # Empty state component
-│   │       ├── hooks/          # Custom hooks
-│   │       │   └── useTierListDnd.ts   # DND logic extracted from editor
-│   │       ├── store/          # Zustand store
-│   │       │   ├── tier-store.ts
-│   │       │   └── index.ts
-│   │       ├── constants.ts    # Tier levels and colors
-│   │       └── index.ts        # Public API and type exports
-│   ├── components/
-│   │   ├── ui/                 # shadcn/ui components
-│   │   ├── landing/            # Landing page components
-│   │   │   └── HeroSection.tsx
-│   │   ├── layout/             # Layout components (Header)
-│   │   ├── providers/          # Context providers (theme)
-│   │   └── theme-toggle.tsx    # Dark/light mode toggle
-│   ├── lib/
-│   │   └── utils.ts            # Utility functions (cn, getContrastColor)
-│   └── test/
-│       └── setup.ts            # Vitest setup with testing-library
-├── playwright.config.ts    # Playwright configuration
-└── vitest.config.ts        # Vitest configuration
+src/
+├── app/                    # Next.js App Router
+│   ├── page.tsx            # Landing page (/)
+│   ├── editor/[id]/        # Tier list editor (/editor/[id])
+│   ├── tiers/              # Gallery of saved lists (/tiers)
+│   ├── share/              # Shared tier list view (/share)
+│   └── api/upload/         # Image upload endpoint
+├── features/tier-list/     # Core feature module
+│   ├── components/         # UI components
+│   ├── hooks/              # useTierListDnd, useShareableExport, useAutoResizeTextarea
+│   ├── store/              # Zustand stores (tier-store, drag-store, settings-store)
+│   └── utils/              # json-export, json-import
+├── components/
+│   ├── ui/                 # shadcn/ui components
+│   ├── layout/             # Header, navigation
+│   └── providers/          # Theme provider
+└── lib/
+    ├── utils.ts            # cn(), getContrastColor()
+    └── services/           # imgbb integration
+e2e/                        # Playwright E2E tests
 ```
 
 ## Architecture
 
 ### Data Flow
-
 ```
-Images → Base64 compression → Zustand store → localStorage
-Drag & Drop → DND Kit → moveItem action → State update
+Images → Base64 compression → Zustand store → localStorage (pako compressed)
+Sharing → JSON export with imgbb URLs (shareable mode)
+DnD → @dnd-kit → moveItem/reorderItemsInContainer → state update
 Export → html2canvas → PNG download
 ```
 
-### Key Store Actions
-
-- `createList(title)`: Initialize new tier list
-- `addItem(item)`: Add item to unassigned pool
-- `moveItem(itemId, source, target)`: Move between tiers/pool
-- `updateTier(id, updates)`: Customize tier name/color
-- `clearAllItems()`: Reset all items
+### Stores
+- **tier-store**: Main state (tierLists, currentListId) + all CRUD actions + undo/redo
+- **drag-store**: Lightweight drag UI state (isDragging, draggedItemId)
+- **settings-store**: User preferences (keyboard nav, animations)
 
 ### Key Types
-
-- `TierItem`: { id, name, imageUrl?, description?, createdAt, updatedAt }
-- `TierRow`: { id, level, color, items[], name? }
-- `TierList`: { id, title, rows[], unassignedItems[], ... }
-- `TierLevel`: "S" | "A" | "B" | "C" | "D" | "F"
-
-## Component Hierarchy
-
-```
-App Layout
-├── Header (navigation, theme toggle)
-└── Pages
-    ├── Landing (/)
-    │   └── HeroSection (framer-motion animations)
-    ├── Gallery (/tiers)
-    │   └── TierListGallery
-    │       └── TierListCard[] (saved tier lists)
-    └── Editor (/editor/[id])
-        └── TierListEditor (DndContext)
-            ├── TierRow[] (useDroppable)
-            │   └── TierItem[] (useSortable)
-            ├── ItemPool (useDroppable)
-            │   └── TierItem[] (useSortable)
-            ├── ImageUpload (react-dropzone)
-            ├── ExportButton (html2canvas)
-            └── EmptyState (when no items)
+```typescript
+TierItem: { id, name, imageUrl?, description?, createdAt, updatedAt }
+TierRow: { id, level, color, items[], name? }
+TierList: { id, title, rows[], unassignedItems[], createdAt, updatedAt }
+TierLevel: "S" | "A" | "B" | "C" | "D" | "F"
 ```
 
-## Future Enhancements (Phase 2)
+## Testing
 
-When backend is needed:
+### Unit Tests (Vitest)
+- Location: `*.test.ts` files next to source
+- Run: `pnpm test:run`
+- Coverage: `pnpm test:coverage`
+- Focus on store logic and utility functions
 
-1. Supabase Auth for user accounts
-2. Cloudflare R2 for image storage (zero egress fees)
-3. Share tier lists via URL
-4. User profiles and saved lists
+### E2E Tests (Playwright)
+- Location: `e2e/` directory
+- Run: `pnpm test:e2e` (headless) or `pnpm test:e2e:ui` (with UI)
+- Tests: navigation, tier list creation, editor interactions, gallery, persistence
+- Install browsers: `pnpm exec playwright install`
 
-## ESLint Configuration
+## Code Conventions
 
-Uses ESLint 9 flat config (`eslint.config.mjs`) with:
+### File Organization
+- Feature-based modules under `src/features/`
+- Shared UI components in `src/components/ui/` (shadcn)
+- One component per file, named exports
 
-- **Next.js**: `eslint-config-next/core-web-vitals` + `typescript`
-- **Prettier**: `eslint-config-prettier` for conflict resolution
-- **Type-aware linting**: Enabled via `parserOptions.projectService`
+### State Management
+- Use granular Zustand selectors (avoid subscribing to full state)
+- All tier list mutations go through `tier-store.ts` actions
+- Don't create new stores - extend existing ones
 
-### Key Rules (Errors)
+### Styling
+- Tailwind CSS utility classes
+- Use `cn()` from `lib/utils` for conditional classes
+- Dark mode via `next-themes` (use `dark:` variants)
 
-- `@typescript-eslint/no-floating-promises` - Catch unhandled promises
-- `@typescript-eslint/no-misused-promises` - Prevent async in wrong contexts
-- `@typescript-eslint/await-thenable` - Only await actual promises
-- `react-hooks/rules-of-hooks` - Enforce hooks rules
-- `react/jsx-key` - Require keys in lists
+### TypeScript
+- Strict mode enabled
+- Use `import type` for type-only imports
+- Prefer `??` over `||` for nullish coalescing
 
-### Key Rules (Warnings)
+### Exports
+- Backup export: Full JSON with base64 images (large, offline use)
+- Shareable export: JSON with imgbb URLs (smaller, requires upload)
 
-- `@typescript-eslint/no-unused-vars` - Unused variables (allows `_` prefix)
-- `@typescript-eslint/no-explicit-any` - Discourage `any` type
-- `@typescript-eslint/prefer-nullish-coalescing` - Use `??` over `||`
-- `@typescript-eslint/consistent-type-imports` - Use `import type`
-- `react-hooks/exhaustive-deps` - Check effect dependencies
-- `no-console` - Only allow `console.warn` and `console.error`
+## Key Patterns
+
+- **DnD**: Uses @dnd-kit with custom `useTierListDnd` hook for multi-container sorting
+- **Persistence**: Zustand persist middleware with pako compression (~60-70% size reduction)
+- **Undo/Redo**: Zundo middleware with 50-step limit
+- **Image handling**: Client-side Base64 compression before storing
