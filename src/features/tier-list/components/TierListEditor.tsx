@@ -312,19 +312,48 @@ export function TierListEditor() {
       {/* Header - Only sticky on desktop, scrolls on mobile to maximize content space */}
       <div className="bg-background md:supports-backdrop-filter:bg-background/80 md:bg-background/95 -mx-4 flex flex-col gap-2 border-b px-4 py-3 sm:py-4 md:sticky md:top-14 md:z-40 md:flex-row md:items-center md:justify-between md:gap-4 md:backdrop-blur-sm">
         <div className="min-w-0 flex-1">
-          <div className="group relative inline-flex max-w-full items-center gap-2">
-            <h1
-              contentEditable
-              suppressContentEditableWarning
-              onBlur={handleTitleBlur}
-              onFocus={handleTitleFocus}
-              onKeyDown={handleTitleKeyDown}
-              onPaste={handleTitlePaste}
-              className="hover:border-muted-foreground/30 focus:border-primary/50 focus:bg-muted/20 max-w-[calc(100vw-5rem)] cursor-text rounded-md border-2 border-transparent px-2 py-1 text-xl font-bold outline-hidden transition-all hover:border-dashed focus:border-solid sm:max-w-[500px] sm:text-2xl md:max-w-[600px] md:text-3xl"
-            >
-              {currentList.title}
-            </h1>
-            <Pencil className="text-muted-foreground pointer-events-none h-3.5 w-3.5 shrink-0 opacity-0 transition-opacity group-hover:opacity-50" />
+          {/* Title row with mobile undo/redo */}
+          <div className="flex items-center justify-between gap-2">
+            <div className="group relative inline-flex min-w-0 flex-1 items-center gap-2">
+              <h1
+                contentEditable
+                suppressContentEditableWarning
+                onBlur={handleTitleBlur}
+                onFocus={handleTitleFocus}
+                onKeyDown={handleTitleKeyDown}
+                onPaste={handleTitlePaste}
+                className="hover:border-muted-foreground/30 focus:border-primary/50 focus:bg-muted/20 max-w-full cursor-text truncate rounded-md border-2 border-transparent px-2 py-1 text-xl font-bold outline-hidden transition-all hover:border-dashed focus:border-solid sm:text-2xl md:max-w-[600px] md:text-3xl"
+              >
+                {currentList.title}
+              </h1>
+              <Pencil className="text-muted-foreground pointer-events-none h-3.5 w-3.5 shrink-0 opacity-0 transition-opacity group-hover:opacity-50" />
+            </div>
+
+            {/* Mobile undo/redo - hidden on md+ */}
+            {settings.enableUndoRedo && (
+              <div className="flex shrink-0 items-center gap-1 md:hidden">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-9"
+                  disabled={!canUndo || activeDragType !== null}
+                  onClick={() => useTierStore.temporal.getState().undo()}
+                  aria-label="Undo"
+                >
+                  <Undo2 className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-9"
+                  disabled={!canRedo || activeDragType !== null}
+                  onClick={() => useTierStore.temporal.getState().redo()}
+                  aria-label="Redo"
+                >
+                  <Redo2 className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
           </div>
           <div className="mt-1 flex items-center gap-3 px-2">
             <p className="text-muted-foreground text-xs">

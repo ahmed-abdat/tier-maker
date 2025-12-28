@@ -53,7 +53,7 @@ export function FAQSection() {
     <section className="relative w-full overflow-hidden py-16 sm:py-20 md:py-24">
       {/* Subtle centered glow - blends with adjacent sections */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="bg-primary/[0.03] dark:bg-primary/[0.02] absolute top-1/2 left-1/2 h-[300px] w-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[120px] sm:h-[500px] sm:w-[500px]" />
+        <div className="bg-primary/3 dark:bg-primary/2 absolute top-1/2 left-1/2 h-[300px] w-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[120px] sm:h-[500px] sm:w-[500px]" />
       </div>
 
       <div className="relative mx-auto max-w-2xl px-4">
@@ -109,7 +109,7 @@ export function FAQSection() {
                   className="text-muted-foreground/60 pointer-events-none absolute -bottom-[5px] left-[7px] h-2.5 w-2.5 -translate-x-1/2 group-last:hidden"
                 />
 
-                <AccordionTrigger className="text-foreground [&[data-state=open]]:text-primary py-4 pr-2 text-left text-sm leading-relaxed hover:no-underline sm:text-[15px]">
+                <AccordionTrigger className="text-foreground data-[state=open]:text-primary py-4 pr-2 text-left text-sm leading-relaxed hover:no-underline sm:text-[15px]">
                   {item.question}
                 </AccordionTrigger>
 
