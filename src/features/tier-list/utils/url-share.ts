@@ -163,7 +163,7 @@ export async function createShareableUrl(
   try {
     // 1. Get items with base64 images that need uploading
     const itemsWithImages = getItemsWithBase64Images(tierList);
-    let imageUrlMap = new Map<string, string>();
+    const imageUrlMap = new Map<string, string>();
 
     // 2. Upload images if any
     if (itemsWithImages.length > 0) {
@@ -175,7 +175,7 @@ export async function createShareableUrl(
       });
 
       try {
-        imageUrlMap = await uploadImages(
+        const uploadResults = await uploadImages(
           itemsWithImages,
           (current, total) => {
             onProgress?.({
@@ -187,6 +187,10 @@ export async function createShareableUrl(
           },
           { customApiKey }
         );
+        // Extract just the URLs for the minimal export
+        for (const [id, result] of uploadResults) {
+          imageUrlMap.set(id, result.url);
+        }
       } catch (uploadError) {
         return {
           success: false,

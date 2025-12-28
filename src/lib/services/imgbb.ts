@@ -1,6 +1,7 @@
 export interface UploadResult {
   success: boolean;
   url?: string;
+  deleteUrl?: string;
   error?: string;
 }
 
@@ -18,6 +19,7 @@ export interface UploadOptions {
 interface UploadApiResponse {
   success: boolean;
   url?: string;
+  deleteUrl?: string;
   error?: { message: string };
 }
 
@@ -53,6 +55,7 @@ export async function uploadImage(
     return {
       success: true,
       url: result.url,
+      deleteUrl: result.deleteUrl,
     };
   } catch (error) {
     if (error instanceof Error && error.name === "AbortError") {
@@ -65,16 +68,22 @@ export async function uploadImage(
   }
 }
 
+export interface UploadedImage {
+  url: string;
+  deleteUrl?: string;
+}
+
 /**
  * Upload multiple images with rate limiting and progress callback
  * Delays 500ms between uploads to avoid rate limiting
+ * Returns Map of itemId -> { url, deleteUrl }
  */
 export async function uploadImages(
   images: Array<{ id: string; base64: string; name?: string }>,
   onProgress?: (current: number, total: number) => void,
   options?: UploadOptions
-): Promise<Map<string, string>> {
-  const urlMap = new Map<string, string>();
+): Promise<Map<string, UploadedImage>> {
+  const resultMap = new Map<string, UploadedImage>();
   const delayMs = 500;
 
   for (let i = 0; i < images.length; i++) {
@@ -85,7 +94,7 @@ export async function uploadImages(
     const result = await uploadImage(base64, name, options);
 
     if (result.success && result.url) {
-      urlMap.set(id, result.url);
+      resultMap.set(id, { url: result.url, deleteUrl: result.deleteUrl });
     } else if (!result.success && result.error !== "Cancelled") {
       throw new Error(result.error ?? "Upload failed");
     }
@@ -98,5 +107,28 @@ export async function uploadImages(
     }
   }
 
-  return urlMap;
+  return resultMap;
+}
+
+/**
+ * Delete images from imgbb using their delete URLs
+ */
+export async function deleteImages(
+  deleteUrls: string[]
+): Promise<{ success: boolean; deletedCount: number; errors: string[] }> {
+  try {
+    const response = await fetch("/api/upload/delete", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ deleteUrls }),
+    });
+
+    return await response.json();
+  } catch (error) {
+    return {
+      success: false,
+      deletedCount: 0,
+      errors: [error instanceof Error ? error.message : "Network error"],
+    };
+  }
 }

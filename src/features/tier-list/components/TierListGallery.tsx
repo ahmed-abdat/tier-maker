@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Search, SortAsc, LayoutGrid } from "lucide-react";
@@ -17,6 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
+import { deleteImages } from "@/lib/services/imgbb";
 
 type SortOption = "updated" | "created" | "name";
 
@@ -29,21 +30,40 @@ export function TierListGallery() {
   // Get tierLists from store
   const rawTierLists = useTierLists();
 
+  // Helper to check if an image URL is hosted on imgbb
+  const isImgbbUrl = useCallback(
+    (url: string | undefined) => url?.includes("ibb.co") ?? false,
+    []
+  );
+
   // Compute metadata outside selector to avoid infinite loops
   const tierLists = useMemo(
     () =>
-      rawTierLists.map((list) => ({
-        id: list.id,
-        title: list.title,
-        createdAt: list.createdAt.getTime(),
-        updatedAt: list.updatedAt.getTime(),
-        itemCount:
-          list.rows.reduce((acc, r) => acc + r.items.length, 0) +
-          list.unassignedItems.length,
-        rowCount: list.rows.length,
-        previewColors: list.rows.slice(0, 4).map((r) => r.color),
-      })),
-    [rawTierLists]
+      rawTierLists.map((list) => {
+        const allItems = [
+          ...list.unassignedItems,
+          ...list.rows.flatMap((r) => r.items),
+        ];
+        const hostedImageDeleteUrls = allItems
+          .filter((item) => item.imageDeleteUrl ?? isImgbbUrl(item.imageUrl))
+          .map((item) => item.imageDeleteUrl)
+          .filter((url): url is string => !!url);
+
+        return {
+          id: list.id,
+          title: list.title,
+          createdAt: list.createdAt.getTime(),
+          updatedAt: list.updatedAt.getTime(),
+          itemCount:
+            list.rows.reduce((acc, r) => acc + r.items.length, 0) +
+            list.unassignedItems.length,
+          rowCount: list.rows.length,
+          previewColors: list.rows.slice(0, 4).map((r) => r.color),
+          hasHostedImages: hostedImageDeleteUrls.length > 0,
+          hostedImageDeleteUrls,
+        };
+      }),
+    [rawTierLists, isImgbbUrl]
   );
 
   const createList = useTierStore((state) => state.createList);
@@ -94,9 +114,36 @@ export function TierListGallery() {
     }
   };
 
-  const handleDeleteList = (id: string) => {
+  const handleDeleteList = async (
+    id: string,
+    cleanupHostedImages?: boolean
+  ) => {
+    // Find the tier list metadata to get delete URLs
+    const listMetadata = tierLists.find((l) => l.id === id);
+
+    // Delete from store first
     deleteList(id);
     toast.success("Tier list deleted");
+
+    // If cleanup requested and there are hosted images, delete them in background
+    if (
+      cleanupHostedImages &&
+      listMetadata?.hostedImageDeleteUrls &&
+      listMetadata.hostedImageDeleteUrls.length > 0
+    ) {
+      try {
+        const result = await deleteImages(listMetadata.hostedImageDeleteUrls);
+        if (result.deletedCount > 0) {
+          toast.success(`Cleaned up ${result.deletedCount} hosted image(s)`);
+        }
+        if (result.errors.length > 0) {
+          console.warn("Some images failed to delete:", result.errors);
+        }
+      } catch (error) {
+        console.error("Failed to cleanup hosted images:", error);
+        // Don't show error toast - the tier list is already deleted
+      }
+    }
   };
 
   // Don't render until mounted to avoid hydration mismatch
@@ -229,7 +276,10 @@ export function TierListGallery() {
               index={index}
               onSelect={() => handleSelectList(list.id)}
               onDuplicate={() => handleDuplicateList(list.id)}
-              onDelete={() => handleDeleteList(list.id)}
+              onDelete={(cleanup) => {
+                void handleDeleteList(list.id, cleanup);
+              }}
+              hasHostedImages={list.hasHostedImages}
             />
           ))}
         </AnimatePresence>

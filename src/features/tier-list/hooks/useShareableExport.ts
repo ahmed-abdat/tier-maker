@@ -159,7 +159,7 @@ export function useShareableExport({
         });
 
         const signal = abortControllerRef.current.signal;
-        const imageUrlMap = await uploadImages(
+        const uploadResults = await uploadImages(
           itemsWithImages,
           (current, total) => {
             if (signal.aborted) return;
@@ -173,6 +173,12 @@ export function useShareableExport({
           resetState();
           toast.info("Export cancelled");
           return;
+        }
+
+        // Extract just the URLs for the export
+        const imageUrlMap = new Map<string, string>();
+        for (const [id, result] of uploadResults) {
+          imageUrlMap.set(id, result.url);
         }
 
         const failedCount = itemsWithImages.length - imageUrlMap.size;

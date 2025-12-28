@@ -13,6 +13,8 @@ import {
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -46,7 +48,8 @@ interface TierListCardProps {
   index: number;
   onSelect: () => void;
   onDuplicate: () => void;
-  onDelete: () => void;
+  onDelete: (cleanupHostedImages?: boolean) => void;
+  hasHostedImages?: boolean;
 }
 
 export const TierListCard = memo(function TierListCard({
@@ -55,9 +58,24 @@ export const TierListCard = memo(function TierListCard({
   onSelect,
   onDuplicate,
   onDelete,
+  hasHostedImages = false,
 }: TierListCardProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [cleanupImages, setCleanupImages] = useState(false);
+
+  const handleDelete = () => {
+    onDelete(cleanupImages);
+    setShowDeleteDialog(false);
+    setCleanupImages(false);
+  };
+
+  const handleCloseDialog = (open: boolean) => {
+    setShowDeleteDialog(open);
+    if (!open) {
+      setCleanupImages(false);
+    }
+  };
 
   // Use precomputed metadata
   const totalItems = tierList.itemCount;
@@ -195,7 +213,7 @@ export const TierListCard = memo(function TierListCard({
       </motion.div>
 
       {/* Delete Confirmation Dialog */}
-      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+      <AlertDialog open={showDeleteDialog} onOpenChange={handleCloseDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Tier List?</AlertDialogTitle>
@@ -204,10 +222,36 @@ export const TierListCard = memo(function TierListCard({
               action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
+
+          {/* Cleanup option - only show if there are hosted images */}
+          {hasHostedImages && (
+            <div className="flex items-start gap-3 rounded-lg border p-3">
+              <Checkbox
+                id={`cleanup-${tierList.id}`}
+                checked={cleanupImages}
+                onCheckedChange={(checked) =>
+                  setCleanupImages(checked === true)
+                }
+              />
+              <div className="grid gap-1.5 leading-none">
+                <Label
+                  htmlFor={`cleanup-${tierList.id}`}
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Delete hosted images
+                </Label>
+                <p className="text-muted-foreground text-xs">
+                  Also delete images from imgbb. This will break any shared
+                  links.
+                </p>
+              </div>
+            </div>
+          )}
+
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={onDelete}
+              onClick={handleDelete}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               Delete

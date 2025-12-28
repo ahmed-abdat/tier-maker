@@ -5,6 +5,7 @@ export interface TierItem {
   id: string;
   name: string;
   imageUrl?: string;
+  imageDeleteUrl?: string; // imgbb delete URL for cleanup
   description?: string;
   createdAt: Date;
   updatedAt: Date;
