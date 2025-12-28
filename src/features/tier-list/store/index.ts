@@ -7,3 +7,4 @@ export {
 } from "./tier-store";
 export { useSettingsStore } from "./settings-store";
 export type { EditorSettings } from "./settings-store";
+export { useDragStore } from "./drag-store";

@@ -7,7 +7,7 @@ import { X } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { type TierItem as TierItemType } from "../index";
-import { useTierStore } from "../store";
+import { useTierStore, useDragStore } from "../store";
 import {
   Tooltip,
   TooltipContent,
@@ -26,6 +26,7 @@ export const TierItem = memo(function TierItem({
   isOverlay,
 }: TierItemProps) {
   const deleteItem = useTierStore((state) => state.deleteItem);
+  const isAnyDragging = useDragStore((state) => state.isDragging);
   const [imageError, setImageError] = useState(false);
 
   const {
@@ -151,32 +152,34 @@ export const TierItem = memo(function TierItem({
             <div className="pointer-events-none absolute inset-0 bg-black/0 transition-colors duration-150 group-hover:bg-black/10" />
           </div>
 
-          {/* Delete button - positioned outside the clipped area */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              e.preventDefault();
-              deleteItem(item.id);
-            }}
-            onPointerDown={(e) => e.stopPropagation()}
-            className={cn(
-              "absolute -top-2 -right-2 rounded-full",
-              // Mobile: larger touch target (32x32), always visible
-              // Desktop (md+): smaller size (24x24), hover-reveal with scale
-              "h-8 w-8 md:h-6 md:w-6",
-              "bg-destructive text-destructive-foreground",
-              "flex items-center justify-center",
-              "scale-100 opacity-100 md:scale-75 md:opacity-0",
-              "md:group-hover:scale-100 md:group-hover:opacity-100",
-              "transition-all duration-150 ease-out",
-              "shadow-lg hover:shadow-xl",
-              "hover:bg-destructive/90 active:scale-90",
-              "focus:ring-destructive/50 z-20 focus:ring-2 focus:outline-hidden"
-            )}
-            aria-label={`Remove ${item.name}`}
-          >
-            <X className="h-4 w-4 md:h-3.5 md:w-3.5" strokeWidth={2.5} />
-          </button>
+          {/* Delete button - hidden during drag, positioned outside the clipped area */}
+          {!isAnyDragging && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                deleteItem(item.id);
+              }}
+              onPointerDown={(e) => e.stopPropagation()}
+              className={cn(
+                "absolute -top-2 -right-2 rounded-full",
+                // Mobile: larger touch target (32x32), always visible
+                // Desktop (md+): smaller size (24x24), hover-reveal with scale
+                "h-8 w-8 md:h-6 md:w-6",
+                "bg-destructive text-destructive-foreground",
+                "flex items-center justify-center",
+                "scale-100 opacity-100 md:scale-75 md:opacity-0",
+                "md:group-hover:scale-100 md:group-hover:opacity-100",
+                "transition-all duration-150 ease-out",
+                "shadow-lg hover:shadow-xl",
+                "hover:bg-destructive/90 active:scale-90",
+                "focus:ring-destructive/50 z-20 focus:ring-2 focus:outline-hidden"
+              )}
+              aria-label={`Remove ${item.name}`}
+            >
+              <X className="h-4 w-4 md:h-3.5 md:w-3.5" strokeWidth={2.5} />
+            </button>
+          )}
         </div>
       </TooltipTrigger>
       <TooltipContent

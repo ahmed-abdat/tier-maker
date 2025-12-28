@@ -15,14 +15,76 @@ declare global {
 
 declare const self: ServiceWorkerGlobalScope;
 
-// URLs to cache during service worker install
-const CRITICAL_URLS = ["/offline.html", "/", "/tiers"] as const;
+const OFFLINE_CACHE = "offline-fallback-v1";
+const OFFLINE_URL = "/offline.html";
 
+// Cache offline page during install - this is critical for fallback to work
+self.addEventListener("install", (event) => {
+  event.waitUntil(
+    (async () => {
+      const cache = await caches.open(OFFLINE_CACHE);
+      await cache.add(new Request(OFFLINE_URL, { cache: "reload" }));
+    })()
+  );
+  // Force activation without waiting
+  self.skipWaiting();
+});
+
+// Claim clients immediately on activation
+self.addEventListener("activate", (event) => {
+  event.waitUntil(self.clients.claim());
+});
+
+// CRITICAL: Manual fetch handler for navigation - must be BEFORE serwist.addEventListeners()
+// This intercepts all navigation requests and serves offline page on failure
+self.addEventListener("fetch", (event) => {
+  // Only handle navigation requests (HTML pages)
+  if (event.request.mode === "navigate") {
+    event.respondWith(
+      (async () => {
+        try {
+          // Try network first with timeout
+          const networkResponse = await Promise.race([
+            fetch(event.request),
+            new Promise<Response>((_, reject) =>
+              setTimeout(() => reject(new Error("timeout")), 10000)
+            ),
+          ]);
+          return networkResponse;
+        } catch {
+          // Network failed - try to serve from any cache
+          const cachedResponse = await caches.match(event.request);
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+
+          // No cache - serve offline page
+          const offlineCache = await caches.open(OFFLINE_CACHE);
+          const offlineResponse = await offlineCache.match(OFFLINE_URL);
+          if (offlineResponse) {
+            return offlineResponse;
+          }
+
+          // Last resort - return a basic offline response
+          return new Response(
+            "<!DOCTYPE html><html><head><title>Offline</title></head><body><h1>You are offline</h1><p>Please check your connection.</p></body></html>",
+            {
+              status: 503,
+              headers: { "Content-Type": "text/html" },
+            }
+          );
+        }
+      })()
+    );
+    return; // Don't let other handlers process this
+  }
+});
+
+// Serwist configuration for non-navigation requests (assets, API, etc.)
 const serwist = new Serwist({
   precacheEntries: self.__SW_MANIFEST,
   skipWaiting: true,
   clientsClaim: true,
-  // Disable navigationPreload - it can interfere with offline fallbacks
   navigationPreload: false,
   runtimeCaching: [
     // Handle RSC prefetch requests (Next.js App Router)
@@ -36,7 +98,7 @@ const serwist = new Serwist({
         plugins: [
           new ExpirationPlugin({
             maxEntries: 200,
-            maxAgeSeconds: 24 * 60 * 60, // 24 hours
+            maxAgeSeconds: 24 * 60 * 60,
           }),
         ],
       }),
@@ -47,7 +109,7 @@ const serwist = new Serwist({
         sameOrigin && request.headers.get("RSC") === "1",
       handler: new NetworkFirst({
         cacheName: "pages-rsc",
-        networkTimeoutSeconds: 10, // 10 seconds for mobile networks
+        networkTimeoutSeconds: 10,
         plugins: [
           new ExpirationPlugin({
             maxEntries: 200,
@@ -56,52 +118,8 @@ const serwist = new Serwist({
         ],
       }),
     },
-    // Handle document navigation requests
-    {
-      matcher: ({ request }) => request.mode === "navigate",
-      handler: new NetworkFirst({
-        cacheName: "pages-cache",
-        networkTimeoutSeconds: 10, // 10 seconds for slow mobile networks
-        plugins: [
-          new ExpirationPlugin({
-            maxEntries: 50,
-            maxAgeSeconds: 24 * 60 * 60, // 24 hours
-          }),
-        ],
-      }),
-    },
     ...defaultCache,
   ],
-  fallbacks: {
-    entries: [
-      {
-        // Use static HTML for most reliable offline fallback
-        url: "/offline.html",
-        matcher({ request }) {
-          return request.destination === "document";
-        },
-      },
-    ],
-  },
-});
-
-// Manually cache critical pages during install for guaranteed offline access
-self.addEventListener("install", (event) => {
-  event.waitUntil(
-    Promise.all(
-      CRITICAL_URLS.map(async (url) => {
-        try {
-          const response = await fetch(url);
-          if (response.ok) {
-            const cache = await caches.open("pages-cache");
-            await cache.put(url, response);
-          }
-        } catch {
-          // Silently fail - precache manifest will handle this
-        }
-      })
-    )
-  );
 });
 
 serwist.addEventListeners();
