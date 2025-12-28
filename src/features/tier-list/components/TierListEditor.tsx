@@ -297,8 +297,8 @@ export function TierListEditor() {
 
   return (
     <div className="space-y-6">
-      {/* Header - Sticky on desktop */}
-      <div className="bg-background/95 supports-backdrop-filter:bg-background/80 sticky top-12 z-40 -mx-4 flex flex-col gap-2 border-b px-4 py-3 backdrop-blur-sm sm:py-4 md:top-14 md:flex-row md:items-center md:justify-between md:gap-4">
+      {/* Header - Only sticky on desktop, scrolls on mobile to maximize content space */}
+      <div className="bg-background md:supports-backdrop-filter:bg-background/80 md:bg-background/95 -mx-4 flex flex-col gap-2 border-b px-4 py-3 sm:py-4 md:sticky md:top-14 md:z-40 md:flex-row md:items-center md:justify-between md:gap-4 md:backdrop-blur-sm">
         <div className="min-w-0 flex-1">
           <div className="group relative inline-flex max-w-full items-center gap-2">
             <h1
