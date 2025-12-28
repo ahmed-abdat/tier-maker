@@ -129,7 +129,7 @@ export const TierRow = memo(function TierRow({
 
         {/* Tier Label */}
         <div
-          className="flex w-12 min-w-12 shrink-0 items-center justify-center p-1 font-bold sm:w-24 sm:min-w-24"
+          className="flex w-14 min-w-14 shrink-0 items-center justify-center p-1 font-bold sm:w-24 sm:min-w-24"
           style={{ backgroundColor: row.color }}
         >
           <span
@@ -206,7 +206,7 @@ export const TierRow = memo(function TierRow({
       {/* Tier Label */}
       <div
         className={cn(
-          "group relative flex w-12 min-w-12 shrink-0 items-center justify-center font-bold sm:w-24 sm:min-w-24",
+          "group relative flex w-14 min-w-14 shrink-0 items-center justify-center font-bold sm:w-24 sm:min-w-24",
           isExporting && "w-24 min-w-24"
         )}
         style={{ backgroundColor: row.color }}
@@ -268,10 +268,10 @@ export const TierRow = memo(function TierRow({
                 size="icon"
                 aria-label={`Settings for tier ${row.name ?? row.level}`}
                 className={cn(
-                  "absolute top-1 right-1 rounded-full",
-                  // Mobile: larger touch target (40x40), always visible
+                  "absolute top-0.5 right-0.5 rounded-full",
+                  // Mobile: compact touch target (32x32), always visible
                   // Desktop (md+): smaller size (24x24), hover-reveal
-                  "h-10 w-10 md:h-6 md:w-6",
+                  "h-8 w-8 md:h-6 md:w-6",
                   "bg-black/40 hover:scale-110 hover:bg-black/60 active:scale-95",
                   "border border-white/30 shadow-xs",
                   "opacity-100 md:opacity-0 md:group-hover:opacity-100",
@@ -279,7 +279,7 @@ export const TierRow = memo(function TierRow({
                 )}
               >
                 <Settings2
-                  className="h-5 w-5 text-white md:h-3 md:w-3"
+                  className="h-4 w-4 text-white md:h-3 md:w-3"
                   aria-hidden="true"
                 />
               </Button>
