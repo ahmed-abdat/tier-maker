@@ -1,102 +1,52 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
+import { PlusIcon } from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const faqs = [
   {
-    question: "What is a tier list?",
+    id: "what-is-libretier",
+    question: "What is LibreTier?",
     answer:
-      "A tier list is a ranking system that organizes items into tiers (usually S, A, B, C, D, F) from best to worst. Tier lists are popular for ranking games, characters, movies, music, and anything else you want to compare.",
+      "LibreTier is a free, open-source tier list maker. Create beautiful rankings with drag-and-drop, customize tiers with colors and names, export as images, and share with friends. No account required - everything runs in your browser.",
   },
   {
-    question: "Is LibreTier really free?",
+    id: "why-libretier",
+    question: "Why LibreTier over TierMaker?",
     answer:
-      "Yes, LibreTier is 100% free and open source. No hidden costs, no premium features, no subscriptions. All features are available to everyone.",
+      "Unlike TierMaker, LibreTier requires no Twitter login or invasive permissions. Your data stays on YOUR device - no tracking, no ads, no watermarks. Plus features like 50-step undo/redo, text-only items, and unlimited custom tiers that others don't have.",
   },
   {
-    question: "Do I need to create an account?",
-    answer:
-      "No account required. Start creating tier lists immediately. Your data is stored locally on your device, giving you full privacy and control.",
-  },
-  {
-    question: "Does it work without internet?",
-    answer:
-      "Yes! LibreTier is a Progressive Web App (PWA) that works offline. Install it on your device and create tier lists anywhere, anytime.",
-  },
-  {
+    id: "privacy",
     question: "Is my data private?",
     answer:
-      "Your tier lists are stored locally on your device. We don't collect, store, or have access to your data. Share only when you choose to.",
+      "Yes. LibreTier is privacy-first. All tier lists are stored locally in your browser using compressed localStorage. We don't collect, track, or have access to your data. You only share when you explicitly choose to.",
+  },
+  {
+    id: "offline",
+    question: "Does it work offline?",
+    answer:
+      "Yes! LibreTier is a Progressive Web App (PWA). Install it on your phone or desktop and use it without internet. All features work offline - create, edit, and export tier lists anywhere.",
+  },
+  {
+    id: "sharing",
+    question: "How do I share my tier list?",
+    answer:
+      "You can export as PNG image, generate a shareable URL link, or create a JSON backup. URL sharing uploads images to ImgBB (free) so others can view and clone your tier list.",
+  },
+  {
+    id: "open-source",
+    question: "Is LibreTier open source?",
+    answer:
+      "Yes, LibreTier is MIT licensed and fully open source. You can view the code, contribute, or self-host it. We believe tier list tools should be free and respect your privacy.",
   },
 ];
-
-function FaqItem({
-  question,
-  answer,
-  index,
-}: {
-  question: string;
-  answer: string;
-  index: number;
-}) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.3, delay: index * 0.05 }}
-      className={cn(
-        "border-b border-border/30 dark:border-border/20",
-        "transition-colors duration-200"
-      )}
-    >
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex w-full items-center justify-between py-4 text-left sm:py-5"
-      >
-        <span
-          className={cn(
-            "text-sm font-medium transition-colors duration-200 sm:text-base",
-            isOpen ? "text-primary" : "text-foreground"
-          )}
-        >
-          {question}
-        </span>
-        <motion.div
-          animate={{ rotate: isOpen ? 180 : 0 }}
-          transition={{ duration: 0.2 }}
-          className={cn(
-            "ml-4 flex-shrink-0 transition-colors duration-200",
-            isOpen ? "text-primary" : "text-foreground/50"
-          )}
-        >
-          <ChevronDown className="h-4 w-4 sm:h-5 sm:w-5" />
-        </motion.div>
-      </button>
-
-      <AnimatePresence initial={false}>
-        {isOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2, ease: "easeInOut" }}
-            className="overflow-hidden"
-          >
-            <p className="text-foreground/70 pb-4 text-sm leading-relaxed sm:pb-5 sm:text-base">
-              {answer}
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
-  );
-}
 
 export function FAQSection() {
   return (
@@ -113,46 +63,63 @@ export function FAQSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="mb-8 text-center sm:mb-12"
+          className="mb-8 sm:mb-12"
         >
           <h2 className="text-foreground text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">
             Frequently Asked Questions
           </h2>
-          <p className="text-foreground/70 mt-3 text-base sm:text-lg">
-            Everything you need to know about LibreTier
+          <p className="text-foreground/60 mt-3 text-sm sm:text-base">
+            Everything you need to know about LibreTier.{" "}
+            <a
+              href="https://github.com/ahmed-abdat/LibreTier/issues"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              Contact us
+            </a>{" "}
+            for more info.
           </p>
         </motion.div>
 
-        {/* FAQ Items */}
-        <div className="space-y-0">
-          {faqs.map((faq, index) => (
-            <FaqItem
-              key={faq.question}
-              question={faq.question}
-              answer={faq.answer}
-              index={index}
-            />
-          ))}
-        </div>
-
-        {/* Help text */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
+        {/* FAQ Accordion with vertical line */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-          className="text-foreground/60 mt-6 text-center text-xs sm:mt-8 sm:text-sm"
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="relative"
         >
-          Have more questions?{" "}
-          <a
-            href="https://github.com/ahmed-abdat/LibreTier/issues"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary font-medium underline-offset-4 hover:underline"
-          >
-            Open an issue on GitHub
-          </a>
-        </motion.p>
+          {/* Vertical guide line */}
+          <div
+            aria-hidden="true"
+            className="bg-border/50 dark:bg-border/30 pointer-events-none absolute inset-y-0 left-3 h-full w-px"
+          />
+
+          <Accordion type="single" collapsible>
+            {faqs.map((item) => (
+              <AccordionItem
+                key={item.id}
+                value={item.id}
+                className="group border-border/40 dark:border-border/20 relative border-b pl-5 first:border-t"
+              >
+                {/* Plus icon on the line */}
+                <PlusIcon
+                  aria-hidden="true"
+                  className="text-muted-foreground/60 pointer-events-none absolute -bottom-[5px] left-[7px] h-2.5 w-2.5 -translate-x-1/2 group-last:hidden"
+                />
+
+                <AccordionTrigger className="text-foreground [&[data-state=open]]:text-primary py-4 pr-2 text-left text-sm leading-relaxed hover:no-underline sm:text-[15px]">
+                  {item.question}
+                </AccordionTrigger>
+
+                <AccordionContent className="text-foreground/70 pr-2 pb-4 text-sm leading-relaxed">
+                  {item.answer}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </motion.div>
       </div>
     </section>
   );
