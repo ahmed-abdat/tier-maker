@@ -169,14 +169,14 @@ export function ExportButton({
         <>
           <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
           <span className={`ml-2 ${isMobile ? "" : "hidden sm:inline"}`}>
-            Exporting...
+            Saving...
           </span>
         </>
       ) : (
         <>
           <Download className="h-4 w-4" aria-hidden="true" />
           <span className={`ml-2 ${isMobile ? "" : "hidden sm:inline"}`}>
-            Export
+            Save Image
           </span>
         </>
       )}
@@ -186,8 +186,8 @@ export function ExportButton({
   // Always show tooltip with different messages
   const tooltipMessage =
     !hasItems && !isExporting
-      ? "Add items to your tier list to export"
-      : "Export tier list as PNG image";
+      ? "Add items to save as image"
+      : "Save as PNG image";
 
   return (
     <Tooltip>

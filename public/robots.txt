@@ -1,0 +1,12 @@
+# LibreTier robots.txt
+# Allow all crawlers to access all content
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://libretier.vercel.app/sitemap.xml
+
+# Disallow service worker and API routes
+Disallow: /sw.js
+Disallow: /api/

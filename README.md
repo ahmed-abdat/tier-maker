@@ -4,6 +4,7 @@
 [![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38bdf8)](https://tailwindcss.com/)
+[![PWA Ready](https://img.shields.io/badge/PWA-Ready-5A0FC8)](https://web.dev/progressive-web-apps/)
 
 A free, open-source tier list maker. Create beautiful rankings with drag-and-drop, export as images, and share with friends. No account required - everything runs in your browser.
 
@@ -17,7 +18,8 @@ A free, open-source tier list maker. Create beautiful rankings with drag-and-dro
 ## Why This Project?
 
 - **Privacy-first**: Your data stays in your browser. No tracking, no accounts, no server uploads (unless you choose to share)
-- **Works offline**: Once loaded, works without internet. All data stored locally
+- **Works offline**: Install as a PWA and use without internet. All data stored locally
+- **Installable**: Add to your home screen on mobile or desktop for native app-like experience
 - **Fully featured**: Not a toy project - this is a production-ready tier list maker with real features
 - **Open source**: MIT licensed, contributions welcome
 
@@ -61,6 +63,19 @@ A free, open-source tier list maker. Create beautiful rankings with drag-and-dro
 - **Sort** - By date updated, created, or alphabetically
 - **Duplicate** - Clone existing tier lists
 - **Preview** - See tier colors at a glance in the gallery
+
+### Sharing
+
+- **URL sharing** - Generate shareable links (images uploaded to ImgBB)
+- **Clone shared lists** - Import shared tier lists to your collection
+- **Read-only view** - Shared links show tier list without editing
+
+### Progressive Web App (PWA)
+
+- **Install on any device** - Add to home screen on iOS, Android, or desktop
+- **Works offline** - Full functionality without internet connection
+- **Fast loading** - Service worker caches assets for instant access
+- **Native-like experience** - Fullscreen, no browser UI
 
 ## Getting Started
 
@@ -106,6 +121,7 @@ Get a free API key at [imgbb.com](https://api.imgbb.com/)
 | State       | Zustand with persist middleware    |
 | Drag & Drop | @dnd-kit                           |
 | Animations  | Framer Motion                      |
+| PWA         | Serwist (service worker)           |
 | Testing     | Vitest + Playwright                |
 
 ## Project Structure
@@ -114,13 +130,18 @@ Get a free API key at [imgbb.com](https://api.imgbb.com/)
 src/
 ├── app/                    # Next.js pages and routes
 │   ├── editor/[id]/        # Tier list editor
-│   └── tiers/              # Gallery of saved lists
+│   ├── share/              # Shared tier list view
+│   ├── tiers/              # Gallery of saved lists
+│   ├── ~offline/           # PWA offline fallback
+│   └── sw.ts               # Service worker
 ├── features/tier-list/     # Core tier list feature
-│   ├── components/         # TierRow, TierItem, ImageUpload, etc.
+│   ├── components/         # TierRow, TierItem, ShareDialog, etc.
 │   ├── hooks/              # useTierListDnd, custom hooks
-│   └── store/              # Zustand store and actions
+│   ├── store/              # Zustand store and actions
+│   └── utils/              # url-share, json-export, etc.
 ├── components/
 │   ├── ui/                 # shadcn/ui components
+│   ├── pwa/                # InstallPrompt
 │   └── layout/             # Header, providers
 └── lib/                    # Utilities
 ```
@@ -128,13 +149,15 @@ src/
 ## Available Commands
 
 ```bash
-pnpm dev          # Start dev server (Turbopack)
-pnpm build        # Production build
-pnpm lint         # Run ESLint
-pnpm format       # Format with Prettier
-pnpm test         # Run unit tests
-pnpm test:e2e     # Run E2E tests (Playwright)
+pnpm dev              # Start dev server (Turbopack)
+pnpm build --webpack  # Production build with PWA service worker
+pnpm lint             # Run ESLint
+pnpm format           # Format with Prettier
+pnpm test             # Run unit tests
+pnpm test:e2e         # Run E2E tests (Playwright)
 ```
+
+> **Note**: Use `--webpack` flag for production builds to generate the service worker. Serwist doesn't support Turbopack yet.
 
 ## Contributing
 

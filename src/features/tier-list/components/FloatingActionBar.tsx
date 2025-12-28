@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ExportButton } from "./ExportButton";
 import { ShareDialog } from "./ShareDialog";
+import { EditorMenu } from "./EditorMenu";
 import dynamic from "next/dynamic";
 import { useSettingsStore } from "../store/settings-store";
 import type { TierList } from "../index";
@@ -26,6 +28,7 @@ export function FloatingActionBar({
   hasItems,
   tierList,
 }: FloatingActionBarProps) {
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const reduceAnimations = useSettingsStore(
     (state) => state.settings.reduceAnimations
   );
@@ -36,7 +39,7 @@ export function FloatingActionBar({
       className="bg-background/95 supports-backdrop-filter:bg-background/80 fixed right-0 bottom-0 left-0 z-30 border-t backdrop-blur-sm md:hidden"
     >
       <div className="container mx-auto flex max-w-5xl items-center justify-center gap-3 px-4 py-3">
-        {/* Export Button - Mobile optimized */}
+        {/* Save Image Button - Mobile optimized */}
         <ExportButton
           targetRef={exportTargetRef}
           filename={filename}
@@ -44,11 +47,23 @@ export function FloatingActionBar({
           isMobile
         />
 
-        {/* Share Button - Mobile optimized */}
+        {/* Share Link Button - Mobile optimized */}
         <ShareDialog tierList={tierList} isMobile />
 
-        {/* Settings Button - Mobile optimized */}
-        <SettingsDialog isMobile />
+        {/* Menu Button - Opens drawer on mobile */}
+        <EditorMenu
+          tierList={tierList}
+          isMobile
+          onOpenSettings={() => setSettingsOpen(true)}
+        />
+
+        {/* Settings dialog (controlled by EditorMenu) */}
+        <SettingsDialog
+          isMobile
+          open={settingsOpen}
+          onOpenChange={setSettingsOpen}
+          showTrigger={false}
+        />
       </div>
 
       {/* Safe area spacing for iOS notch */}

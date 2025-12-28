@@ -17,9 +17,21 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://libretier.vercel.app"),
-  title: "LibreTier - Free Open Source Tier List Maker",
+  title: "Free Tier List Maker - No Login Required | LibreTier",
   description:
-    "LibreTier is a free, open-source tier list maker. Rank anything with customizable tiers, drag-and-drop, and export to share.",
+    "Create and share tier lists instantly. No account needed. Works offline. Upload images, drag to rank, export as PNG. Free, open source, privacy-first tier list creator.",
+  keywords: [
+    "tier list maker",
+    "free tier list maker",
+    "tier list creator",
+    "ranking maker",
+    "tier list no login",
+    "open source tier list",
+    "offline tier list",
+    "tiermaker alternative",
+  ],
+  authors: [{ name: "LibreTier" }],
+  creator: "LibreTier",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -30,18 +42,69 @@ export const metadata: Metadata = {
     apple: "/icons/apple-touch-icon.png",
   },
   openGraph: {
-    title: "LibreTier - Free Open Source Tier List Maker",
+    type: "website",
+    locale: "en_US",
+    url: "https://libretier.vercel.app",
+    siteName: "LibreTier",
+    title: "Free Tier List Maker - No Login Required | LibreTier",
     description:
-      "LibreTier is a free, open-source tier list maker. Rank anything with customizable tiers, drag-and-drop, and export to share.",
-    images: ["/tier_list_logo.png"],
+      "Create and share tier lists instantly. No account needed. Works offline. Upload images, drag to rank, export as PNG. Free, open source, privacy-first.",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "LibreTier - Free Tier List Maker",
+      },
+    ],
   },
   twitter: {
-    card: "summary",
-    title: "LibreTier - Free Open Source Tier List Maker",
+    card: "summary_large_image",
+    title: "Free Tier List Maker - No Login Required | LibreTier",
     description:
-      "LibreTier is a free, open-source tier list maker. Rank anything with customizable tiers, drag-and-drop, and export to share.",
-    images: ["/tier_list_logo.png"],
+      "Create and share tier lists instantly. No account needed. Works offline. Free, open source, privacy-first tier list creator.",
+    images: ["/og-image.jpg"],
+    creator: "@libretier",
   },
+  alternates: {
+    canonical: "https://libretier.vercel.app",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "LibreTier",
+  description:
+    "Free, open-source tier list maker. Create and share tier lists instantly with no account required.",
+  url: "https://libretier.vercel.app",
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Any",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+  featureList: [
+    "No login required",
+    "Works offline (PWA)",
+    "Drag and drop interface",
+    "Export as PNG",
+    "URL sharing",
+    "Undo/Redo support",
+    "Open source",
+  ],
 };
 
 export default function RootLayout({
@@ -51,7 +114,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head />
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body
         suppressHydrationWarning
         className={`${roboto.variable} bg-background text-foreground flex min-h-screen flex-col font-sans antialiased`}

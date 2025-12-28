@@ -8,6 +8,10 @@ import {
   Palette,
   Download,
   ArrowRight,
+  Undo2,
+  WifiOff,
+  Type,
+  Shield,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -129,11 +133,11 @@ export function HeroSection() {
           No account required
         </span>
         <h1 className="text-foreground text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
-          Create Beautiful Tier Lists
+          Free Tier List Maker
         </h1>
         <p className="text-muted-foreground text-base leading-relaxed sm:text-lg">
-          Rank anything with customizable tier lists. Upload images, drag to
-          organize, and export to share with friends.
+          Create and share tier lists instantly. No login needed. Works offline.
+          Upload images, drag to rank, export as PNG.
         </p>
       </motion.div>
 
@@ -161,19 +165,23 @@ export function HeroSection() {
       {/* Feature hints */}
       <motion.div
         variants={itemVariants}
-        className="mt-12 grid w-full max-w-2xl grid-cols-2 gap-3 px-2 sm:mt-16 sm:grid-cols-4 sm:gap-6"
+        className="mt-12 grid w-full max-w-3xl grid-cols-2 gap-3 px-2 sm:mt-16 sm:grid-cols-4 sm:gap-4"
       >
         {[
           { icon: Upload, text: "Upload images", desc: "Drag & drop files" },
           { icon: Move, text: "Drag to rank", desc: "Intuitive sorting" },
           { icon: Palette, text: "Customize", desc: "Colors & names" },
-          { icon: Download, text: "Export", desc: "Share anywhere" },
+          { icon: Download, text: "Export PNG", desc: "Share anywhere" },
+          { icon: Undo2, text: "Undo/Redo", desc: "50-step history" },
+          { icon: WifiOff, text: "Works offline", desc: "PWA support" },
+          { icon: Type, text: "Text items", desc: "No image needed" },
+          { icon: Shield, text: "Private & local", desc: "Data on device" },
         ].map((feature, i) => (
           <motion.div
             key={feature.text}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1 + i * 0.1 }}
+            transition={{ delay: 1 + i * 0.05 }}
             whileHover={{ y: -2 }}
             className="bg-muted/30 hover:bg-muted/50 flex cursor-default flex-col items-center gap-1.5 rounded-xl p-3 transition-colors sm:gap-2 sm:p-4"
           >

@@ -133,7 +133,7 @@ export function ShareDialog({ tierList, isMobile = false }: ShareDialogProps) {
     >
       <Share2 className="h-4 w-4" aria-hidden="true" />
       <span className={`ml-2 ${isMobile ? "" : "hidden sm:inline"}`}>
-        Share
+        Share Link
       </span>
     </Button>
   );
@@ -156,7 +156,7 @@ export function ShareDialog({ tierList, isMobile = false }: ShareDialogProps) {
           <DialogTrigger asChild>{triggerButton}</DialogTrigger>
         </TooltipTrigger>
         <TooltipContent>
-          <p>Share via link</p>
+          <p>Create shareable link</p>
         </TooltipContent>
       </Tooltip>
 

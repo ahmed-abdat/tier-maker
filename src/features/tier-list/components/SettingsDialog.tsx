@@ -336,8 +336,27 @@ function SettingsContent({ onClose }: { onClose?: () => void }) {
   );
 }
 
-export function SettingsDialog({ isMobile = false }: { isMobile?: boolean }) {
-  const [open, setOpen] = useState(false);
+interface SettingsDialogProps {
+  isMobile?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  showTrigger?: boolean;
+}
+
+export function SettingsDialog({
+  isMobile = false,
+  open: controlledOpen,
+  onOpenChange: controlledOnOpenChange,
+  showTrigger = true,
+}: SettingsDialogProps) {
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
+
+  // Support both controlled and uncontrolled modes
+  const isControlled = controlledOpen !== undefined;
+  const open = isControlled ? controlledOpen : uncontrolledOpen;
+  const setOpen = isControlled
+    ? (value: boolean) => controlledOnOpenChange?.(value)
+    : setUncontrolledOpen;
 
   // Keyboard shortcut listener (Ctrl+, or Cmd+,)
   useEffect(() => {
@@ -354,7 +373,7 @@ export function SettingsDialog({ isMobile = false }: { isMobile?: boolean }) {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [setOpen]);
 
   const triggerButton = (
     <Button
@@ -371,14 +390,16 @@ export function SettingsDialog({ isMobile = false }: { isMobile?: boolean }) {
   if (isMobile) {
     return (
       <Drawer open={open} onOpenChange={setOpen}>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <DrawerTrigger asChild>{triggerButton}</DrawerTrigger>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Settings</p>
-          </TooltipContent>
-        </Tooltip>
+        {showTrigger && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <DrawerTrigger asChild>{triggerButton}</DrawerTrigger>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Settings</p>
+            </TooltipContent>
+          </Tooltip>
+        )}
 
         <DrawerContent>
           <DrawerHeader>
@@ -397,14 +418,16 @@ export function SettingsDialog({ isMobile = false }: { isMobile?: boolean }) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <DialogTrigger asChild>{triggerButton}</DialogTrigger>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>Settings (Ctrl+,)</p>
-        </TooltipContent>
-      </Tooltip>
+      {showTrigger && (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <DialogTrigger asChild>{triggerButton}</DialogTrigger>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Settings (Ctrl+,)</p>
+          </TooltipContent>
+        </Tooltip>
+      )}
 
       <DialogContent className="w-[95vw] max-w-md">
         <DialogHeader>

@@ -2,6 +2,8 @@
 
 import { ThemeToggle } from "@/components/theme-toggle";
 import { HeroSection } from "@/components/landing/HeroSection";
+import { FAQSection } from "@/components/landing/FAQSection";
+import { FinalCTA } from "@/components/landing/FinalCTA";
 import { BackgroundGlow } from "@/components/ui/background-glow";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/Logo";
@@ -15,7 +17,7 @@ export default function Home() {
         <div className="container mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
           <Link href="/" className="flex items-center gap-2">
             <Logo size={40} priority />
-            <span className="text-xl font-bold">Tier List</span>
+            <span className="text-xl font-bold">LibreTier</span>
           </Link>
           <div className="flex items-center gap-3">
             <Button variant="ghost" asChild>
@@ -26,16 +28,25 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Main Content - Landing Hero */}
-      <main className="container mx-auto max-w-6xl px-4">
-        <HeroSection />
+      {/* Main Content */}
+      <main>
+        {/* Hero Section */}
+        <div className="container mx-auto max-w-6xl px-4">
+          <HeroSection />
+        </div>
+
+        {/* FAQ Section */}
+        <FAQSection />
+
+        {/* Final CTA */}
+        <FinalCTA />
       </main>
 
       {/* Footer */}
-      <footer className="mt-auto border-t">
+      <footer className="border-t">
         <div className="container mx-auto max-w-6xl px-4 py-6">
           <p className="text-muted-foreground text-center text-sm">
-            Create beautiful tier lists. No account required.
+            LibreTier - Free, open source tier list maker. No account required.
           </p>
         </div>
       </footer>

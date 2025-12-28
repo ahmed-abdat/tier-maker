@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useMemo, useCallback } from "react";
+import { useRef, useEffect, useMemo, useCallback, useState } from "react";
 import dynamic from "next/dynamic";
 import {
   DndContext,
@@ -17,15 +17,7 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import {
-  RotateCcw,
-  Plus,
-  Pencil,
-  MoreVertical,
-  Undo2,
-  Redo2,
-  ArrowDown,
-} from "lucide-react";
+import { Plus, Pencil, Undo2, Redo2, ArrowDown } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTierStore, useTemporalStore, useCurrentList } from "../store";
 import { useSettingsStore } from "../store/settings-store";
@@ -36,8 +28,8 @@ import { ItemPool } from "./ItemPool";
 import { ImageUpload } from "./ImageUpload";
 import { TextItemInput } from "./TextItemInput";
 import { ExportButton } from "./ExportButton";
-import { ExportJSONDialog } from "./ExportJSONDialog";
 import { ShareDialog } from "./ShareDialog";
+import { EditorMenu } from "./EditorMenu";
 import { FloatingActionBar } from "./FloatingActionBar";
 
 // Code split SettingsDialog - only load when user opens settings
@@ -49,29 +41,12 @@ const SettingsDialog = dynamic(
 import { useTierListDnd } from "../hooks/useTierListDnd";
 import { createTierListKeyboardCoordinates } from "../utils/tierListKeyboardCoordinates";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Kbd } from "@/components/ui/kbd";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 // import { cn } from "@/lib/utils"; // Unused for now
 
@@ -81,9 +56,11 @@ export function TierListEditor() {
   // Use proper reactive selector for current list
   const currentList = useCurrentList();
 
+  // Settings dialog state (for EditorMenu to open it)
+  const [settingsOpen, setSettingsOpen] = useState(false);
+
   // Action selectors (stable references, won't cause re-renders)
   const updateList = useTierStore((state) => state.updateList);
-  const clearAllItems = useTierStore((state) => state.clearAllItems);
   const moveItem = useTierStore((state) => state.moveItem);
   const reorderTiers = useTierStore((state) => state.reorderTiers);
   const reorderItemsInContainer = useTierStore(
@@ -399,68 +376,24 @@ export function TierListEditor() {
             <div className="bg-border hidden h-5 w-px sm:block" />
           )}
 
-          {/* Actions group */}
+          {/* Actions group - simplified layout */}
           <ExportButton
             targetRef={exportRef}
             filename={currentList.title.toLowerCase().replace(/\s+/g, "-")}
             hasItems={currentList.rows.some((row) => row.items.length > 0)}
           />
           <ShareDialog tierList={currentList} />
-          <ExportJSONDialog tierList={currentList} />
-          <SettingsDialog />
-          <DropdownMenu>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-11 w-11 md:h-10 md:w-10"
-                    aria-label="More options"
-                  >
-                    <MoreVertical className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>More options</p>
-              </TooltipContent>
-            </Tooltip>
-            <DropdownMenuContent align="end">
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <DropdownMenuItem
-                    onSelect={(e) => e.preventDefault()}
-                    className="text-destructive focus:text-destructive"
-                  >
-                    <RotateCcw className="mr-2 h-4 w-4" />
-                    Reset All Items
-                  </DropdownMenuItem>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Reset Tier List?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This will remove all items from all tiers. This action
-                      cannot be undone.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={() => {
-                        clearAllItems();
-                        toast.success("Tier list reset");
-                      }}
-                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                    >
-                      Reset
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <EditorMenu
+            tierList={currentList}
+            onOpenSettings={() => setSettingsOpen(true)}
+          />
+
+          {/* Settings dialog (controlled by EditorMenu) */}
+          <SettingsDialog
+            open={settingsOpen}
+            onOpenChange={setSettingsOpen}
+            showTrigger={false}
+          />
         </div>
       </div>
 
