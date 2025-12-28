@@ -31,6 +31,10 @@ public/fallback-*.js
 .cursorrules
 .cursor/*
 
+# claude code
+CLAUDE.md
+.claude/
+
 # supabase email templates
 src/features/auth/auth-html-templates/*
 src/features/auth/auth-html-templates/email-confirmation.html
