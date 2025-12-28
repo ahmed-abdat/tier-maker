@@ -134,13 +134,13 @@
 
 ## Competitor Features Comparison
 
-| Feature          | TierMaker | Canva | Us  | Status                      |
-| ---------------- | --------- | ----- | --- | --------------------------- |
-| 1M+ Templates    | ✅        | ✅    | ❌  | Planned (F3)                |
-| Undo/Redo        | Limited   | ✅    | ✅  | ✅ Done!                    |
-| JSON Export      | ❌        | ❌    | ✅  | ✅ Done! (Unique!)          |
-| Real-time Collab | ❌        | ✅    | ❌  | Not planned                 |
-| Ads              | ✅        | ❌    | ❌  | Never!                      |
+| Feature          | TierMaker | Canva | Us  | Status             |
+| ---------------- | --------- | ----- | --- | ------------------ |
+| 1M+ Templates    | ✅        | ✅    | ❌  | Planned (F3)       |
+| Undo/Redo        | Limited   | ✅    | ✅  | ✅ Done!           |
+| JSON Export      | ❌        | ❌    | ✅  | ✅ Done! (Unique!) |
+| Real-time Collab | ❌        | ✅    | ❌  | Not planned        |
+| Ads              | ✅        | ❌    | ❌  | Never!             |
 
 ---
 

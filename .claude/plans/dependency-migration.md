@@ -32,6 +32,7 @@ Already on Next.js 16.0.10, React 19.2.1.
 - Fixed `Slot` usage → `Slot.Root` for button and breadcrumb
 
 **Import pattern:**
+
 ```typescript
 // Before
 import * as DialogPrimitive from "@radix-ui/react-dialog";
@@ -45,6 +46,7 @@ import { Dialog as DialogPrimitive } from "radix-ui";
 ## Phase 4: Update Other Dependencies ✅
 
 Most already updated in prior work. Current versions:
+
 - date-fns: 4.1.0
 - sonner: 2.0.7
 - zustand: 5.0.9
@@ -52,6 +54,7 @@ Most already updated in prior work. Current versions:
 - uuid: 13.0.0
 
 **NOT upgraded:**
+
 - tailwind-merge stays at 2.6.0 (v3 requires Tailwind CSS v4)
 
 ---
@@ -72,10 +75,10 @@ No fixes needed - Sonner v2 API compatible, tailwind-merge v2 kept.
 
 ## Summary
 
-| Before | After | Savings |
-|--------|-------|---------|
-| 19 @radix-ui packages | 1 radix-ui package | -18 deps |
-| ~740 packages total | ~720 packages | tree-shakeable |
+| Before                | After              | Savings        |
+| --------------------- | ------------------ | -------------- |
+| 19 @radix-ui packages | 1 radix-ui package | -18 deps       |
+| ~740 packages total   | ~720 packages      | tree-shakeable |
 
 ---
 

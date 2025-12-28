@@ -82,7 +82,8 @@ export function validateTierListImport(json: unknown): ImportValidationResult {
     if (typeof data.version === "number" && data.version > 1) {
       return {
         success: false,
-        error: "This file was created with a newer version. Please update the app.",
+        error:
+          "This file was created with a newer version. Please update the app.",
       };
     }
     return { success: false, error: "Invalid or missing version field" };
@@ -181,16 +182,20 @@ export function transformImportToTierList(
   return {
     title: tierList.title.slice(0, 200),
     description: tierList.description?.slice(0, 1000),
-    rows: (tierList.rows as unknown as Record<string, unknown>[]).map(transformRow),
-    unassignedItems: (tierList.unassignedItems as unknown as Record<string, unknown>[]).map(
-      transformItem
+    rows: (tierList.rows as unknown as Record<string, unknown>[]).map(
+      transformRow
     ),
+    unassignedItems: (
+      tierList.unassignedItems as unknown as Record<string, unknown>[]
+    ).map(transformItem),
     createdBy: "local-user",
     isPublic: false,
     createdAt: parseDate(tierList.createdAt),
     updatedAt: now,
     tags: Array.isArray(tierList.tags)
-      ? tierList.tags.filter((t): t is string => typeof t === "string").slice(0, 10)
+      ? tierList.tags
+          .filter((t): t is string => typeof t === "string")
+          .slice(0, 10)
       : undefined,
   };
 }

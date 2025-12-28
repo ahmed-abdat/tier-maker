@@ -10,6 +10,7 @@
 ## Overview
 
 Add JSON export/import functionality to allow users to:
+
 - Backup tier lists as JSON files
 - Transfer tier lists between devices/browsers
 - Share editable tier list data (not just images)
@@ -20,12 +21,12 @@ Add JSON export/import functionality to allow users to:
 
 ### Approach: Native Browser APIs + Zod Validation
 
-| Component | Choice | Reason |
-|-----------|--------|--------|
-| Export | Native Blob API | Already used in ExportButton, 0KB overhead |
-| Import | FileReader + react-dropzone | Already have dropzone for images |
-| Validation | Zod | Type-safe, good errors, ~12KB |
-| Sanitization | Manual (no DOMPurify) | Overkill for text-only fields |
+| Component    | Choice                      | Reason                                     |
+| ------------ | --------------------------- | ------------------------------------------ |
+| Export       | Native Blob API             | Already used in ExportButton, 0KB overhead |
+| Import       | FileReader + react-dropzone | Already have dropzone for images           |
+| Validation   | Zod                         | Type-safe, good errors, ~12KB              |
+| Sanitization | Manual (no DOMPurify)       | Overkill for text-only fields              |
 
 **No new dependencies needed** - Zod is optional (can use manual validation).
 
@@ -231,17 +232,19 @@ function isValidTierItem(item: unknown): boolean {
 ```typescript
 import { v4 as uuidv4 } from "uuid";
 
-export function transformImportToTierList(data: TierListExport): Omit<TierList, "id"> {
+export function transformImportToTierList(
+  data: TierListExport
+): Omit<TierList, "id"> {
   const now = new Date();
 
   return {
     title: data.tierList.title.slice(0, 200), // Enforce max length
     description: data.tierList.description?.slice(0, 1000),
-    rows: data.tierList.rows.map(row => ({
+    rows: data.tierList.rows.map((row) => ({
       ...row,
       id: uuidv4(), // New ID to prevent conflicts
       name: row.name?.slice(0, 100),
-      items: row.items.map(item => ({
+      items: row.items.map((item) => ({
         ...item,
         id: uuidv4(),
         name: item.name.slice(0, 200),
@@ -249,7 +252,7 @@ export function transformImportToTierList(data: TierListExport): Omit<TierList, 
         updatedAt: now,
       })),
     })),
-    unassignedItems: data.tierList.unassignedItems.map(item => ({
+    unassignedItems: data.tierList.unassignedItems.map((item) => ({
       ...item,
       id: uuidv4(),
       name: item.name.slice(0, 200),
@@ -310,6 +313,7 @@ interface ImportJSONButtonProps {
 ```
 
 Features:
+
 - Hidden file input triggered by button click
 - Accept only `.json` files
 - Max size: 10MB
@@ -331,6 +335,7 @@ Features:
 #### 4.1 File Size Warning
 
 For exports > 1MB, show toast warning:
+
 ```typescript
 if (blob.size > 1024 * 1024) {
   toast.warning("Large file! Consider removing some images to reduce size.");
@@ -340,8 +345,9 @@ if (blob.size > 1024 * 1024) {
 #### 4.2 Duplicate Detection
 
 Before import, check if title already exists:
+
 ```typescript
-const existingList = tierLists.find(l => l.title === importData.title);
+const existingList = tierLists.find((l) => l.title === importData.title);
 if (existingList) {
   // Append "(Imported)" to title
   importData.title = `${importData.title} (Imported)`;
@@ -371,27 +377,30 @@ if (currentUsage + estimatedSize > QUOTA_LIMIT * 0.9) {
 ## File Changes Summary
 
 ### New Files
-| File | Purpose |
-|------|---------|
-| `src/features/tier-list/utils/json-export.ts` | Export utility |
-| `src/features/tier-list/utils/json-import.ts` | Import + validation |
-| `src/features/tier-list/components/ExportJSONButton.tsx` | Export button |
-| `src/features/tier-list/components/ImportJSONButton.tsx` | Import button |
+
+| File                                                     | Purpose             |
+| -------------------------------------------------------- | ------------------- |
+| `src/features/tier-list/utils/json-export.ts`            | Export utility      |
+| `src/features/tier-list/utils/json-import.ts`            | Import + validation |
+| `src/features/tier-list/components/ExportJSONButton.tsx` | Export button       |
+| `src/features/tier-list/components/ImportJSONButton.tsx` | Import button       |
 
 ### Modified Files
-| File | Changes |
-|------|---------|
-| `tier-store.ts` | Add `importList` action |
-| `TierListEditor.tsx` | Add ExportJSONButton to toolbar |
-| `TierListGallery.tsx` | Add ImportJSONButton |
-| `FloatingActionBar.tsx` | Add mobile export option |
-| `index.ts` | Export new components |
+
+| File                    | Changes                         |
+| ----------------------- | ------------------------------- |
+| `tier-store.ts`         | Add `importList` action         |
+| `TierListEditor.tsx`    | Add ExportJSONButton to toolbar |
+| `TierListGallery.tsx`   | Add ImportJSONButton            |
+| `FloatingActionBar.tsx` | Add mobile export option        |
+| `index.ts`              | Export new components           |
 
 ---
 
 ## Testing Checklist
 
 ### Export Tests
+
 - [ ] Export empty tier list (only default rows)
 - [ ] Export tier list with items
 - [ ] Export tier list with Base64 images
@@ -400,6 +409,7 @@ if (currentUsage + estimatedSize > QUOTA_LIMIT * 0.9) {
 - [ ] Verify JSON structure matches schema
 
 ### Import Tests
+
 - [ ] Import valid JSON file
 - [ ] Reject non-JSON file
 - [ ] Reject oversized file (>10MB)
@@ -413,6 +423,7 @@ if (currentUsage + estimatedSize > QUOTA_LIMIT * 0.9) {
 - [ ] Verify redirect to editor after import
 
 ### E2E Tests
+
 - [ ] Full export → import round trip
 - [ ] Export on desktop, import on mobile
 - [ ] Import file exported from older version (future-proofing)
@@ -422,12 +433,14 @@ if (currentUsage + estimatedSize > QUOTA_LIMIT * 0.9) {
 ## UI Mockup
 
 ### Editor Toolbar (Desktop)
+
 ```
 [Title] [Undo] [Redo] | [Export PNG ▼] [Export JSON] | [Settings]
                            └─ Dropdown with PNG/JSON options (alternative)
 ```
 
 ### Gallery Page
+
 ```
 Your Tier Lists                    [Import JSON] [Create New]
 ─────────────────────────────────────────────────────────────
@@ -435,6 +448,7 @@ Your Tier Lists                    [Import JSON] [Create New]
 ```
 
 ### Mobile (FloatingActionBar)
+
 ```
                     [JSON] [PNG] [Settings]
 ```

@@ -99,7 +99,10 @@ export function EmptyState({ onCreateNew }: EmptyStateProps) {
       </motion.div>
 
       {/* CTA Buttons */}
-      <motion.div variants={itemVariants} className="flex flex-col items-center gap-3">
+      <motion.div
+        variants={itemVariants}
+        className="flex flex-col items-center gap-3"
+      >
         <Button
           size="lg"
           onClick={onCreateNew}

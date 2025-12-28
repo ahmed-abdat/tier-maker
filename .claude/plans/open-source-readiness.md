@@ -14,17 +14,17 @@ This plan tracks the work needed to prepare Tier Maker for open-source release. 
 
 ## Progress Summary
 
-| Phase                           | Status      | Progress |
-| ------------------------------- | ----------- | -------- |
-| Phase 1: Quick Wins             | ✅ Complete | 5/5      |
-| Phase 2: Testing Infrastructure | ✅ Complete | 6/6      |
-| Phase 3: Code Quality           | ✅ Complete | 6/6      |
-| Phase 4: Refactoring            | ✅ Complete | 5/5      |
-| Phase 5: CI/CD & Automation     | ✅ Complete | 4/4      |
-| Future Features - Sprint 1      | ✅ Complete | 2/2      |
-| Future Features - Sprint 2      | ✅ Complete | 1/1      |
-| Future Features - Sprint 3      | ⏳ Pending  | 0/1      |
-| Future Features - Backlog       | Deprioritized | 0/4   |
+| Phase                           | Status        | Progress |
+| ------------------------------- | ------------- | -------- |
+| Phase 1: Quick Wins             | ✅ Complete   | 5/5      |
+| Phase 2: Testing Infrastructure | ✅ Complete   | 6/6      |
+| Phase 3: Code Quality           | ✅ Complete   | 6/6      |
+| Phase 4: Refactoring            | ✅ Complete   | 5/5      |
+| Phase 5: CI/CD & Automation     | ✅ Complete   | 4/4      |
+| Future Features - Sprint 1      | ✅ Complete   | 2/2      |
+| Future Features - Sprint 2      | ✅ Complete   | 1/1      |
+| Future Features - Sprint 3      | ⏳ Pending    | 0/1      |
+| Future Features - Backlog       | Deprioritized | 0/4      |
 
 ---
 
@@ -216,13 +216,13 @@ After research, **Vitest + React Testing Library** is recommended:
 
 ### Priority Order (Based on Competitor Research)
 
-| Sprint | Feature                | Effort   | Status           |
-| ------ | ---------------------- | -------- | ---------------- |
-| 1      | F1: Undo/Redo          | 3-4 days | ✅ Complete      |
-| 1      | F2: Keyboard Nav Docs  | 1 day    | ✅ Complete      |
-| 2      | F4: JSON Import/Export | 2-3 days | ✅ Complete      |
-| 3      | F3: Templates          | 3-5 days | ⏳ Pending       |
-| -      | F5-F8                  | Backlog  | Deprioritized    |
+| Sprint | Feature                | Effort   | Status        |
+| ------ | ---------------------- | -------- | ------------- |
+| 1      | F1: Undo/Redo          | 3-4 days | ✅ Complete   |
+| 1      | F2: Keyboard Nav Docs  | 1 day    | ✅ Complete   |
+| 2      | F4: JSON Import/Export | 2-3 days | ✅ Complete   |
+| 3      | F3: Templates          | 3-5 days | ⏳ Pending    |
+| -      | F5-F8                  | Backlog  | Deprioritized |
 
 ### Sprint 1: Core UX ✅ COMPLETE
 

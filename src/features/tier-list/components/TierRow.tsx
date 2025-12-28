@@ -220,7 +220,7 @@ export const TierRow = memo(function TierRow({
             onKeyDown={handleKeyDown}
             rows={1}
             aria-multiline="true"
-            className="w-full resize-none overflow-hidden border-none bg-transparent p-1 text-center font-bold outline-none break-words focus:ring-1 focus:ring-white/30"
+            className="w-full resize-none overflow-hidden break-words border-none bg-transparent p-1 text-center font-bold outline-none focus:ring-1 focus:ring-white/30"
             style={{
               color: textColor,
               fontSize: "14px",
@@ -281,7 +281,11 @@ export const TierRow = memo(function TierRow({
                 />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[90vw] sm:w-64 max-w-xs" align="start" side="right">
+            <PopoverContent
+              className="w-[90vw] max-w-xs sm:w-64"
+              align="start"
+              side="right"
+            >
               <div className="space-y-4">
                 <div className="space-y-2">
                   <span className="text-sm font-medium">Color</span>
@@ -355,10 +359,7 @@ export const TierRow = memo(function TierRow({
         ref={setDroppableRef}
         className="grid min-h-[5rem] flex-1 grid-cols-[repeat(auto-fill,72px)] content-start items-start gap-2 bg-muted/20 p-2"
       >
-        <SortableContext
-          items={itemIds}
-          strategy={rectSortingStrategy}
-        >
+        <SortableContext items={itemIds} strategy={rectSortingStrategy}>
           {row.items.map((item) => (
             <TierItem key={item.id} item={item} containerId={row.id} />
           ))}

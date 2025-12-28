@@ -94,7 +94,9 @@ export function ImportJSONButton({
       disabled={isImporting}
       variant="outline"
       aria-busy={isImporting}
-      aria-label={isImporting ? "Importing tier list" : "Import tier list from JSON"}
+      aria-label={
+        isImporting ? "Importing tier list" : "Import tier list from JSON"
+      }
       className="h-10 px-3 sm:h-9 sm:px-4"
     >
       {isImporting ? (

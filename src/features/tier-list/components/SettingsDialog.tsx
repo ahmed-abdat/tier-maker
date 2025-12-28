@@ -80,9 +80,7 @@ export function SettingsDialog({ isMobile = false }: { isMobile?: boolean }) {
 
   const handleAnimationsToggle = (checked: boolean) => {
     updateSettings({ reduceAnimations: checked });
-    toast.success(
-      checked ? "Animations reduced" : "Animations enabled"
-    );
+    toast.success(checked ? "Animations reduced" : "Animations enabled");
   };
 
   return (

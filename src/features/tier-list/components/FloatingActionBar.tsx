@@ -6,7 +6,8 @@ import dynamic from "next/dynamic";
 import { useSettingsStore } from "../store/settings-store";
 
 const SettingsDialog = dynamic(
-  () => import("./SettingsDialog").then((mod) => ({ default: mod.SettingsDialog })),
+  () =>
+    import("./SettingsDialog").then((mod) => ({ default: mod.SettingsDialog })),
   { ssr: false }
 );
 
@@ -21,7 +22,9 @@ export function FloatingActionBar({
   filename,
   hasItems,
 }: FloatingActionBarProps) {
-  const reduceAnimations = useSettingsStore((state) => state.settings.reduceAnimations);
+  const reduceAnimations = useSettingsStore(
+    (state) => state.settings.reduceAnimations
+  );
 
   const barContent = (
     <div

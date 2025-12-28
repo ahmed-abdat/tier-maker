@@ -613,14 +613,18 @@ export const useTierStore = create<TierStore>()(
             let data;
             // Try decompressing (new format)
             try {
-              const compressed = Uint8Array.from(atob(str), c => c.charCodeAt(0));
-              const decompressed = pako.inflate(compressed, { to: 'string' });
+              const compressed = Uint8Array.from(atob(str), (c) =>
+                c.charCodeAt(0)
+              );
+              const decompressed = pako.inflate(compressed, { to: "string" });
               data = JSON.parse(decompressed);
             } catch (compressionError) {
               // Fallback to uncompressed (legacy format)
               console.warn(
                 "Failed to decompress storage, using legacy format:",
-                compressionError instanceof Error ? compressionError.message : compressionError
+                compressionError instanceof Error
+                  ? compressionError.message
+                  : compressionError
               );
               data = JSON.parse(str);
             }
@@ -671,7 +675,7 @@ export const useTierStore = create<TierStore>()(
             // Compress using pako (60-70% size reduction)
             const compressed = pako.deflate(json);
             // Convert to base64 in chunks to avoid call stack limit
-            let binary = '';
+            let binary = "";
             for (let i = 0; i < compressed.length; i++) {
               binary += String.fromCharCode(compressed[i]);
             }
@@ -680,7 +684,9 @@ export const useTierStore = create<TierStore>()(
           } catch (error) {
             console.error("Failed to save to localStorage:", error);
             if (error instanceof Error && error.name === "QuotaExceededError") {
-              toast.error("Storage full. Delete old tier lists to save changes.");
+              toast.error(
+                "Storage full. Delete old tier lists to save changes."
+              );
             } else {
               toast.error("Failed to save. Your changes may not persist.");
             }
@@ -730,5 +736,7 @@ export const useTierLists = () => useTierStore((state) => state.tierLists);
 export const useCurrentList = () =>
   useTierStore((state) => {
     if (!state.currentListId) return null;
-    return state.tierLists.find((list) => list.id === state.currentListId) || null;
+    return (
+      state.tierLists.find((list) => list.id === state.currentListId) || null
+    );
   });

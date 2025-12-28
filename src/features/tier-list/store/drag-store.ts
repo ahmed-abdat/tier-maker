@@ -22,6 +22,5 @@ export const useDragStore = create<DragStore>((set) => ({
       ...dragState,
     })),
 
-  resetDragState: () =>
-    set(initialDragState),
+  resetDragState: () => set(initialDragState),
 }));

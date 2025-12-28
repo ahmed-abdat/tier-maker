@@ -87,7 +87,7 @@ export const TierItem = memo(function TierItem({
           src={item.imageUrl}
           alt={item.name}
           loading="lazy"
-          className="h-full w-full object-cover animate-[fadeIn_0.2s_ease-in]"
+          className="h-full w-full animate-[fadeIn_0.2s_ease-in] object-cover"
           draggable={false}
           onError={() => setImageError(true)}
         />

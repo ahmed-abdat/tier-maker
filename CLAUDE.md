@@ -3,6 +3,7 @@
 ## Project Overview
 
 Tier Maker is a client-side web app for creating and sharing tier-based rankings. Users can:
+
 - Upload images via drag-and-drop or file picker
 - Organize items into customizable tiers (S, A, B, C, D, F)
 - Add text-only items without images
@@ -68,6 +69,7 @@ e2e/                        # Playwright E2E tests
 ## Architecture
 
 ### Data Flow
+
 ```
 Images → Base64 compression → Zustand store → localStorage (pako compressed)
 Sharing → JSON export with imgbb URLs (shareable mode)
@@ -76,11 +78,13 @@ Export → html2canvas → PNG download
 ```
 
 ### Stores
+
 - **tier-store**: Main state (tierLists, currentListId) + all CRUD actions + undo/redo
 - **drag-store**: Lightweight drag UI state (isDragging, draggedItemId)
 - **settings-store**: User preferences (keyboard nav, animations)
 
 ### Key Types
+
 ```typescript
 TierItem: { id, name, imageUrl?, description?, createdAt, updatedAt }
 TierRow: { id, level, color, items[], name? }
@@ -91,12 +95,14 @@ TierLevel: "S" | "A" | "B" | "C" | "D" | "F"
 ## Testing
 
 ### Unit Tests (Vitest)
+
 - Location: `*.test.ts` files next to source
 - Run: `pnpm test:run`
 - Coverage: `pnpm test:coverage`
 - Focus on store logic and utility functions
 
 ### E2E Tests (Playwright)
+
 - Location: `e2e/` directory
 - Run: `pnpm test:e2e` (headless) or `pnpm test:e2e:ui` (with UI)
 - Tests: navigation, tier list creation, editor interactions, gallery, persistence
@@ -105,26 +111,31 @@ TierLevel: "S" | "A" | "B" | "C" | "D" | "F"
 ## Code Conventions
 
 ### File Organization
+
 - Feature-based modules under `src/features/`
 - Shared UI components in `src/components/ui/` (shadcn)
 - One component per file, named exports
 
 ### State Management
+
 - Use granular Zustand selectors (avoid subscribing to full state)
 - All tier list mutations go through `tier-store.ts` actions
 - Don't create new stores - extend existing ones
 
 ### Styling
+
 - Tailwind CSS utility classes
 - Use `cn()` from `lib/utils` for conditional classes
 - Dark mode via `next-themes` (use `dark:` variants)
 
 ### TypeScript
+
 - Strict mode enabled
 - Use `import type` for type-only imports
 - Prefer `??` over `||` for nullish coalescing
 
 ### Exports
+
 - Backup export: Full JSON with base64 images (large, offline use)
 - Shareable export: JSON with imgbb URLs (smaller, requires upload)
 

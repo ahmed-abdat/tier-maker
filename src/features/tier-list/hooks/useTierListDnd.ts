@@ -144,15 +144,12 @@ export function useTierListDnd({
     [findItem, findRow]
   );
 
-  const handleDragOver = useCallback(
-    (event: DragOverEvent) => {
-      const { over } = event;
-      // Only update visual feedback (overId) - don't move items during drag
-      // Actual moves happen in handleDragEnd when undo history is resumed
-      setOverId(over?.id as string | null);
-    },
-    []
-  );
+  const handleDragOver = useCallback((event: DragOverEvent) => {
+    const { over } = event;
+    // Only update visual feedback (overId) - don't move items during drag
+    // Actual moves happen in handleDragEnd when undo history is resumed
+    setOverId(over?.id as string | null);
+  }, []);
 
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
