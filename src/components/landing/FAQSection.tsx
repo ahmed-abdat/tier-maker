@@ -1,13 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { HelpCircle } from "lucide-react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const faqs = [
   {
@@ -37,65 +33,107 @@ const faqs = [
   },
 ];
 
+function FaqItem({
+  question,
+  answer,
+  index,
+}: {
+  question: string;
+  answer: string;
+  index: number;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.3, delay: index * 0.05 }}
+      className={cn(
+        "border-b border-border/30 dark:border-border/20",
+        "transition-colors duration-200"
+      )}
+    >
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex w-full items-center justify-between py-4 text-left sm:py-5"
+      >
+        <span
+          className={cn(
+            "text-sm font-medium transition-colors duration-200 sm:text-base",
+            isOpen ? "text-primary" : "text-foreground"
+          )}
+        >
+          {question}
+        </span>
+        <motion.div
+          animate={{ rotate: isOpen ? 180 : 0 }}
+          transition={{ duration: 0.2 }}
+          className={cn(
+            "ml-4 flex-shrink-0 transition-colors duration-200",
+            isOpen ? "text-primary" : "text-foreground/50"
+          )}
+        >
+          <ChevronDown className="h-4 w-4 sm:h-5 sm:w-5" />
+        </motion.div>
+      </button>
+
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+            className="overflow-hidden"
+          >
+            <p className="text-foreground/70 pb-4 text-sm leading-relaxed sm:pb-5 sm:text-base">
+              {answer}
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+}
+
 export function FAQSection() {
   return (
-    <section className="bg-muted/30 dark:bg-muted/10 relative w-full py-20 sm:py-24">
-      {/* Subtle background pattern */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="from-background via-transparent to-background absolute inset-0 bg-gradient-to-b" />
+    <section className="relative w-full overflow-hidden py-16 sm:py-20 md:py-24">
+      {/* Subtle centered glow - blends with adjacent sections */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="bg-primary/[0.03] dark:bg-primary/[0.02] absolute top-1/2 left-1/2 h-[300px] w-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[120px] sm:h-[500px] sm:w-[500px]" />
       </div>
 
-      <div className="relative mx-auto max-w-3xl px-4">
+      <div className="relative mx-auto max-w-2xl px-4">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="mb-12 text-center"
+          className="mb-8 text-center sm:mb-12"
         >
-          <div className="bg-muted mb-4 inline-flex items-center justify-center rounded-full p-3">
-            <HelpCircle className="text-foreground h-6 w-6" />
-          </div>
-          <h2 className="text-foreground text-3xl font-bold tracking-tight sm:text-4xl">
+          <h2 className="text-foreground text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">
             Frequently Asked Questions
           </h2>
-          <p className="text-muted-foreground mt-3 text-lg">
+          <p className="text-foreground/70 mt-3 text-base sm:text-lg">
             Everything you need to know about LibreTier
           </p>
         </motion.div>
 
-        {/* FAQ Accordion Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
-          <Accordion
-            type="single"
-            collapsible
-            className="bg-card ring-border/50 dark:ring-border/30 w-full rounded-2xl border px-6 py-2 shadow-lg ring-1 sm:px-8"
-          >
-            {faqs.map((faq) => (
-              <AccordionItem
-                key={faq.question}
-                value={faq.question}
-                className="border-border/50 dark:border-border/30 border-dashed last:border-b-0"
-              >
-                <AccordionTrigger className="text-foreground py-5 text-left text-base font-medium hover:no-underline sm:text-lg [&[data-state=open]]:text-primary">
-                  {faq.question}
-                </AccordionTrigger>
-                <AccordionContent
-                  className="text-foreground/80 dark:text-foreground/70 text-base leading-relaxed"
-                  contentClassName="pb-5"
-                >
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </motion.div>
+        {/* FAQ Items */}
+        <div className="space-y-0">
+          {faqs.map((faq, index) => (
+            <FaqItem
+              key={faq.question}
+              question={faq.question}
+              answer={faq.answer}
+              index={index}
+            />
+          ))}
+        </div>
 
         {/* Help text */}
         <motion.p
@@ -103,11 +141,11 @@ export function FAQSection() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.3 }}
-          className="text-muted-foreground mt-8 text-center text-sm"
+          className="text-foreground/60 mt-6 text-center text-xs sm:mt-8 sm:text-sm"
         >
           Have more questions?{" "}
           <a
-            href="https://github.com/libretier/libretier/issues"
+            href="https://github.com/ahmed-abdat/LibreTier/issues"
             target="_blank"
             rel="noopener noreferrer"
             className="text-primary font-medium underline-offset-4 hover:underline"

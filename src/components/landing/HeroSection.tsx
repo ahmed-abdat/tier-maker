@@ -46,8 +46,8 @@ export function HeroSection() {
     >
       {/* Animated illustration */}
       <motion.div variants={itemVariants} className="relative mb-8 sm:mb-10">
-        {/* Background glow */}
-        <div className="bg-primary/15 absolute inset-0 scale-150 rounded-full blur-[60px] sm:blur-[80px]" />
+        {/* Background glow - subtle and smooth */}
+        <div className="bg-primary/10 dark:bg-primary/[0.07] absolute inset-0 scale-150 rounded-full blur-[80px] sm:blur-[100px]" />
 
         {/* Stacked tier cards illustration */}
         <div className="relative scale-75 sm:scale-100">
@@ -146,18 +146,12 @@ export function HeroSection() {
         <Button
           size="lg"
           asChild
-          className="group hover:shadow-primary/25 relative overflow-hidden rounded-xl px-6 py-6 text-base font-semibold shadow-xl hover:shadow-2xl sm:px-8 sm:py-7 sm:text-lg"
+          className="group rounded-xl px-6 py-5 text-base font-semibold shadow-md transition-all duration-200 hover:shadow-lg sm:px-8 sm:py-6 sm:text-lg"
         >
           <Link href="/tiers">
-            {/* Shine effect */}
-            <motion.div
-              className="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/20 to-transparent"
-              animate={{ translateX: ["-100%", "200%"] }}
-              transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 4 }}
-            />
-            <Plus className="mr-2 h-5 w-5 transition-transform duration-300 group-hover:rotate-90" />
+            <Plus className="mr-2 h-4 w-4 transition-transform duration-200 group-hover:rotate-90 sm:h-5 sm:w-5" />
             Get Started
-            <ArrowRight className="ml-2 h-5 w-5 -translate-x-2 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100" />
+            <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-200 group-hover:translate-x-1 sm:h-5 sm:w-5" />
           </Link>
         </Button>
       </motion.div>
