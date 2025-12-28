@@ -77,6 +77,7 @@ export function ImageUpload({ className }: ImageUploadProps) {
 
   // Detect Mac for keyboard shortcut display
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Required for SSR hydration
     setIsMac(
       typeof navigator !== "undefined" && navigator.platform.includes("Mac")
     );
@@ -170,7 +171,7 @@ export function ImageUpload({ className }: ImageUploadProps) {
           if (isDuplicate) {
             duplicateFiles.push({
               name: file.name,
-              existingName: existingName || name,
+              existingName: existingName ?? name,
             });
           }
 

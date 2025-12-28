@@ -31,7 +31,7 @@ export function ThemeToggle({
   }, []);
 
   useEffect(() => {
-    setMounted(true);
+    setMounted(true); // eslint-disable-line react-hooks/set-state-in-effect -- Required for SSR hydration
     // Initialize from localStorage or system preference
     const stored = localStorage.getItem("theme");
     const prefersDark = window.matchMedia(
@@ -57,7 +57,7 @@ export function ThemeToggle({
     const newTheme = !isDark;
 
     // Check if View Transitions API is supported
-    if (!document.startViewTransition) {
+    if (!("startViewTransition" in document)) {
       // Fallback for browsers without View Transitions API
       applyTheme(newTheme);
       return;

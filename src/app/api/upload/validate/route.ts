@@ -57,7 +57,7 @@ export async function POST(request: Request) {
 
     if (!result.success) {
       // Check for specific error messages
-      const errorMsg = result.error?.message?.toLowerCase() ?? "";
+      const errorMsg = result.error?.message.toLowerCase() ?? "";
 
       if (errorMsg.includes("invalid") || errorMsg.includes("key")) {
         return NextResponse.json({

@@ -13,7 +13,7 @@ import {
   Pencil,
 } from "lucide-react";
 import { cn, getContrastColor } from "@/lib/utils";
-import { TierRow as TierRowType } from "../index";
+import { type TierRow as TierRowType } from "../index";
 import { TierItem } from "./TierItem";
 import { Button } from "@/components/ui/button";
 import {
@@ -45,7 +45,7 @@ export const TierRow = memo(function TierRow({
 
   // Inline editing state
   const [isEditing, setIsEditing] = useState(false);
-  const [editValue, setEditValue] = useState(row.name || row.level);
+  const [editValue, setEditValue] = useState(row.name ?? row.level);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   // Auto-resize textarea
@@ -65,7 +65,7 @@ export const TierRow = memo(function TierRow({
   // Handle save
   const handleSave = () => {
     const trimmedValue = editValue.trim();
-    if (trimmedValue && trimmedValue !== (row.name || row.level)) {
+    if (trimmedValue && trimmedValue !== (row.name ?? row.level)) {
       updateTier(row.id, { name: trimmedValue });
     }
     setIsEditing(false);
@@ -77,7 +77,7 @@ export const TierRow = memo(function TierRow({
       e.preventDefault();
       handleSave();
     } else if (e.key === "Escape") {
-      setEditValue(row.name || row.level);
+      setEditValue(row.name ?? row.level);
       setIsEditing(false);
     }
   };
@@ -140,7 +140,7 @@ export const TierRow = memo(function TierRow({
               lineHeight: "1.2",
             }}
           >
-            {row.name || row.level}
+            {row.name ?? row.level}
           </span>
         </div>
 
@@ -152,6 +152,7 @@ export const TierRow = memo(function TierRow({
               className="bg-muted h-[72px] w-[72px] overflow-hidden rounded-lg"
             >
               {item.imageUrl ? (
+                /* eslint-disable-next-line @next/next/no-img-element -- Base64 data URLs not supported by next/image */
                 <img
                   src={item.imageUrl}
                   alt={item.name}
@@ -188,7 +189,7 @@ export const TierRow = memo(function TierRow({
           {...attributes}
           {...listeners}
           role="button"
-          aria-label={`Drag to reorder tier ${row.name || row.level}`}
+          aria-label={`Drag to reorder tier ${row.name ?? row.level}`}
           aria-roledescription="draggable"
           data-drag-handle
           className={cn(
@@ -236,7 +237,7 @@ export const TierRow = memo(function TierRow({
               !isExporting && "transition-colors hover:bg-black/10"
             )}
             title={!isExporting ? "Click to edit tier name" : undefined}
-            aria-label={`Edit tier name: ${row.name || row.level}`}
+            aria-label={`Edit tier name: ${row.name ?? row.level}`}
           >
             <span
               className="block w-full p-1 text-center font-bold wrap-break-word drop-shadow-xs"
@@ -246,7 +247,7 @@ export const TierRow = memo(function TierRow({
                 lineHeight: "1.2",
               }}
             >
-              {row.name || row.level}
+              {row.name ?? row.level}
             </span>
             {/* Edit hint icon - shows on hover */}
             {!isExporting && (
@@ -265,18 +266,20 @@ export const TierRow = memo(function TierRow({
               <Button
                 variant="ghost"
                 size="icon"
-                aria-label={`Settings for tier ${row.name || row.level}`}
+                aria-label={`Settings for tier ${row.name ?? row.level}`}
                 className={cn(
-                  "absolute top-1 right-1 h-8 w-8 rounded-full sm:h-6 sm:w-6",
+                  "absolute top-1 right-1 rounded-full",
+                  // Touch devices: larger touch target (40x40), always visible
+                  // Desktop: smaller size, hover-reveal
+                  "h-10 w-10 pointer-fine:h-6 pointer-fine:w-6",
                   "bg-black/40 hover:scale-110 hover:bg-black/60 active:scale-95",
                   "border border-white/30 shadow-xs",
-                  // Always visible on touch devices, hover-reveal on desktop
-                  "opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100",
+                  "opacity-100 hover-hover:opacity-0 hover-hover:group-hover:opacity-100",
                   "transition-all duration-200"
                 )}
               >
                 <Settings2
-                  className="h-4 w-4 text-white sm:h-3 sm:w-3"
+                  className="h-5 w-5 text-white pointer-fine:h-3 pointer-fine:w-3"
                   aria-hidden="true"
                 />
               </Button>

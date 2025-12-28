@@ -105,7 +105,7 @@ export function createTierListKeyboardCoordinates(
     const filteredContainers: DroppableContainer[] = [];
 
     droppableContainers.getEnabled().forEach((entry) => {
-      if (!entry || entry.disabled) return;
+      if (entry.disabled) return;
 
       const entryId = String(entry.id);
 

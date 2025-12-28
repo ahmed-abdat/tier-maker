@@ -1,7 +1,8 @@
-"use client";
-
 import { WifiOff, CheckCircle, XCircle } from "lucide-react";
 import Link from "next/link";
+import { ReloadButton } from "./reload-button";
+
+export const dynamic = "force-static";
 
 export default function OfflinePage() {
   return (
@@ -74,12 +75,7 @@ export default function OfflinePage() {
           >
             Go to My Tier Lists
           </Link>
-          <button
-            onClick={() => window.location.reload()}
-            className="bg-background hover:bg-accent inline-flex items-center justify-center rounded-md border px-4 py-2 text-sm font-medium transition-colors"
-          >
-            Try Again
-          </button>
+          <ReloadButton />
         </div>
       </div>
     </div>

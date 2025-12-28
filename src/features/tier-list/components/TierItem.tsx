@@ -6,7 +6,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { X } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { TierItem as TierItemType } from "../index";
+import { type TierItem as TierItemType } from "../index";
 import { useTierStore } from "../store";
 import {
   Tooltip,
@@ -63,6 +63,7 @@ export const TierItem = memo(function TierItem({
         {...listeners}
       >
         {item.imageUrl && !imageError ? (
+          /* eslint-disable-next-line @next/next/no-img-element -- Base64 data URLs not supported by next/image */
           <img
             src={item.imageUrl}
             alt={item.name}
@@ -83,6 +84,7 @@ export const TierItem = memo(function TierItem({
   const renderContent = () => {
     if (item.imageUrl && !imageError) {
       return (
+        /* eslint-disable-next-line @next/next/no-img-element -- Base64 data URLs not supported by next/image */
         <img
           src={item.imageUrl}
           alt={item.name}
@@ -158,12 +160,14 @@ export const TierItem = memo(function TierItem({
             }}
             onPointerDown={(e) => e.stopPropagation()}
             className={cn(
-              "absolute -top-2 -right-2 h-7 w-7 rounded-full sm:h-6 sm:w-6",
+              "absolute -top-2 -right-2 rounded-full",
+              // Touch devices: larger touch target, always visible
+              // Desktop: smaller size, hover-reveal
+              "h-8 w-8 pointer-fine:h-6 pointer-fine:w-6",
               "bg-destructive text-destructive-foreground",
               "flex items-center justify-center",
-              // Always visible on mobile (coarse pointer), hover-reveal on desktop
-              "scale-100 opacity-100 [@media(hover:hover)]:scale-75 [@media(hover:hover)]:opacity-0",
-              "[@media(hover:hover)]:group-hover:scale-100 [@media(hover:hover)]:group-hover:opacity-100",
+              "scale-100 opacity-100 hover-hover:scale-75 hover-hover:opacity-0",
+              "hover-hover:group-hover:scale-100 hover-hover:group-hover:opacity-100",
               "transition-all duration-150 ease-out",
               "shadow-lg hover:shadow-xl",
               "hover:bg-destructive/90 active:scale-90",
@@ -171,7 +175,7 @@ export const TierItem = memo(function TierItem({
             )}
             aria-label={`Remove ${item.name}`}
           >
-            <X className="h-4 w-4 sm:h-3.5 sm:w-3.5" strokeWidth={2.5} />
+            <X className="h-4 w-4 pointer-fine:h-3.5 pointer-fine:w-3.5" strokeWidth={2.5} />
           </button>
         </div>
       </TooltipTrigger>

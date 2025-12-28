@@ -73,17 +73,16 @@ async function validateApiKey(apiKey: string): Promise<ValidationResponse> {
 function SettingsContent({ onClose }: { onClose?: () => void }) {
   const { settings, updateSettings, resetToDefaults } = useSettingsStore();
   const [showApiKey, setShowApiKey] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- Defensive for corrupted localStorage
   const [apiKeyInput, setApiKeyInput] = useState(settings.imgbbApiKey ?? "");
   const [apiKeyStatus, setApiKeyStatus] = useState<ApiKeyStatus>(
     settings.imgbbApiKey ? "valid" : "idle"
   );
   const [apiKeyError, setApiKeyError] = useState<string | null>(null);
 
-  const {
-    enableKeyboardNavigation = false,
-    enableUndoRedo = false,
-    reduceAnimations = true,
-  } = settings ?? {};
+  const enableKeyboardNavigation = settings.enableKeyboardNavigation;
+  const enableUndoRedo = settings.enableUndoRedo;
+  const reduceAnimations = settings.reduceAnimations;
 
   const handleReset = () => {
     resetToDefaults();
@@ -354,9 +353,16 @@ export function SettingsDialog({
   // Support both controlled and uncontrolled modes
   const isControlled = controlledOpen !== undefined;
   const open = isControlled ? controlledOpen : uncontrolledOpen;
-  const setOpen = isControlled
-    ? (value: boolean) => controlledOnOpenChange?.(value)
-    : setUncontrolledOpen;
+  const setOpen = useCallback(
+    (value: boolean) => {
+      if (isControlled) {
+        controlledOnOpenChange?.(value);
+      } else {
+        setUncontrolledOpen(value);
+      }
+    },
+    [isControlled, controlledOnOpenChange]
+  );
 
   // Keyboard shortcut listener (Ctrl+, or Cmd+,)
   useEffect(() => {

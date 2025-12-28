@@ -1,14 +1,14 @@
 import { useState, useCallback, useMemo } from "react";
 import {
-  DragStartEvent,
-  DragEndEvent,
-  DragOverEvent,
+  type DragStartEvent,
+  type DragEndEvent,
+  type DragOverEvent,
   pointerWithin,
   rectIntersection,
-  closestCenter,
+  type closestCenter,
 } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
-import { TierItem, TierRow, TierList } from "../index";
+import { type TierItem, type TierRow, type TierList } from "../index";
 
 type ActiveDragType = "item" | "row" | null;
 
@@ -116,7 +116,7 @@ export function useTierListDnd({
       }
 
       const row = currentList.rows.find((r) => r.id === containerId);
-      return row?.items || [];
+      return row?.items ?? [];
     },
     [currentList]
   );

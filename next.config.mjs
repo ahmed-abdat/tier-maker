@@ -1,9 +1,14 @@
 import withSerwistInit from "@serwist/next";
 
 const withSerwist = withSerwistInit({
+  cacheOnNavigation: true,
   swSrc: "src/app/sw.ts",
   swDest: "public/sw.js",
-  additionalPrecacheEntries: [{ url: "/~offline", revision: "1" }],
+  additionalPrecacheEntries: [
+    { url: "/~offline", revision: "2" },
+    { url: "/", revision: "1" },
+    { url: "/tiers", revision: "1" },
+  ],
   // Disable in development since Serwist doesn't support Turbopack yet
   disable: process.env.NODE_ENV !== "production",
 });

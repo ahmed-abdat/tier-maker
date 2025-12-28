@@ -5,7 +5,7 @@ import { useDroppable } from "@dnd-kit/core";
 import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 import { Package } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { TierItem as TierItemType } from "../index";
+import { type TierItem as TierItemType } from "../index";
 import { TierItem } from "./TierItem";
 
 interface ItemPoolProps {

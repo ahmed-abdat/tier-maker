@@ -215,7 +215,8 @@ export function TierListEditor() {
   const handleTitleBlur = useCallback(
     (e: React.FocusEvent<HTMLElement>) => {
       const newTitle =
-        e.currentTarget.textContent?.trim().slice(0, MAX_TITLE_LENGTH) ||
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- textContent can be null
+        (e.currentTarget.textContent ?? "").trim().slice(0, MAX_TITLE_LENGTH) ||
         "Untitled Tier List";
       if (currentList && newTitle !== currentList.title) {
         updateList({ title: newTitle });
@@ -242,7 +243,8 @@ export function TierListEditor() {
         "Home",
         "End",
       ];
-      const currentLength = e.currentTarget.textContent?.length || 0;
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- textContent can be null
+      const currentLength = (e.currentTarget.textContent ?? "").length;
       if (
         currentLength >= MAX_TITLE_LENGTH &&
         !allowedKeys.includes(e.key) &&
@@ -263,7 +265,7 @@ export function TierListEditor() {
       const currentText = e.currentTarget.textContent || "";
       const selection = window.getSelection();
       // Calculate how many chars we can add
-      const selectedLength = selection?.toString().length || 0;
+      const selectedLength = selection?.toString().length ?? 0;
       const availableSpace =
         MAX_TITLE_LENGTH - currentText.length + selectedLength;
       const truncatedText = text.slice(0, availableSpace);
@@ -324,7 +326,7 @@ export function TierListEditor() {
                   key={row.id}
                   className="h-1.5 w-3 rounded-full transition-transform hover:scale-110"
                   style={{ backgroundColor: row.color }}
-                  title={row.name || row.level}
+                  title={row.name ?? row.level}
                 />
               ))}
             </div>

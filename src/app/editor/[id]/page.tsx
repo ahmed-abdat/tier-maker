@@ -26,7 +26,7 @@ export default function EditorPage() {
 
   // Handle hydration and select the list
   useEffect(() => {
-    setMounted(true);
+    setMounted(true); // eslint-disable-line react-hooks/set-state-in-effect -- Required for SSR hydration
     if (id) {
       selectList(id);
     }
@@ -55,7 +55,7 @@ export default function EditorPage() {
           <div className="container mx-auto flex h-12 max-w-6xl items-center justify-between px-4 md:h-14">
             <Link href="/" className="flex items-center gap-2">
               <Logo size={40} />
-              <h1 className="text-xl font-bold">Tier List</h1>
+              <h1 className="text-xl font-bold">LibreTier</h1>
             </Link>
             <ThemeToggle />
           </div>
@@ -112,7 +112,7 @@ export default function EditorPage() {
             </Button>
             <Link href="/" className="flex items-center gap-2">
               <Logo size={40} />
-              <span className="hidden font-semibold sm:inline">Tier List</span>
+              <span className="hidden font-semibold sm:inline">LibreTier</span>
             </Link>
           </div>
           <div className="flex items-center gap-4">

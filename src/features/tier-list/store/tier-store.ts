@@ -1,12 +1,12 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useStore } from "zustand";
-import { temporal, TemporalState } from "zundo";
+import { temporal, type TemporalState } from "zundo";
 import { v4 as uuidv4 } from "uuid";
 import pako from "pako";
 import { toast } from "sonner";
-import { TierLevel, TIER_COLORS, TIER_LEVELS } from "../constants";
-import { TierItem, TierRow, TierList } from "../index";
+import { type TierLevel, TIER_COLORS, TIER_LEVELS } from "../constants";
+import { type TierItem, type TierRow, type TierList } from "../index";
 
 interface TierStore {
   // State
@@ -87,7 +87,7 @@ export const useTierStore = create<TierStore>()(
         getCurrentList: () => {
           const { tierLists, currentListId } = get();
           if (!currentListId) return null;
-          return tierLists.find((list) => list.id === currentListId) || null;
+          return tierLists.find((list) => list.id === currentListId) ?? null;
         },
 
         // List Management Actions
@@ -285,7 +285,7 @@ export const useTierStore = create<TierStore>()(
             if (!currentList) return state;
 
             const tierToDelete = currentList.rows.find((row) => row.id === id);
-            const itemsToMove = tierToDelete?.items || [];
+            const itemsToMove = tierToDelete?.items ?? [];
 
             return {
               tierLists: state.tierLists.map((list) =>
@@ -314,7 +314,7 @@ export const useTierStore = create<TierStore>()(
             if (!currentList) return state;
 
             const tierToClear = currentList.rows.find((row) => row.id === id);
-            const itemsToMove = tierToClear?.items || [];
+            const itemsToMove = tierToClear?.items ?? [];
 
             return {
               tierLists: state.tierLists.map((list) =>
@@ -737,6 +737,6 @@ export const useCurrentList = () =>
   useTierStore((state) => {
     if (!state.currentListId) return null;
     return (
-      state.tierLists.find((list) => list.id === state.currentListId) || null
+      state.tierLists.find((list) => list.id === state.currentListId) ?? null
     );
   });

@@ -1,4 +1,4 @@
-import { TierLevel } from "./constants";
+import { type TierLevel } from "./constants";
 
 // Represents a single item that can be placed in a tier
 export interface TierItem {

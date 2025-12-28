@@ -99,7 +99,7 @@ export default function SharePage() {
 
   // Parse URL hash on mount
   useEffect(() => {
-    setMounted(true);
+    setMounted(true); // eslint-disable-line react-hooks/set-state-in-effect -- Required for SSR hydration
 
     if (typeof window === "undefined") return;
 

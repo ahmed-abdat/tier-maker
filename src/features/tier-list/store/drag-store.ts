@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { DragState } from "../index";
+import { type DragState } from "../index";
 
 interface DragStore extends DragState {
   setDragState: (state: Partial<DragState>) => void;

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { HelpCircle } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -38,34 +39,83 @@ const faqs = [
 
 export function FAQSection() {
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5 }}
-      className="mx-auto w-full max-w-2xl px-4 py-16"
-    >
-      <div className="mb-8 text-center">
-        <h2 className="text-foreground text-2xl font-bold sm:text-3xl">
-          Frequently Asked Questions
-        </h2>
-        <p className="text-muted-foreground mt-2">
-          Everything you need to know about LibreTier
-        </p>
+    <section className="bg-muted/30 dark:bg-muted/10 relative w-full py-20 sm:py-24">
+      {/* Subtle background pattern */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="from-background via-transparent to-background absolute inset-0 bg-gradient-to-b" />
       </div>
 
-      <Accordion type="single" collapsible className="w-full">
-        {faqs.map((faq) => (
-          <AccordionItem key={faq.question} value={faq.question}>
-            <AccordionTrigger className="text-left text-base">
-              {faq.question}
-            </AccordionTrigger>
-            <AccordionContent className="text-muted-foreground">
-              {faq.answer}
-            </AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
-    </motion.section>
+      <div className="relative mx-auto max-w-3xl px-4">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="mb-12 text-center"
+        >
+          <div className="bg-muted mb-4 inline-flex items-center justify-center rounded-full p-3">
+            <HelpCircle className="text-foreground h-6 w-6" />
+          </div>
+          <h2 className="text-foreground text-3xl font-bold tracking-tight sm:text-4xl">
+            Frequently Asked Questions
+          </h2>
+          <p className="text-muted-foreground mt-3 text-lg">
+            Everything you need to know about LibreTier
+          </p>
+        </motion.div>
+
+        {/* FAQ Accordion Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
+          <Accordion
+            type="single"
+            collapsible
+            className="bg-card ring-border/50 dark:ring-border/30 w-full rounded-2xl border px-6 py-2 shadow-lg ring-1 sm:px-8"
+          >
+            {faqs.map((faq) => (
+              <AccordionItem
+                key={faq.question}
+                value={faq.question}
+                className="border-border/50 dark:border-border/30 border-dashed last:border-b-0"
+              >
+                <AccordionTrigger className="text-foreground py-5 text-left text-base font-medium hover:no-underline sm:text-lg [&[data-state=open]]:text-primary">
+                  {faq.question}
+                </AccordionTrigger>
+                <AccordionContent
+                  className="text-foreground/80 dark:text-foreground/70 text-base leading-relaxed"
+                  contentClassName="pb-5"
+                >
+                  {faq.answer}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </motion.div>
+
+        {/* Help text */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.3 }}
+          className="text-muted-foreground mt-8 text-center text-sm"
+        >
+          Have more questions?{" "}
+          <a
+            href="https://github.com/libretier/libretier/issues"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary font-medium underline-offset-4 hover:underline"
+          >
+            Open an issue on GitHub
+          </a>
+        </motion.p>
+      </div>
+    </section>
   );
 }

@@ -105,9 +105,9 @@ export function HeroSection() {
                     {tier}
                   </div>
                   <div className="flex gap-1.5">
-                    {[1, 2, 3].slice(0, 3 - i).map((_, j) => (
+                    {[1, 2, 3].slice(0, 3 - i).map((n, j) => (
                       <motion.div
-                        key={j}
+                        key={`${tier}-item-${n}`}
                         initial={{ opacity: 0, scale: 0 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.8 + i * 0.1 + j * 0.05 }}
@@ -129,13 +129,13 @@ export function HeroSection() {
         variants={itemVariants}
         className="max-w-xl space-y-3 px-2 text-center sm:space-y-4"
       >
-        <span className="bg-muted text-muted-foreground inline-block rounded-full px-3 py-1 text-xs font-medium sm:text-sm">
+        <span className="border-primary/20 bg-primary/5 text-primary inline-block rounded-full border px-4 py-1.5 text-xs font-medium sm:text-sm">
           No account required
         </span>
         <h1 className="text-foreground text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
           Free Tier List Maker
         </h1>
-        <p className="text-muted-foreground text-base leading-relaxed sm:text-lg">
+        <p className="text-foreground/70 dark:text-foreground/60 text-base leading-relaxed sm:text-lg">
           Create and share tier lists instantly. No login needed. Works offline.
           Upload images, drag to rank, export as PNG.
         </p>
@@ -183,15 +183,15 @@ export function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1 + i * 0.05 }}
             whileHover={{ y: -2 }}
-            className="bg-muted/30 hover:bg-muted/50 flex cursor-default flex-col items-center gap-1.5 rounded-xl p-3 transition-colors sm:gap-2 sm:p-4"
+            className="bg-card/50 dark:bg-card/30 hover:bg-card/80 dark:hover:bg-card/50 flex cursor-default flex-col items-center gap-1.5 rounded-xl border border-border/50 p-3 shadow-sm transition-all hover:shadow-md sm:gap-2 sm:p-4"
           >
-            <div className="bg-muted flex h-9 w-9 items-center justify-center rounded-lg sm:h-10 sm:w-10">
-              <feature.icon className="text-foreground h-4 w-4 sm:h-5 sm:w-5" />
+            <div className="bg-primary/10 dark:bg-primary/20 flex h-9 w-9 items-center justify-center rounded-lg sm:h-10 sm:w-10">
+              <feature.icon className="text-primary h-4 w-4 sm:h-5 sm:w-5" />
             </div>
-            <span className="text-center text-xs font-medium sm:text-sm">
+            <span className="text-foreground text-center text-xs font-medium sm:text-sm">
               {feature.text}
             </span>
-            <span className="text-muted-foreground text-center text-[10px] sm:text-xs">
+            <span className="text-foreground/60 dark:text-foreground/50 text-center text-[11px] sm:text-xs">
               {feature.desc}
             </span>
           </motion.div>

@@ -2,6 +2,12 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Touch/pointer device detection variants */
+@custom-variant pointer-coarse (@media (pointer: coarse));
+@custom-variant pointer-fine (@media (pointer: fine));
+@custom-variant hover-hover (@media (hover: hover));
+@custom-variant hover-none (@media (hover: none));
+
 @utility container {
   margin-inline: auto;
   padding-inline: 2rem;

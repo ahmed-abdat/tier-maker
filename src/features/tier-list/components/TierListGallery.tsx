@@ -54,7 +54,7 @@ export function TierListGallery() {
 
   // Handle hydration
   useEffect(() => {
-    setMounted(true);
+    setMounted(true); // eslint-disable-line react-hooks/set-state-in-effect -- Required for SSR hydration
     clearCurrentList();
   }, [clearCurrentList]);
 

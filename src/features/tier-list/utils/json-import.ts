@@ -247,7 +247,7 @@ export async function importTierListFromFile(
   // 2. Validate
   const validation = validateTierListImport(json);
   if (!validation.success || !validation.data) {
-    throw new Error(validation.error || "Invalid tier list file");
+    throw new Error(validation.error ?? "Invalid tier list file");
   }
 
   // 3. Transform

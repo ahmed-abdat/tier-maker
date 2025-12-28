@@ -12,7 +12,7 @@ describe("TierStore", () => {
 
   describe("createList", () => {
     it("should create a new tier list with default tiers", () => {
-      const { createList, tierLists, currentListId } = useTierStore.getState();
+      const { createList } = useTierStore.getState();
 
       const listId = createList("My Tier List");
       const state = useTierStore.getState();
@@ -99,8 +99,7 @@ describe("TierStore", () => {
 
   describe("updateList", () => {
     it("should update the current list title", () => {
-      const { createList, updateList, getCurrentList } =
-        useTierStore.getState();
+      const { createList, updateList } = useTierStore.getState();
 
       createList("Original Title");
       updateList({ title: "New Title" });
@@ -120,7 +119,7 @@ describe("TierStore", () => {
 
   describe("addItem", () => {
     it("should add an item to unassigned pool", () => {
-      const { createList, addItem, getCurrentList } = useTierStore.getState();
+      const { createList, addItem } = useTierStore.getState();
 
       createList("Test List");
       addItem({ name: "Test Item", imageUrl: "http://example.com/img.png" });
@@ -141,8 +140,7 @@ describe("TierStore", () => {
 
   describe("moveItem", () => {
     it("should move item from unassigned to a tier", () => {
-      const { createList, addItem, moveItem, getCurrentList } =
-        useTierStore.getState();
+      const { createList, addItem, moveItem } = useTierStore.getState();
 
       createList("Test List");
       addItem({ name: "Move Me" });
@@ -160,8 +158,7 @@ describe("TierStore", () => {
     });
 
     it("should move item between tiers", () => {
-      const { createList, addItem, moveItem, getCurrentList } =
-        useTierStore.getState();
+      const { createList, addItem, moveItem } = useTierStore.getState();
 
       createList("Test List");
       addItem({ name: "Move Me" });
@@ -182,8 +179,7 @@ describe("TierStore", () => {
     });
 
     it("should move item back to unassigned pool", () => {
-      const { createList, addItem, moveItem, getCurrentList } =
-        useTierStore.getState();
+      const { createList, addItem, moveItem } = useTierStore.getState();
 
       createList("Test List");
       addItem({ name: "Move Me" });
@@ -203,8 +199,7 @@ describe("TierStore", () => {
 
   describe("deleteItem", () => {
     it("should delete an item from unassigned pool", () => {
-      const { createList, addItem, deleteItem, getCurrentList } =
-        useTierStore.getState();
+      const { createList, addItem, deleteItem } = useTierStore.getState();
 
       createList("Test List");
       addItem({ name: "Delete Me" });
@@ -219,7 +214,7 @@ describe("TierStore", () => {
     });
 
     it("should delete an item from a tier", () => {
-      const { createList, addItem, moveItem, deleteItem, getCurrentList } =
+      const { createList, addItem, moveItem, deleteItem } =
         useTierStore.getState();
 
       createList("Test List");
@@ -239,8 +234,7 @@ describe("TierStore", () => {
 
   describe("updateTier", () => {
     it("should update tier name", () => {
-      const { createList, updateTier, getCurrentList } =
-        useTierStore.getState();
+      const { createList, updateTier } = useTierStore.getState();
 
       createList("Test List");
 
@@ -254,8 +248,7 @@ describe("TierStore", () => {
     });
 
     it("should update tier color", () => {
-      const { createList, updateTier, getCurrentList } =
-        useTierStore.getState();
+      const { createList, updateTier } = useTierStore.getState();
 
       createList("Test List");
 
@@ -271,7 +264,7 @@ describe("TierStore", () => {
 
   describe("deleteTier", () => {
     it("should delete a tier and move items to unassigned", () => {
-      const { createList, addItem, moveItem, deleteTier, getCurrentList } =
+      const { createList, addItem, moveItem, deleteTier } =
         useTierStore.getState();
 
       createList("Test List");
@@ -296,7 +289,7 @@ describe("TierStore", () => {
 
   describe("clearAllItems", () => {
     it("should clear all items from all tiers and unassigned", () => {
-      const { createList, addItem, moveItem, clearAllItems, getCurrentList } =
+      const { createList, addItem, moveItem, clearAllItems } =
         useTierStore.getState();
 
       createList("Test List");
@@ -323,8 +316,7 @@ describe("TierStore", () => {
 
   describe("reorderTiers", () => {
     it("should reorder tiers", () => {
-      const { createList, reorderTiers, getCurrentList } =
-        useTierStore.getState();
+      const { createList, reorderTiers } = useTierStore.getState();
 
       createList("Test List");
 

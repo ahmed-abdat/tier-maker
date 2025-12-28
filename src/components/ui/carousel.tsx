@@ -116,7 +116,7 @@ const Carousel = React.forwardRef<
       api.on("select", onSelect);
 
       return () => {
-        api?.off("select", onSelect);
+        api.off("select", onSelect);
       };
     }, [api, onSelect]);
 
@@ -127,7 +127,8 @@ const Carousel = React.forwardRef<
           api: api,
           opts,
           orientation:
-            orientation || (opts?.axis === "y" ? "vertical" : "horizontal"),
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- shadcn defensive default
+            orientation ?? (opts?.axis === "y" ? "vertical" : "horizontal"),
           scrollPrev,
           scrollNext,
           canScrollPrev,
@@ -216,7 +217,7 @@ const CarouselPrevious = React.forwardRef<
       onClick={scrollPrev}
       {...props}
     >
-      {props?.children ?? <ArrowLeft className="h-4 w-4" />}
+      {props.children ?? <ArrowLeft className="h-4 w-4" />}
       <span className="sr-only">Previous slide</span>
     </Button>
   );
@@ -245,7 +246,7 @@ const CarouselNext = React.forwardRef<
       onClick={scrollNext}
       {...props}
     >
-      {props?.children ?? <ArrowRight className="h-4 w-4" />}
+      {props.children ?? <ArrowRight className="h-4 w-4" />}
       <span className="sr-only">Next slide</span>
     </Button>
   );

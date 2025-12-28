@@ -90,9 +90,10 @@ export const TierListCard = memo(function TierListCard({
           <div className="from-muted/50 to-muted relative h-36 overflow-hidden rounded-t-xl bg-linear-to-br">
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="flex h-full w-full flex-col gap-1 p-2">
+                {/* eslint-disable react/no-array-index-key -- Color array is stable for animation sequencing */}
                 {tierList.previewColors.map((color, i) => (
                   <motion.div
-                    key={i}
+                    key={`preview-${tierList.id}-${i}`}
                     style={{ backgroundColor: color }}
                     className="flex-1 rounded transition-all hover:scale-[1.02]"
                     initial={{ opacity: 0, x: -20 }}
@@ -100,6 +101,7 @@ export const TierListCard = memo(function TierListCard({
                     transition={{ delay: index * 0.05 + i * 0.05 }}
                   />
                 ))}
+                {/* eslint-enable react/no-array-index-key */}
               </div>
             </div>
           </div>
@@ -127,13 +129,15 @@ export const TierListCard = memo(function TierListCard({
 
             {/* Tier indicators */}
             <div className="flex gap-1">
+              {/* eslint-disable react/no-array-index-key -- Color array is stable */}
               {tierList.previewColors.map((color, i) => (
                 <div
-                  key={i}
+                  key={`indicator-${tierList.id}-${i}`}
                   className="h-2 w-6 rounded-full transition-all duration-300"
                   style={{ backgroundColor: color }}
                 />
               ))}
+              {/* eslint-enable react/no-array-index-key */}
               {tierList.rowCount > tierList.previewColors.length && (
                 <span className="text-muted-foreground text-xs">
                   +{tierList.rowCount - tierList.previewColors.length}
@@ -157,14 +161,16 @@ export const TierListCard = memo(function TierListCard({
               variant="secondary"
               size="icon"
               className={cn(
-                "absolute top-2 right-2 h-8 w-8 rounded-full shadow-md transition-all duration-200",
-                // Always visible on touch devices, hover-reveal on desktop
-                "opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100",
+                "absolute top-2 right-2 rounded-full shadow-md transition-all duration-200",
+                // Touch devices: always visible, larger touch target (44x44)
+                // Desktop: hover-reveal, smaller size
+                "h-10 w-10 pointer-fine:h-8 pointer-fine:w-8",
+                "opacity-100 hover-hover:opacity-0 hover-hover:group-hover:opacity-100",
                 "bg-background/90 hover:bg-background"
               )}
               onClick={(e) => e.stopPropagation()}
             >
-              <MoreVertical className="h-4 w-4" />
+              <MoreVertical className="h-5 w-5 pointer-fine:h-4 pointer-fine:w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
