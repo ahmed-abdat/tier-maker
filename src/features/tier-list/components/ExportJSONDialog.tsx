@@ -219,7 +219,7 @@ export function ExportJSONDialog({
         {isUploading && (
           <div className="space-y-4 py-4">
             <div className="flex items-center gap-2">
-              <Cloud className="h-5 w-5 animate-pulse text-primary" />
+              <Cloud className="text-primary h-5 w-5 animate-pulse" />
               <p className="text-sm font-medium">
                 Uploading images to cloud...
               </p>
@@ -228,12 +228,12 @@ export function ExportJSONDialog({
             <Progress value={progressPercent} className="h-2" />
 
             <div className="space-y-1">
-              <p className="text-center text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-center text-sm">
                 {uploadProgress.current} of {uploadProgress.total} images (
                 {progressPercent}%)
               </p>
               {currentImageName && (
-                <p className="truncate text-center text-xs text-muted-foreground">
+                <p className="text-muted-foreground truncate text-center text-xs">
                   Uploading: {currentImageName}
                 </p>
               )}
@@ -257,9 +257,9 @@ export function ExportJSONDialog({
         {exportState === "error" && (
           <div className="space-y-4 py-4">
             <div className="flex flex-col items-center gap-3">
-              <XCircle className="h-12 w-12 text-destructive" />
+              <XCircle className="text-destructive h-12 w-12" />
               <p className="text-sm font-medium">Export failed</p>
-              <p className="text-center text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-center text-sm">
                 Please check your internet connection and try again.
               </p>
             </div>
@@ -280,7 +280,7 @@ export function ExportJSONDialog({
               {/* Backup Option */}
               <label
                 htmlFor="backup"
-                className={`flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition-colors hover:bg-muted/50 ${
+                className={`hover:bg-muted/50 flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition-colors ${
                   exportMode === "backup"
                     ? "border-primary bg-primary/5"
                     : "border-border"
@@ -293,17 +293,17 @@ export function ExportJSONDialog({
                       <HardDrive className="h-4 w-4" />
                       Full Backup
                     </span>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-muted-foreground text-xs">
                       ~{formatFileSize(fileSizeEstimate.backup)}
                     </span>
                   </div>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-muted-foreground text-sm">
                     Images embedded in file. Works offline.
                   </p>
                 </div>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Info className="h-4 w-4 shrink-0 text-muted-foreground" />
+                    <Info className="text-muted-foreground h-4 w-4 shrink-0" />
                   </TooltipTrigger>
                   <TooltipContent side="left" className="max-w-[200px]">
                     <p>
@@ -317,7 +317,7 @@ export function ExportJSONDialog({
               {/* Shareable Option */}
               <label
                 htmlFor="shareable"
-                className={`flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition-colors hover:bg-muted/50 ${
+                className={`hover:bg-muted/50 flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition-colors ${
                   exportMode === "shareable"
                     ? "border-primary bg-primary/5"
                     : "border-border"
@@ -334,11 +334,11 @@ export function ExportJSONDialog({
                       <Share2 className="h-4 w-4" />
                       Shareable
                     </span>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-muted-foreground text-xs">
                       ~{formatFileSize(fileSizeEstimate.shareable)}
                     </span>
                   </div>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-muted-foreground text-sm">
                     {fileSizeEstimate.imageCount > 0
                       ? `${fileSizeEstimate.imageCount} image${fileSizeEstimate.imageCount > 1 ? "s" : ""} will be uploaded to cloud.`
                       : "No images to upload. Small file size."}
@@ -346,7 +346,7 @@ export function ExportJSONDialog({
                 </div>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Info className="h-4 w-4 shrink-0 text-muted-foreground" />
+                    <Info className="text-muted-foreground h-4 w-4 shrink-0" />
                   </TooltipTrigger>
                   <TooltipContent side="left" className="max-w-[200px]">
                     <p>

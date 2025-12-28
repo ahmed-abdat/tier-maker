@@ -104,7 +104,7 @@ export function TierListGallery() {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
         <div className="flex flex-col items-center gap-2">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          <div className="border-primary h-8 w-8 animate-spin rounded-full border-2 border-t-transparent" />
           <p className="text-muted-foreground">Loading your tier lists...</p>
         </div>
       </div>
@@ -132,12 +132,12 @@ export function TierListGallery() {
       >
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <LayoutGrid className="h-5 w-5 text-primary" />
+            <LayoutGrid className="text-primary h-5 w-5" />
             <h2 className="text-xl font-bold tracking-tight sm:text-2xl">
               Your Tier Lists
             </h2>
           </div>
-          <p className="text-sm text-muted-foreground sm:text-base">
+          <p className="text-muted-foreground text-sm sm:text-base">
             {tierLists.length === 1
               ? "You have 1 tier list"
               : `You have ${tierLists.length} tier lists`}
@@ -147,7 +147,7 @@ export function TierListGallery() {
           <ImportJSONButton />
           <Button
             onClick={handleCreateNew}
-            className="group h-11 flex-1 gap-2 shadow-lg transition-all hover:shadow-xl hover:shadow-primary/20 sm:h-10 sm:flex-none"
+            className="group hover:shadow-primary/20 h-11 flex-1 gap-2 shadow-lg transition-all hover:shadow-xl sm:h-10 sm:flex-none"
           >
             <Plus className="h-4 w-4 transition-transform duration-200 group-hover:rotate-90" />
             Create New
@@ -159,12 +159,12 @@ export function TierListGallery() {
       <div className="flex flex-col items-stretch justify-between gap-3 sm:flex-row sm:items-center">
         {/* Search */}
         <div className="relative w-full sm:w-80">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
           <Input
             placeholder="Search tier lists..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="h-11 border-muted-foreground/20 bg-muted/30 pl-10 transition-colors focus:bg-background"
+            className="border-muted-foreground/20 bg-muted/30 focus:bg-background h-11 pl-10 transition-colors"
           />
         </div>
 
@@ -208,7 +208,7 @@ export function TierListGallery() {
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-sm text-muted-foreground"
+          className="text-muted-foreground text-sm"
         >
           {filteredAndSortedLists.length === 0
             ? `No results for "${searchQuery}"`
@@ -242,8 +242,8 @@ export function TierListGallery() {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-4 py-16 text-center"
         >
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-muted/50">
-            <Search className="h-8 w-8 text-muted-foreground/50" />
+          <div className="bg-muted/50 mx-auto flex h-16 w-16 items-center justify-center rounded-full">
+            <Search className="text-muted-foreground/50 h-8 w-8" />
           </div>
           <div className="space-y-2">
             <p className="text-lg font-medium">No results found</p>

@@ -118,7 +118,7 @@ export function SettingsDialog({ isMobile = false }: { isMobile?: boolean }) {
               <Label htmlFor="keyboard-nav" className="text-base">
                 Keyboard Navigation
               </Label>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 Use arrow keys and Space to move items
               </p>
             </div>
@@ -135,7 +135,7 @@ export function SettingsDialog({ isMobile = false }: { isMobile?: boolean }) {
               <Label htmlFor="undo-redo" className="text-base">
                 Undo/Redo
               </Label>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 Track changes (Ctrl+Z to undo)
               </p>
             </div>
@@ -152,7 +152,7 @@ export function SettingsDialog({ isMobile = false }: { isMobile?: boolean }) {
               <Label htmlFor="reduce-motion" className="text-base">
                 Reduce Animations
               </Label>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 Disable animations for better performance
               </p>
             </div>

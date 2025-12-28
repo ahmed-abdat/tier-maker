@@ -37,7 +37,7 @@ export const Modal: React.FC<ModalProps> = ({
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">{title}</DialogTitle>
           {description && (
-            <DialogDescription className="text-sm text-muted-foreground">
+            <DialogDescription className="text-muted-foreground text-sm">
               {description}
             </DialogDescription>
           )}

@@ -23,7 +23,7 @@ export default function NotFound() {
           Go Back
         </Button>
       </div>
-      <p className="mt-8 text-sm text-muted-foreground">
+      <p className="text-muted-foreground mt-8 text-sm">
         If you believe this is an error, please contact our support team.
       </p>
     </div>
