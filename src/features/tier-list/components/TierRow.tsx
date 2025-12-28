@@ -121,19 +121,19 @@ export const TierRow = memo(function TierRow({
   // Row overlay when dragging
   if (isRowOverlay) {
     return (
-      <div className="flex rounded-lg border-2 border-primary bg-background opacity-95 shadow-2xl">
+      <div className="border-primary bg-background flex rounded-lg border-2 opacity-95 shadow-2xl">
         {/* Drag Handle */}
-        <div className="flex w-10 cursor-grabbing items-center justify-center border-r bg-muted/50 sm:w-8">
-          <GripVertical className="h-6 w-6 text-primary sm:h-5 sm:w-5" />
+        <div className="bg-muted/50 flex w-10 cursor-grabbing items-center justify-center border-r sm:w-8">
+          <GripVertical className="text-primary h-6 w-6 sm:h-5 sm:w-5" />
         </div>
 
         {/* Tier Label */}
         <div
-          className="flex w-16 min-w-[4rem] shrink-0 items-center justify-center p-1 font-bold sm:w-24 sm:min-w-[6rem]"
+          className="flex w-16 min-w-16 shrink-0 items-center justify-center p-1 font-bold sm:w-24 sm:min-w-24"
           style={{ backgroundColor: row.color }}
         >
           <span
-            className="block w-full break-words text-center font-bold drop-shadow-sm"
+            className="block w-full text-center font-bold wrap-break-word drop-shadow-xs"
             style={{
               color: textColor,
               fontSize: "14px",
@@ -145,11 +145,11 @@ export const TierRow = memo(function TierRow({
         </div>
 
         {/* Tier Content */}
-        <div className="grid min-h-[5rem] flex-1 grid-cols-[repeat(auto-fill,72px)] content-start items-start gap-2 bg-muted/20 p-2">
+        <div className="bg-muted/20 grid min-h-20 flex-1 grid-cols-[repeat(auto-fill,72px)] content-start items-start gap-2 p-2">
           {row.items.map((item) => (
             <div
               key={item.id}
-              className="h-[72px] w-[72px] overflow-hidden rounded-lg bg-muted"
+              className="bg-muted h-[72px] w-[72px] overflow-hidden rounded-lg"
             >
               {item.imageUrl ? (
                 <img
@@ -158,7 +158,7 @@ export const TierRow = memo(function TierRow({
                   className="h-full w-full object-cover"
                 />
               ) : (
-                <div className="flex h-full w-full items-center justify-center bg-secondary p-1.5 text-center text-[10px] font-medium text-secondary-foreground">
+                <div className="bg-secondary text-secondary-foreground flex h-full w-full items-center justify-center p-1.5 text-center text-[10px] font-medium">
                   {item.name}
                 </div>
               )}
@@ -174,7 +174,7 @@ export const TierRow = memo(function TierRow({
       ref={setSortableRef}
       style={style}
       className={cn(
-        "group/row relative flex border-b border-border transition-all duration-200 last:border-b-0",
+        "group/row border-border relative flex border-b transition-all duration-200 last:border-b-0",
         // Hover effects - using box-shadow instead of border to avoid layout shift
         "hover:shadow-[inset_4px_0_0_0_hsl(var(--primary)/0.4),0_4px_12px_-4px_hsl(var(--primary)/0.1)]",
         "hover:bg-muted/5",
@@ -192,21 +192,21 @@ export const TierRow = memo(function TierRow({
           aria-roledescription="draggable"
           data-drag-handle
           className={cn(
-            "flex w-10 cursor-grab items-center justify-center border-r border-border bg-muted/20 active:cursor-grabbing sm:w-8",
-            "group/handle transition-all duration-150 hover:bg-primary/10 active:bg-primary/20",
+            "border-border bg-muted/20 flex w-10 cursor-grab items-center justify-center border-r active:cursor-grabbing sm:w-8",
+            "group/handle hover:bg-primary/10 active:bg-primary/20 transition-all duration-150",
             "touch-none select-none"
           )}
           title="Drag to reorder"
         >
-          <GripVertical className="h-6 w-6 text-muted-foreground/50 transition-colors group-hover/handle:text-primary sm:h-5 sm:w-5" />
+          <GripVertical className="text-muted-foreground/50 group-hover/handle:text-primary h-6 w-6 transition-colors sm:h-5 sm:w-5" />
         </div>
       )}
 
       {/* Tier Label */}
       <div
         className={cn(
-          "group relative flex w-16 min-w-[4rem] shrink-0 items-center justify-center font-bold sm:w-24 sm:min-w-[6rem]",
-          isExporting && "w-24 min-w-[6rem]"
+          "group relative flex w-16 min-w-16 shrink-0 items-center justify-center font-bold sm:w-24 sm:min-w-24",
+          isExporting && "w-24 min-w-24"
         )}
         style={{ backgroundColor: row.color }}
       >
@@ -220,7 +220,7 @@ export const TierRow = memo(function TierRow({
             onKeyDown={handleKeyDown}
             rows={1}
             aria-multiline="true"
-            className="w-full resize-none overflow-hidden break-words border-none bg-transparent p-1 text-center font-bold outline-none focus:ring-1 focus:ring-white/30"
+            className="w-full resize-none overflow-hidden border-none bg-transparent p-1 text-center font-bold wrap-break-word outline-hidden focus:ring-1 focus:ring-white/30"
             style={{
               color: textColor,
               fontSize: "14px",
@@ -239,7 +239,7 @@ export const TierRow = memo(function TierRow({
             aria-label={`Edit tier name: ${row.name || row.level}`}
           >
             <span
-              className="block w-full break-words p-1 text-center font-bold drop-shadow-sm"
+              className="block w-full p-1 text-center font-bold wrap-break-word drop-shadow-xs"
               style={{
                 color: textColor,
                 fontSize: "14px",
@@ -251,7 +251,7 @@ export const TierRow = memo(function TierRow({
             {/* Edit hint icon - shows on hover */}
             {!isExporting && (
               <Pencil
-                className="absolute bottom-1 right-1 h-3 w-3 opacity-0 transition-opacity group-hover/label:opacity-60"
+                className="absolute right-1 bottom-1 h-3 w-3 opacity-0 transition-opacity group-hover/label:opacity-60"
                 style={{ color: textColor }}
               />
             )}
@@ -267,9 +267,9 @@ export const TierRow = memo(function TierRow({
                 size="icon"
                 aria-label={`Settings for tier ${row.name || row.level}`}
                 className={cn(
-                  "absolute right-1 top-1 h-8 w-8 rounded-full sm:h-6 sm:w-6",
+                  "absolute top-1 right-1 h-8 w-8 rounded-full sm:h-6 sm:w-6",
                   "bg-black/40 hover:scale-110 hover:bg-black/60 active:scale-95",
-                  "border border-white/30 shadow-sm",
+                  "border border-white/30 shadow-xs",
                   // Always visible on touch devices, hover-reveal on desktop
                   "opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100",
                   "transition-all duration-200"
@@ -303,7 +303,7 @@ export const TierRow = memo(function TierRow({
                         className={cn(
                           "h-7 w-7 rounded-md border-2 transition-all hover:scale-110",
                           row.color === color
-                            ? "border-primary ring-2 ring-primary/30"
+                            ? "border-primary ring-primary/30 ring-2"
                             : "border-border hover:border-primary/50"
                         )}
                         style={{ backgroundColor: color }}
@@ -320,7 +320,7 @@ export const TierRow = memo(function TierRow({
                       }
                       className="h-8 w-12 cursor-pointer p-1"
                     />
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-muted-foreground text-xs">
                       Custom color
                     </span>
                   </div>
@@ -341,7 +341,7 @@ export const TierRow = memo(function TierRow({
                   <Button
                     variant="outline"
                     size="sm"
-                    className="w-full justify-start gap-2 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                    className="text-destructive hover:bg-destructive/10 hover:text-destructive w-full justify-start gap-2"
                     onClick={() => deleteTier(row.id)}
                   >
                     <Trash2 className="h-3.5 w-3.5" />
@@ -357,7 +357,7 @@ export const TierRow = memo(function TierRow({
       {/* Tier Content (Droppable Area) */}
       <div
         ref={setDroppableRef}
-        className="grid min-h-[5rem] flex-1 grid-cols-[repeat(auto-fill,72px)] content-start items-start gap-2 bg-muted/20 p-2"
+        className="bg-muted/20 grid min-h-20 flex-1 grid-cols-[repeat(auto-fill,72px)] content-start items-start gap-2 p-2"
       >
         <SortableContext items={itemIds} strategy={rectSortingStrategy}>
           {row.items.map((item) => (

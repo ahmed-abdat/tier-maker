@@ -41,7 +41,7 @@ const Slider = React.forwardRef<
         <SliderPrimitive.Root
           ref={ref}
           className={cn(
-            "relative flex w-full touch-none select-none items-center",
+            "relative flex w-full touch-none items-center select-none",
             className
           )}
           min={min}
@@ -51,24 +51,24 @@ const Slider = React.forwardRef<
           onValueChange={handleValueChange}
           {...props}
         >
-          <SliderPrimitive.Track className="relative h-2 w-full grow overflow-hidden rounded-full bg-accent">
-            <SliderPrimitive.Range className="absolute h-full bg-gradient-to-r from-[#3293CE] via-[#2F8CCA] to-[#30489C]" />
+          <SliderPrimitive.Track className="bg-accent relative h-2 w-full grow overflow-hidden rounded-full">
+            <SliderPrimitive.Range className="absolute h-full bg-linear-to-r from-[#3293CE] via-[#2F8CCA] to-[#30489C]" />
           </SliderPrimitive.Track>
 
           {/* Thumb 1 with Label */}
           <div
-            className="absolute -bottom-8 -translate-x-1/2 text-xs font-medium text-foreground"
+            className="text-foreground absolute -bottom-8 -translate-x-1/2 text-xs font-medium"
             style={{
               left: `${((values[0] - min) / (max - min)) * 100}%`,
             }}
           >
             {label} {values[0]}
           </div>
-          <SliderPrimitive.Thumb className="block h-4 w-4 rounded-full border-2 border-[#3293CE] bg-background shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2F8CCA] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50" />
+          <SliderPrimitive.Thumb className="bg-background block h-4 w-4 rounded-full border-2 border-[#3293CE] shadow-xs transition-colors focus-visible:ring-2 focus-visible:ring-[#2F8CCA] focus-visible:ring-offset-2 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50" />
 
           {/* Thumb 2 with Label */}
           <div
-            className="absolute -bottom-8 -translate-x-1/2 text-xs font-medium text-foreground"
+            className="text-foreground absolute -bottom-8 -translate-x-1/2 text-xs font-medium"
             style={{
               left: `${((values[1] - min) / (max - min)) * 100}%`,
             }}
@@ -76,7 +76,7 @@ const Slider = React.forwardRef<
             {values[1]}
             {label}
           </div>
-          <SliderPrimitive.Thumb className="block h-4 w-4 rounded-full border-2 border-[#3293CE] bg-background shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2F8CCA] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50" />
+          <SliderPrimitive.Thumb className="bg-background block h-4 w-4 rounded-full border-2 border-[#3293CE] shadow-xs transition-colors focus-visible:ring-2 focus-visible:ring-[#2F8CCA] focus-visible:ring-offset-2 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50" />
         </SliderPrimitive.Root>
       </div>
     );

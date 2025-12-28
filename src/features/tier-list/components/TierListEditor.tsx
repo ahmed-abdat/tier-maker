@@ -308,7 +308,7 @@ export function TierListEditor() {
     return (
       <div className="flex h-64 items-center justify-center">
         <div className="flex flex-col items-center gap-2">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          <div className="border-primary h-8 w-8 animate-spin rounded-full border-2 border-t-transparent" />
           <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
@@ -318,7 +318,7 @@ export function TierListEditor() {
   return (
     <div className="space-y-6">
       {/* Header - Sticky on desktop */}
-      <div className="sticky top-12 z-40 -mx-4 hidden flex-col gap-2 border-b bg-background/95 px-4 py-4 backdrop-blur supports-[backdrop-filter]:bg-background/80 sm:flex-row sm:items-center sm:justify-between sm:gap-4 md:top-14 md:flex">
+      <div className="bg-background/95 supports-backdrop-filter:bg-background/80 sticky top-12 z-40 -mx-4 hidden flex-col gap-2 border-b px-4 py-4 backdrop-blur-sm sm:flex-row sm:items-center sm:justify-between sm:gap-4 md:top-14 md:flex">
         <div className="min-w-0 flex-1">
           <div className="group relative inline-flex max-w-full items-center gap-2">
             <h1
@@ -327,14 +327,14 @@ export function TierListEditor() {
               onBlur={handleTitleBlur}
               onKeyDown={handleTitleKeyDown}
               onPaste={handleTitlePaste}
-              className="max-w-[calc(100vw-6rem)] cursor-text break-words rounded-md border-2 border-transparent px-2 py-1 text-xl font-bold outline-none transition-all hover:border-dashed hover:border-muted-foreground/30 focus:border-solid focus:border-primary/50 focus:bg-muted/20 sm:max-w-[600px] sm:text-2xl md:text-3xl"
+              className="hover:border-muted-foreground/30 focus:border-primary/50 focus:bg-muted/20 max-w-[calc(100vw-6rem)] cursor-text rounded-md border-2 border-transparent px-2 py-1 text-xl font-bold wrap-break-word outline-hidden transition-all hover:border-dashed focus:border-solid sm:max-w-[600px] sm:text-2xl md:text-3xl"
             >
               {currentList.title}
             </h1>
-            <Pencil className="pointer-events-none h-3.5 w-3.5 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-50" />
+            <Pencil className="text-muted-foreground pointer-events-none h-3.5 w-3.5 shrink-0 opacity-0 transition-opacity group-hover:opacity-50" />
           </div>
           <div className="mt-1 flex items-center gap-3 px-2">
-            <p className="text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-xs">
               {totalItems === 0
                 ? "No items yet — upload some images to get started"
                 : `${totalItems} ${totalItems === 1 ? "item" : "items"} • ${currentList.rows.length} ${currentList.rows.length === 1 ? "tier" : "tiers"}`}
@@ -355,7 +355,7 @@ export function TierListEditor() {
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
           {/* History group with subtle bg */}
           {settings.enableUndoRedo && (
-            <div className="flex items-center rounded-lg bg-muted/40 p-0.5">
+            <div className="bg-muted/40 flex items-center rounded-lg p-0.5">
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
@@ -395,7 +395,7 @@ export function TierListEditor() {
 
           {/* Separator - only show when undo/redo is visible */}
           {settings.enableUndoRedo && (
-            <div className="hidden h-5 w-px bg-border sm:block" />
+            <div className="bg-border hidden h-5 w-px sm:block" />
           )}
 
           {/* Actions group */}
@@ -491,12 +491,12 @@ export function TierListEditor() {
         <div
           ref={exportRef}
           data-export-target
-          className="overflow-hidden rounded-xl border bg-background shadow-lg"
+          className="bg-background overflow-hidden rounded-xl border shadow-md"
         >
           {/* Title - Hidden in editor (shows in header), visible in export */}
           <div
             data-export-title
-            className="hidden border-b bg-gradient-to-r from-muted/80 to-muted/40 px-4 py-3"
+            className="from-muted/80 to-muted/40 hidden border-b bg-linear-to-r px-4 py-3"
           >
             <h2 className="text-xl font-bold sm:text-2xl md:text-3xl">
               {currentList.title}
@@ -540,11 +540,11 @@ export function TierListEditor() {
           {/* Add Tier Button - Inside tier box, hidden during export */}
           <div
             data-hide-export
-            className="border-t border-dashed border-muted-foreground/20 p-3"
+            className="border-muted-foreground/20 border-t border-dashed p-3"
           >
             <Button
               variant="ghost"
-              className="group w-full gap-2 py-2.5 text-muted-foreground transition-all hover:bg-primary/5 hover:text-foreground"
+              className="group text-muted-foreground hover:bg-primary/5 hover:text-foreground w-full gap-2 py-2.5 transition-all"
               onClick={handleAddTier}
             >
               <Plus className="h-4 w-4 transition-transform duration-200 group-hover:rotate-90" />
@@ -567,7 +567,7 @@ export function TierListEditor() {
             >
               <ArrowDown className="h-6 w-6" />
             </motion.div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               Drop images below to start ranking
             </p>
           </motion.div>
@@ -581,9 +581,9 @@ export function TierListEditor() {
 
         {/* Text-only item input */}
         <div className="flex items-center gap-4">
-          <div className="h-px flex-1 bg-border" />
-          <span className="text-xs text-muted-foreground">or</span>
-          <div className="h-px flex-1 bg-border" />
+          <div className="bg-border h-px flex-1" />
+          <span className="text-muted-foreground text-xs">or</span>
+          <div className="bg-border h-px flex-1" />
         </div>
         <TextItemInput />
 
@@ -608,7 +608,7 @@ export function TierListEditor() {
       </DndContext>
 
       {/* Help text */}
-      <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 border-t pt-4 text-[10px] text-muted-foreground sm:gap-x-6 sm:text-xs">
+      <div className="text-muted-foreground flex flex-wrap items-center justify-center gap-x-4 gap-y-2 border-t pt-4 text-[10px] sm:gap-x-6 sm:text-xs">
         <span className="flex items-center gap-1.5">
           <Kbd>Drag</Kbd>
           items to rank

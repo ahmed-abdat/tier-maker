@@ -40,7 +40,7 @@ export default function EditorPage() {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="flex flex-col items-center gap-2">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          <div className="border-primary h-8 w-8 animate-spin rounded-full border-2 border-t-transparent" />
           <p className="text-muted-foreground">Loading editor...</p>
         </div>
       </div>
@@ -51,7 +51,7 @@ export default function EditorPage() {
   if (!listExists) {
     return (
       <div className="flex min-h-screen flex-col">
-        <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <header className="bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 z-50 w-full border-b backdrop-blur-sm">
           <div className="container mx-auto flex h-12 max-w-6xl items-center justify-between px-4 md:h-14">
             <Link href="/" className="flex items-center gap-2">
               <Logo size={40} />
@@ -70,7 +70,7 @@ export default function EditorPage() {
               <Logo size={64} className="opacity-50" />
             </div>
             <h2 className="text-2xl font-bold">Tier List Not Found</h2>
-            <p className="max-w-md text-muted-foreground">
+            <p className="text-muted-foreground max-w-md">
               The tier list you&apos;re looking for doesn&apos;t exist or has
               been deleted.
             </p>
@@ -90,7 +90,7 @@ export default function EditorPage() {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="flex flex-col items-center gap-2">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          <div className="border-primary h-8 w-8 animate-spin rounded-full border-2 border-t-transparent" />
           <p className="text-muted-foreground">Loading editor...</p>
         </div>
       </div>
@@ -99,7 +99,7 @@ export default function EditorPage() {
 
   return (
     <div className="min-h-screen">
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 z-50 w-full border-b backdrop-blur-sm">
         <div className="container mx-auto flex h-12 max-w-5xl items-center justify-between px-4 md:h-14">
           <div className="flex items-center gap-3">
             <Button

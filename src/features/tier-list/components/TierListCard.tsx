@@ -81,13 +81,13 @@ export const TierListCard = memo(function TierListCard({
         <div
           onClick={onSelect}
           className={cn(
-            "relative cursor-pointer overflow-hidden rounded-xl border bg-card transition-all duration-300",
-            "hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5",
+            "bg-card relative cursor-pointer overflow-hidden rounded-xl border transition-all duration-300",
+            "hover:border-primary/30 hover:shadow-primary/5 hover:shadow-lg",
             "active:scale-[0.98]"
           )}
         >
           {/* Preview Section - Tier Colors */}
-          <div className="relative h-36 overflow-hidden rounded-t-xl bg-gradient-to-br from-muted/50 to-muted">
+          <div className="from-muted/50 to-muted relative h-36 overflow-hidden rounded-t-xl bg-linear-to-br">
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="flex h-full w-full flex-col gap-1 p-2">
                 {tierList.previewColors.map((color, i) => (
@@ -107,12 +107,12 @@ export const TierListCard = memo(function TierListCard({
           {/* Content Section */}
           <div className="space-y-3 p-4">
             {/* Title */}
-            <h3 className="line-clamp-1 text-lg font-semibold leading-tight transition-colors group-hover:text-primary">
+            <h3 className="group-hover:text-primary line-clamp-1 text-lg leading-tight font-semibold transition-colors">
               {tierList.title}
             </h3>
 
             {/* Meta info */}
-            <div className="flex items-center justify-between text-sm text-muted-foreground">
+            <div className="text-muted-foreground flex items-center justify-between text-sm">
               <div className="flex items-center gap-1.5">
                 <Clock className="h-3.5 w-3.5" />
                 <span>{timeAgo}</span>
@@ -135,7 +135,7 @@ export const TierListCard = memo(function TierListCard({
                 />
               ))}
               {tierList.rowCount > tierList.previewColors.length && (
-                <span className="text-xs text-muted-foreground">
+                <span className="text-muted-foreground text-xs">
                   +{tierList.rowCount - tierList.previewColors.length}
                 </span>
               )}
@@ -146,7 +146,7 @@ export const TierListCard = memo(function TierListCard({
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: isHovered ? 1 : 0 }}
-            className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/5 to-transparent"
+            className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/5 to-transparent"
           />
         </div>
 
@@ -157,7 +157,7 @@ export const TierListCard = memo(function TierListCard({
               variant="secondary"
               size="icon"
               className={cn(
-                "absolute right-2 top-2 h-8 w-8 rounded-full shadow-md transition-all duration-200",
+                "absolute top-2 right-2 h-8 w-8 rounded-full shadow-md transition-all duration-200",
                 // Always visible on touch devices, hover-reveal on desktop
                 "opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100",
                 "bg-background/90 hover:bg-background"

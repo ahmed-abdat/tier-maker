@@ -71,7 +71,7 @@ export const TierItem = memo(function TierItem({
             draggable={false}
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center bg-secondary p-1.5 text-center text-[10px] font-medium leading-tight text-secondary-foreground">
+          <div className="bg-secondary text-secondary-foreground flex h-full w-full items-center justify-center p-1.5 text-center text-[10px] leading-tight font-medium">
             <span className="line-clamp-3">{item.name}</span>
           </div>
         )}
@@ -96,7 +96,7 @@ export const TierItem = memo(function TierItem({
 
     // Text fallback for items without images or failed loads
     return (
-      <div className="flex h-full w-full items-center justify-center bg-secondary p-1.5 text-center text-[10px] font-medium leading-tight text-secondary-foreground">
+      <div className="bg-secondary text-secondary-foreground flex h-full w-full items-center justify-center p-1.5 text-center text-[10px] leading-tight font-medium">
         <span className="line-clamp-3">{item.name}</span>
       </div>
     );
@@ -109,11 +109,11 @@ export const TierItem = memo(function TierItem({
         initial={{ scale: 1, rotate: 0 }}
         animate={{ scale: 1.1, rotate: 2 }}
         transition={{ duration: 0.15, ease: "easeOut" }}
-        className="relative h-[72px] w-[72px] overflow-hidden rounded-lg border-2 border-primary bg-background shadow-2xl"
+        className="border-primary bg-background relative h-[72px] w-[72px] overflow-hidden rounded-lg border-2 shadow-2xl"
       >
         {renderContent()}
         {/* Drag indicator overlay */}
-        <div className="pointer-events-none absolute inset-0 bg-primary/15" />
+        <div className="bg-primary/15 pointer-events-none absolute inset-0" />
       </motion.div>
     );
   }
@@ -138,8 +138,8 @@ export const TierItem = memo(function TierItem({
             className={cn(
               "relative h-full w-full overflow-hidden rounded-lg",
               "border-2 transition-all duration-150",
-              "shadow-sm hover:shadow-lg",
-              "border-transparent hover:border-primary/60",
+              "shadow-xs hover:shadow-lg",
+              "hover:border-primary/60 border-transparent",
               "group-hover:scale-105"
             )}
           >
@@ -158,7 +158,7 @@ export const TierItem = memo(function TierItem({
             }}
             onPointerDown={(e) => e.stopPropagation()}
             className={cn(
-              "absolute -right-2 -top-2 h-7 w-7 rounded-full sm:h-6 sm:w-6",
+              "absolute -top-2 -right-2 h-7 w-7 rounded-full sm:h-6 sm:w-6",
               "bg-destructive text-destructive-foreground",
               "flex items-center justify-center",
               // Always visible on mobile (coarse pointer), hover-reveal on desktop
@@ -167,7 +167,7 @@ export const TierItem = memo(function TierItem({
               "transition-all duration-150 ease-out",
               "shadow-lg hover:shadow-xl",
               "hover:bg-destructive/90 active:scale-90",
-              "z-20 focus:outline-none focus:ring-2 focus:ring-destructive/50"
+              "focus:ring-destructive/50 z-20 focus:ring-2 focus:outline-hidden"
             )}
             aria-label={`Remove ${item.name}`}
           >
@@ -180,9 +180,9 @@ export const TierItem = memo(function TierItem({
         className="max-w-[180px] px-3 py-2"
         sideOffset={8}
       >
-        <p className="text-sm font-medium leading-tight">{item.name}</p>
+        <p className="text-sm leading-tight font-medium">{item.name}</p>
         {item.description && (
-          <p className="mt-1 text-xs leading-snug text-muted-foreground">
+          <p className="text-muted-foreground mt-1 text-xs leading-snug">
             {item.description}
           </p>
         )}

@@ -1,60 +1,183 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-/* Base HTML Styles */
-html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 56px; /* Page header height */
+@custom-variant dark (&:is(.dark *));
+
+@utility container {
+  margin-inline: auto;
+  padding-inline: 2rem;
+  @media (width >= --theme(--breakpoint-sm)) {
+    max-width: none;
+  }
+  @media (width >= 1400px) {
+    max-width: 1400px;
+  }
 }
 
-@media (min-width: 768px) {
+@theme {
+  --font-inter: var(--font-inter);
+  --font-ibm-arabic: var(--font-ibm-plex-arabic);
+
+  --color-brand-blue-light: #3293ce;
+  --color-brand-blue: #2f8cca;
+  --color-brand-blue-dark: #30489c;
+  --color-brand-gray: #4f585f;
+
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --background-image-gradient-brand: linear-gradient(
+    to right,
+    #3293ce,
+    #2f8cca,
+    #30489c
+  );
+  --background-image-gradient-brand-vertical: linear-gradient(
+    to bottom,
+    #3293ce,
+    #2f8cca,
+    #30489c
+  );
+  --background-image-gradient-brand-light: linear-gradient(
+    to right,
+    rgba(50, 147, 206, 0.1),
+    rgba(47, 140, 202, 0.1),
+    rgba(48, 72, 156, 0.1)
+  );
+  --background-image-gradient-brand-vertical-light: linear-gradient(
+    to bottom,
+    rgba(50, 147, 206, 0.1),
+    rgba(47, 140, 202, 0.1),
+    rgba(48, 72, 156, 0.1)
+  );
+  --background-image-gradient-brand-to-transparent: linear-gradient(
+    to bottom,
+    rgba(50, 147, 206, 0.1),
+    transparent,
+    rgba(48, 72, 156, 0.1)
+  );
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@layer utilities {
+  /* Base HTML Styles */
   html {
-    scroll-padding-top: 112px; /* Page header + Editor header */
+    scroll-behavior: smooth;
+    scroll-padding-top: 56px; /* Page header height */
   }
-}
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
+  @media (min-width: 768px) {
+    html {
+      scroll-padding-top: 112px; /* Page header + Editor header */
+    }
+  }
 
-/* Smooth Scrolling & Scrollbar Styles */
-::-webkit-scrollbar {
-  @apply h-2 w-2;
-}
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+  }
 
-::-webkit-scrollbar-track {
-  @apply rounded-full bg-muted/50;
-}
+  /* Smooth Scrolling & Scrollbar Styles */
+  ::-webkit-scrollbar {
+    @apply h-2 w-2;
+  }
 
-::-webkit-scrollbar-thumb {
-  @apply rounded-full bg-primary/40 transition-colors hover:bg-primary/70;
-}
+  ::-webkit-scrollbar-track {
+    @apply bg-muted/50 rounded-full;
+  }
 
-::-webkit-scrollbar-corner {
-  @apply bg-transparent;
-}
+  ::-webkit-scrollbar-thumb {
+    @apply bg-primary/40 hover:bg-primary/70 rounded-full transition-colors;
+  }
 
-/* Selection Styles */
-::selection {
-  @apply bg-primary/20 text-primary;
-}
+  ::-webkit-scrollbar-corner {
+    @apply bg-transparent;
+  }
 
-/* Focus Styles - Enhanced for accessibility */
-:focus-visible {
-  @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background;
-}
+  /* Selection Styles */
+  ::selection {
+    @apply bg-primary/20 text-primary;
+  }
 
-/* Ensure focus is visible in high contrast mode */
-@media (prefers-contrast: high) {
+  /* Focus Styles - Enhanced for accessibility */
   :focus-visible {
-    @apply ring-4 ring-offset-4;
+    @apply ring-primary ring-offset-background ring-2 ring-offset-2 outline-hidden;
   }
-}
 
-/* Transition Styles */
-.transition-all {
-  @apply duration-300 ease-in-out;
+  /* Ensure focus is visible in high contrast mode */
+  @media (prefers-contrast: high) {
+    :focus-visible {
+      @apply ring-4 ring-offset-4;
+    }
+  }
+
+  /* Transition Styles */
+  .transition-all {
+    @apply duration-300 ease-in-out;
+  }
 }
 
 @layer base {

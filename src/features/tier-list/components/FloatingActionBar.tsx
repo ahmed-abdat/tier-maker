@@ -29,7 +29,7 @@ export function FloatingActionBar({
   const barContent = (
     <div
       data-hide-export
-      className="fixed bottom-0 left-0 right-0 z-30 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 md:hidden"
+      className="bg-background/95 supports-backdrop-filter:bg-background/80 fixed right-0 bottom-0 left-0 z-30 border-t backdrop-blur-sm md:hidden"
     >
       <div className="container mx-auto flex max-w-5xl items-center justify-center gap-3 px-4 py-3">
         {/* Export Button - Mobile optimized */}

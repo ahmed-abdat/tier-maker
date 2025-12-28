@@ -27,12 +27,12 @@ export const ItemPool = memo(function ItemPool({ items }: ItemPoolProps) {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+        <h3 className="text-muted-foreground flex items-center gap-2 text-sm font-medium">
           <Package className="h-4 w-4" />
           Unassigned Items
         </h3>
         {items.length > 0 && (
-          <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
+          <span className="bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-xs">
             {items.length}
           </span>
         )}
@@ -40,7 +40,7 @@ export const ItemPool = memo(function ItemPool({ items }: ItemPoolProps) {
       <div
         ref={setNodeRef}
         className={cn(
-          "min-h-[5rem] rounded-xl border-2 border-dashed border-muted-foreground/20 bg-muted/20 p-4",
+          "border-muted-foreground/20 bg-muted/20 min-h-20 rounded-xl border-2 border-dashed p-4",
           items.length === 0 && "flex items-center justify-center"
         )}
       >
@@ -52,7 +52,7 @@ export const ItemPool = memo(function ItemPool({ items }: ItemPoolProps) {
               ))}
             </div>
           ) : (
-            <p className="text-sm text-muted-foreground/50">
+            <p className="text-muted-foreground/50 text-sm">
               Upload images below to get started
             </p>
           )}

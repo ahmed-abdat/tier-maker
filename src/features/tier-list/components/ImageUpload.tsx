@@ -263,7 +263,7 @@ export function ImageUpload({ className }: ImageUploadProps) {
       className={cn(
         "group relative cursor-pointer overflow-hidden rounded-xl border-2 border-dashed p-4 text-center transition-all duration-200 sm:p-8",
         isDragActive
-          ? "scale-[1.02] border-primary bg-primary/10"
+          ? "border-primary bg-primary/10 scale-[1.02]"
           : "border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/30",
         isProcessing && "cursor-wait opacity-50",
         className
@@ -278,40 +278,40 @@ export function ImageUpload({ className }: ImageUploadProps) {
           isDragActive && "opacity-100"
         )}
       >
-        <div className="absolute inset-0 animate-pulse bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/20 via-transparent to-transparent" />
+        <div className="from-primary/20 absolute inset-0 animate-pulse bg-[radial-gradient(circle_at_center,var(--tw-gradient-stops))] via-transparent to-transparent" />
       </div>
 
       <div className="relative flex flex-col items-center gap-3">
         {isDragActive ? (
           <>
             <div className="relative">
-              <ImageIcon className="h-12 w-12 animate-bounce text-primary" />
-              <Plus className="absolute -right-1 -top-1 h-5 w-5 rounded-full bg-background text-primary" />
+              <ImageIcon className="text-primary h-12 w-12 animate-bounce" />
+              <Plus className="bg-background text-primary absolute -top-1 -right-1 h-5 w-5 rounded-full" />
             </div>
-            <p className="text-sm font-semibold text-primary">
+            <p className="text-primary text-sm font-semibold">
               Drop images here
             </p>
           </>
         ) : isProcessing ? (
           <div role="status" aria-live="polite">
             <div
-              className="h-12 w-12 animate-spin rounded-full border-2 border-primary border-t-transparent"
+              className="border-primary h-12 w-12 animate-spin rounded-full border-2 border-t-transparent"
               aria-label="Processing images"
             />
-            <p className="mt-3 text-sm font-medium text-muted-foreground">
+            <p className="text-muted-foreground mt-3 text-sm font-medium">
               Processing...
             </p>
           </div>
         ) : (
           <>
             <div className="relative">
-              <Upload className="h-12 w-12 transform text-muted-foreground transition-colors duration-200 group-hover:scale-110 group-hover:text-primary" />
+              <Upload className="text-muted-foreground group-hover:text-primary h-12 w-12 transform transition-colors duration-200 group-hover:scale-110" />
             </div>
             <div className="space-y-1">
-              <p className="text-sm font-medium text-foreground">
+              <p className="text-foreground text-sm font-medium">
                 Drop images here or click to upload
               </p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-muted-foreground text-xs">
                 PNG, JPG, GIF, WebP supported. Paste with{" "}
                 {isMac ? "⌘V" : "Ctrl+V"}
               </p>
