@@ -161,13 +161,13 @@ export const TierItem = memo(function TierItem({
             onPointerDown={(e) => e.stopPropagation()}
             className={cn(
               "absolute -top-2 -right-2 rounded-full",
-              // Touch devices: larger touch target, always visible
-              // Desktop: smaller size, hover-reveal
-              "h-8 w-8 pointer-fine:h-6 pointer-fine:w-6",
+              // Mobile: larger touch target (32x32), always visible
+              // Desktop (md+): smaller size (24x24), hover-reveal with scale
+              "h-8 w-8 md:h-6 md:w-6",
               "bg-destructive text-destructive-foreground",
               "flex items-center justify-center",
-              "scale-100 opacity-100 hover-hover:scale-75 hover-hover:opacity-0",
-              "hover-hover:group-hover:scale-100 hover-hover:group-hover:opacity-100",
+              "scale-100 opacity-100 md:scale-75 md:opacity-0",
+              "md:group-hover:scale-100 md:group-hover:opacity-100",
               "transition-all duration-150 ease-out",
               "shadow-lg hover:shadow-xl",
               "hover:bg-destructive/90 active:scale-90",
@@ -175,7 +175,7 @@ export const TierItem = memo(function TierItem({
             )}
             aria-label={`Remove ${item.name}`}
           >
-            <X className="h-4 w-4 pointer-fine:h-3.5 pointer-fine:w-3.5" strokeWidth={2.5} />
+            <X className="h-4 w-4 md:h-3.5 md:w-3.5" strokeWidth={2.5} />
           </button>
         </div>
       </TooltipTrigger>
