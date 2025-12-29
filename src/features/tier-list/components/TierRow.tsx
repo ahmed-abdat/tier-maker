@@ -176,8 +176,7 @@ export const TierRow = memo(function TierRow({
       style={style}
       className={cn(
         "group/row border-border relative flex border-b transition-all duration-200 last:border-b-0",
-        // Hover effects - using box-shadow instead of border to avoid layout shift
-        "hover:shadow-[inset_4px_0_0_0_hsl(var(--primary)/0.4),0_4px_12px_-4px_hsl(var(--primary)/0.1)]",
+        // Hover effects - subtle highlight
         "hover:bg-muted/5",
         isDragging && "bg-muted/50 opacity-50",
         isRowDragging && !isDragging && "translate-y-0"
@@ -221,7 +220,7 @@ export const TierRow = memo(function TierRow({
             onKeyDown={handleKeyDown}
             rows={1}
             aria-multiline="true"
-            className="w-full resize-none overflow-hidden border-none bg-transparent p-1 text-center font-bold wrap-break-word outline-hidden focus:ring-1 focus:ring-white/30"
+            className="w-full resize-none overflow-hidden border-none bg-transparent p-1 text-center font-bold wrap-break-word outline-none"
             style={{
               color: textColor,
               fontSize: "14px",
