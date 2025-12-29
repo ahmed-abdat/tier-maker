@@ -45,17 +45,19 @@ self.addEventListener("fetch", (event) => {
   if (event.request.mode === "navigate") {
     event.respondWith(
       (async () => {
-        const cache = await caches.open(NAVIGATION_CACHE);
+        const navCache = await caches.open(NAVIGATION_CACHE);
 
-        // Try to get from cache first (offline-first)
-        const cachedResponse = await cache.match(event.request);
+        // Check navigation cache first (dynamically cached pages)
+        let cachedResponse = await navCache.match(event.request);
+
+        // If not in nav cache, check all caches (including Serwist's precache)
+        cachedResponse ??= await caches.match(event.request);
 
         // Fetch from network in background
         const networkPromise = fetch(event.request)
           .then(async (networkResponse) => {
-            // Cache the fresh response for next time
             if (networkResponse.ok) {
-              await cache.put(event.request, networkResponse.clone());
+              await navCache.put(event.request, networkResponse.clone());
             }
             return networkResponse;
           })
@@ -63,7 +65,6 @@ self.addEventListener("fetch", (event) => {
 
         // If we have a cached response, return it immediately
         if (cachedResponse) {
-          // Update cache in background (don't await)
           void networkPromise;
           return cachedResponse;
         }

@@ -5,10 +5,13 @@ const withSerwist = withSerwistInit({
   swSrc: "src/app/sw.ts",
   swDest: "public/sw.js",
   additionalPrecacheEntries: [
-    // Static HTML fallback - most reliable for offline
+    // Static HTML fallback
     { url: "/offline.html", revision: "3" },
-    { url: "/", revision: "2" },
-    { url: "/tiers", revision: "2" },
+    // All static routes - precached for offline-first
+    { url: "/", revision: "3" },
+    { url: "/tiers", revision: "3" },
+    { url: "/share", revision: "3" },
+    { url: "/~offline", revision: "3" },
   ],
   // Disable in development since Serwist doesn't support Turbopack yet
   disable: process.env.NODE_ENV !== "production",

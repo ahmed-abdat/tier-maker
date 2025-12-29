@@ -9,8 +9,8 @@ interface LogoProps {
 export function Logo({ size = 40, className, priority = false }: LogoProps) {
   return (
     <Image
-      src="/tier_list_logo.png"
-      alt="LibreTier Logo"
+      src="/logo.png"
+      alt="LiberTier Logo"
       width={size}
       height={size}
       priority={priority}
