@@ -12,8 +12,7 @@ A free, open-source tier list maker. Create beautiful rankings with drag-and-dro
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/ahmed-abdat/LibreTier)
 
-<!-- Add your demo GIF here -->
-<!-- ![Demo](./assets/demo.gif) -->
+![LibreTier Demo](./public/demo/libretier-preview.gif)
 
 ## Why This Project?
 
