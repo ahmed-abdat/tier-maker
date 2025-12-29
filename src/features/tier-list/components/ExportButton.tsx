@@ -185,6 +185,14 @@ export function ExportButton({
                 innerContainer.style.borderRadius = "8px";
                 innerContainer.style.overflow = "hidden";
 
+                // Remove hover overlay divs that can interfere with image rendering
+                const overlayDivs = innerContainer.querySelectorAll(
+                  ".pointer-events-none.absolute.inset-0"
+                );
+                overlayDivs.forEach((overlay) => {
+                  (overlay as HTMLElement).style.display = "none";
+                });
+
                 // Check if it's a text-only item (no image)
                 const img = innerContainer.querySelector("img");
                 if (img) {
@@ -192,18 +200,19 @@ export function ExportButton({
                   innerContainer.style.backgroundColor = isDark
                     ? "#1a1a1f"
                     : "#ffffff";
-                  // Force full opacity and remove any filters
+                  // Force full opacity and remove any animations/filters
                   img.style.opacity = "1";
+                  img.style.animation = "none";
                   img.style.filter = "none";
                   img.style.objectFit = "cover";
                   img.style.width = "100%";
                   img.style.height = "100%";
                   // Ensure image is not transparent
                   img.style.mixBlendMode = "normal";
-                  // Add slight contrast boost for light mode
-                  if (!isDark) {
-                    img.style.filter = "contrast(1.05) saturate(1.05)";
-                  }
+                  // Add stronger contrast boost for visibility
+                  img.style.filter = isDark
+                    ? "contrast(1.08) saturate(1.1)"
+                    : "contrast(1.12) saturate(1.15) brightness(1.02)";
                 } else {
                   // Text-only item - needs better contrast
                   const textFallback = innerContainer.querySelector(
