@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logger } from "@/lib/logger";
 
 interface ImgBBResponse {
   success: boolean;
@@ -91,7 +92,7 @@ export async function POST(request: Request) {
       message: "API key is valid",
     });
   } catch (error) {
-    console.error("API key validation error:", error);
+    logger.prod.error("API key validation error", error as Error);
 
     if (error instanceof Error && error.message.includes("fetch")) {
       return NextResponse.json({

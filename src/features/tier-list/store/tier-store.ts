@@ -7,6 +7,9 @@ import pako from "pako";
 import { toast } from "sonner";
 import { type TierLevel, TIER_COLORS, TIER_LEVELS } from "../constants";
 import { type TierItem, type TierRow, type TierList } from "../index";
+import { logger } from "@/lib/logger";
+
+const log = logger.child("TierStore");
 
 interface TierStore {
   // State
@@ -620,12 +623,12 @@ export const useTierStore = create<TierStore>()(
               data = JSON.parse(decompressed);
             } catch (compressionError) {
               // Fallback to uncompressed (legacy format)
-              console.warn(
-                "Failed to decompress storage, using legacy format:",
-                compressionError instanceof Error
-                  ? compressionError.message
-                  : compressionError
-              );
+              log.warn("Failed to decompress storage, using legacy format", {
+                error:
+                  compressionError instanceof Error
+                    ? compressionError.message
+                    : String(compressionError),
+              });
               data = JSON.parse(str);
             }
 
@@ -656,8 +659,8 @@ export const useTierStore = create<TierStore>()(
             }
             return data;
           } catch (error) {
-            console.error("Failed to parse localStorage data:", error);
-            console.warn(
+            log.error("Failed to parse localStorage data", error as Error);
+            log.warn(
               "Tier list data was corrupted and will be reset. Consider exporting your lists regularly."
             );
             try {
@@ -682,7 +685,7 @@ export const useTierStore = create<TierStore>()(
             const base64 = btoa(binary);
             localStorage.setItem(name, base64);
           } catch (error) {
-            console.error("Failed to save to localStorage:", error);
+            log.error("Failed to save to localStorage", error as Error);
             if (error instanceof Error && error.name === "QuotaExceededError") {
               toast.error(
                 "Storage full. Delete old tier lists to save changes."

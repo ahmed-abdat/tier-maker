@@ -1,5 +1,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { logger } from "@/lib/logger";
+
+const log = logger.child("SettingsStore");
 
 // Simple settings - just on/off toggles + custom API key
 export interface EditorSettings {
@@ -48,7 +51,7 @@ export const useSettingsStore = create<SettingsStore>()(
             const str = localStorage.getItem(name);
             return str ? JSON.parse(str) : null;
           } catch {
-            console.warn("Failed to load settings, using defaults");
+            log.warn("Failed to load settings, using defaults");
             return null;
           }
         },
@@ -57,7 +60,7 @@ export const useSettingsStore = create<SettingsStore>()(
           try {
             localStorage.setItem(name, JSON.stringify(value));
           } catch (error) {
-            console.warn("Failed to save settings:", error);
+            log.warn("Failed to save settings", error as Error);
           }
         },
         removeItem: (name) => {

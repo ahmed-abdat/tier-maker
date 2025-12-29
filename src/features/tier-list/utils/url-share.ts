@@ -4,6 +4,7 @@ import type { TierLevel } from "../constants";
 import { TIER_LEVELS } from "../constants";
 import { getItemsWithBase64Images, isBase64Image } from "./json-export";
 import { uploadImages } from "@/lib/services/imgbb";
+import { logger } from "@/lib/logger";
 
 // Maximum URL length for broad browser compatibility
 const MAX_URL_LENGTH = 8000;
@@ -127,13 +128,23 @@ function compressForUrl(data: MinimalExport): string {
   return LZString.compressToEncodedURIComponent(json);
 }
 
+// Maximum decompressed size to prevent memory bombs (5MB)
+const MAX_DECOMPRESSED_SIZE = 5 * 1024 * 1024;
+
 /**
- * Decompress data from URL
+ * Decompress data from URL with size limit protection
  */
 function decompressFromUrl(compressed: string): MinimalExport | null {
   try {
     const json = LZString.decompressFromEncodedURIComponent(compressed);
     if (!json) return null;
+
+    // Prevent decompression bombs by limiting decompressed size
+    if (json.length > MAX_DECOMPRESSED_SIZE) {
+      logger.warn("Decompressed data exceeds size limit");
+      return null;
+    }
+
     return JSON.parse(json) as MinimalExport;
   } catch {
     return null;
@@ -276,7 +287,7 @@ export function parseShareUrl(hash: string): TierList | null {
 
   // Validate version
   if (data.v !== SHARE_VERSION) {
-    console.warn(`Unknown share version: ${data.v}`);
+    logger.warn("Unknown share version", { version: data.v });
     return null;
   }
 

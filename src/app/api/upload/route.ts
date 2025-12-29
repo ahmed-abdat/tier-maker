@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logger } from "@/lib/logger";
 
 export interface ImgBBUploadResponse {
   success: boolean;
@@ -82,7 +83,7 @@ export async function POST(request: Request) {
       deleteUrl: result.data?.delete_url,
     });
   } catch (error) {
-    console.error("ImgBB upload error:", error);
+    logger.prod.error("ImgBB upload error", error as Error);
     return NextResponse.json(
       {
         success: false,

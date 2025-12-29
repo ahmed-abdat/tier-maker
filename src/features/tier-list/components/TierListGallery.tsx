@@ -18,6 +18,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import { deleteImages } from "@/lib/services/imgbb";
+import { logger } from "@/lib/logger";
+
+const log = logger.child("TierListGallery");
 
 type SortOption = "updated" | "created" | "name";
 
@@ -137,10 +140,10 @@ export function TierListGallery() {
           toast.success(`Cleaned up ${result.deletedCount} hosted image(s)`);
         }
         if (result.errors.length > 0) {
-          console.warn("Some images failed to delete:", result.errors);
+          log.warn("Some images failed to delete", { errors: result.errors });
         }
       } catch (error) {
-        console.error("Failed to cleanup hosted images:", error);
+        log.error("Failed to cleanup hosted images", error as Error);
         // Don't show error toast - the tier list is already deleted
       }
     }

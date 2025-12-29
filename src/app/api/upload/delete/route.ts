@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logger } from "@/lib/logger";
 
 export interface DeleteResult {
   success: boolean;
@@ -27,10 +28,18 @@ export async function POST(request: Request) {
       );
     }
 
-    // Filter valid imgbb delete URLs
-    const validUrls = deleteUrls.filter(
-      (url) => url && (url.includes("ibb.co") || url.includes("imgbb.com"))
-    );
+    // Filter valid imgbb delete URLs using proper URL parsing
+    const validUrls = deleteUrls.filter((urlStr) => {
+      if (!urlStr || typeof urlStr !== "string") return false;
+      try {
+        const url = new URL(urlStr);
+        return (
+          url.hostname.endsWith("ibb.co") || url.hostname.endsWith("imgbb.com")
+        );
+      } catch {
+        return false;
+      }
+    });
 
     if (validUrls.length === 0) {
       return NextResponse.json(
@@ -79,7 +88,7 @@ export async function POST(request: Request) {
       errors,
     });
   } catch (error) {
-    console.error("Image deletion error:", error);
+    logger.prod.error("Image deletion error", error as Error);
     return NextResponse.json(
       {
         success: false,

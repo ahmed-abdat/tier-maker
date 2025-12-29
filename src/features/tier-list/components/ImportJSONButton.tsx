@@ -12,6 +12,9 @@ import {
 import { toast } from "sonner";
 import { useTierStore } from "../store";
 import { importTierListFromFile } from "../utils/json-import";
+import { logger } from "@/lib/logger";
+
+const log = logger.child("ImportJSON");
 
 interface ImportJSONButtonProps {
   onImportSuccess?: (listId: string) => void;
@@ -73,7 +76,7 @@ export function ImportJSONButton({
           router.push(`/editor/${newListId}`);
         }
       } catch (error) {
-        console.error("Import error:", error);
+        log.error("Import error", error as Error);
         const message =
           error instanceof Error ? error.message : "Failed to import tier list";
         toast.error(message, { id: toastId });

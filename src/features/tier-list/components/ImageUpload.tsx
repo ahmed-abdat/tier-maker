@@ -12,6 +12,9 @@ import {
   IMAGE_QUALITY,
   MAX_FILE_SIZE,
 } from "../constants";
+import { logger } from "@/lib/logger";
+
+const log = logger.child("ImageUpload");
 
 interface ImageUploadProps {
   className?: string;
@@ -179,7 +182,7 @@ export function ImageUpload({ className }: ImageUploadProps) {
           addItem({ name, imageUrl: base64 });
           successCount++;
         } catch (error) {
-          console.error(`Error processing image "${file.name}":`, error);
+          log.error(`Error processing image "${file.name}"`, error as Error);
           failedFiles.push({
             name: file.name,
             error: error instanceof Error ? error.message : "Unknown error",

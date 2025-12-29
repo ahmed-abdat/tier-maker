@@ -10,6 +10,9 @@ import {
   getItemsWithBase64Images,
 } from "../utils/json-export";
 import { uploadImages } from "@/lib/services/imgbb";
+import { logger } from "@/lib/logger";
+
+const log = logger.child("ShareableExport");
 
 export type ExportMode = "backup" | "shareable";
 export type ExportState = "idle" | "uploading" | "success" | "error";
@@ -104,7 +107,7 @@ export function useShareableExport({
         }
       }
     } catch (error) {
-      console.error("Export error:", error);
+      log.error("Export error", error as Error);
       toast.error("Failed to export tier list");
     } finally {
       setIsExportingSimple(false);
@@ -211,7 +214,7 @@ export function useShareableExport({
         }
       }
     } catch (error) {
-      console.error("Export error:", error);
+      log.error("Export error", error as Error);
       setExportState("error");
       toast.error("Failed to export tier list");
     } finally {

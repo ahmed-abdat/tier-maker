@@ -10,6 +10,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { toast } from "sonner";
+import { logger } from "@/lib/logger";
+
+const log = logger.child("ExportButton");
 
 interface ExportButtonProps {
   targetRef: React.RefObject<HTMLDivElement | null>;
@@ -47,7 +50,7 @@ export function ExportButton({
       const html2canvasModule = await import("html2canvas");
       html2canvas = html2canvasModule.default;
     } catch (importError) {
-      console.error("Failed to load export library:", importError);
+      log.error("Failed to load export library", importError as Error);
       toast.error("Failed to load export feature. Check your connection.", {
         id: toastId,
       });
@@ -143,7 +146,7 @@ export function ExportButton({
         );
       });
     } catch (error) {
-      console.error("Export rendering error:", error);
+      log.error("Export rendering error", error as Error);
       toast.error("Failed to render tier list. Try a smaller list.", {
         id: toastId,
       });
