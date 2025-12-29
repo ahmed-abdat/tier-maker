@@ -150,27 +150,38 @@ describe("validateTierListImport", () => {
 
 describe("transformImportToTierList", () => {
   const validExport = {
-    version: 1,
+    version: 1 as const,
     exportedAt: "2024-01-01T00:00:00.000Z",
     tierList: {
       title: "Test Tier List",
       description: "A test description",
       rows: [
         {
+          id: "row-1",
           level: "S",
           color: "#FF7F7F",
           name: "Super",
           items: [
             {
+              id: "item-1",
               name: "Item 1",
               imageUrl: "https://example.com/image.png",
               createdAt: "2024-01-01T00:00:00.000Z",
+              updatedAt: "2024-01-01T00:00:00.000Z",
             },
           ],
         },
       ],
-      unassignedItems: [{ name: "Unassigned Item" }],
+      unassignedItems: [
+        {
+          id: "unassigned-1",
+          name: "Unassigned Item",
+          createdAt: "2024-01-01T00:00:00.000Z",
+          updatedAt: "2024-01-01T00:00:00.000Z",
+        },
+      ],
       createdAt: "2024-01-01T00:00:00.000Z",
+      updatedAt: "2024-01-01T00:00:00.000Z",
       tags: ["tag1", "tag2"],
     },
   };
@@ -218,11 +229,14 @@ describe("transformImportToTierList", () => {
 
   it("handles missing dates with fallback", () => {
     const exportWithoutDates = {
-      version: 1,
+      version: 1 as const,
+      exportedAt: "2024-01-01T00:00:00.000Z",
       tierList: {
         title: "Test",
-        rows: [{ level: "S", color: "#FF0000", items: [] }],
+        rows: [{ id: "r1", level: "S", color: "#FF0000", items: [] }],
         unassignedItems: [],
+        createdAt: "",
+        updatedAt: "",
       },
     };
     const result = transformImportToTierList(exportWithoutDates);
@@ -247,7 +261,7 @@ describe("transformImportToTierList", () => {
           "tag9",
           "tag10",
           "tag11",
-        ],
+        ] as unknown as string[],
       },
     };
     const result = transformImportToTierList(exportWithManyTags);
