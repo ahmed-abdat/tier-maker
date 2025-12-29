@@ -9,10 +9,10 @@ export interface EditorSettings {
   imgbbApiKey: string; // Empty = use default, non-empty = use custom
 }
 
-// Default values - all features disabled, animations reduced for max performance
+// Default values - undo/redo enabled, animations reduced for max performance
 const DEFAULT_SETTINGS: EditorSettings = {
   enableKeyboardNavigation: false,
-  enableUndoRedo: false,
+  enableUndoRedo: true,
   reduceAnimations: true,
   imgbbApiKey: "",
 };
