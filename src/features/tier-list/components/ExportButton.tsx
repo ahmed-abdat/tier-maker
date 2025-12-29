@@ -46,8 +46,8 @@ export function ExportButton({
 
     let html2canvas;
     try {
-      // Dynamic import html2canvas (4.1MB) - only load when user exports
-      const html2canvasModule = await import("html2canvas");
+      // Dynamic import html2canvas-pro (supports oklch colors from Tailwind v4)
+      const html2canvasModule = await import("html2canvas-pro");
       html2canvas = html2canvasModule.default;
     } catch (importError) {
       log.error("Failed to load export library", importError as Error);
@@ -115,6 +115,11 @@ export function ExportButton({
         },
       });
 
+      // Validate canvas was generated successfully
+      if (canvas.width === 0 || canvas.height === 0) {
+        throw new Error("Canvas generation failed - empty result");
+      }
+
       // Convert to blob and download with timeout protection
       await new Promise<void>((resolve, reject) => {
         const timeout = setTimeout(() => {
@@ -146,8 +151,9 @@ export function ExportButton({
         );
       });
     } catch (error) {
+      const msg = error instanceof Error ? error.message : "Unknown error";
       log.error("Export rendering error", error as Error);
-      toast.error("Failed to render tier list. Try a smaller list.", {
+      toast.error(`Export failed: ${msg}. Try a smaller list.`, {
         id: toastId,
       });
     } finally {
