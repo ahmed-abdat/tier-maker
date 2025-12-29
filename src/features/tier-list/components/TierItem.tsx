@@ -127,6 +127,7 @@ export const TierItem = memo(function TierItem({
         <div
           ref={setNodeRef}
           style={style}
+          data-tier-item
           {...attributes}
           {...listeners}
           className={cn(

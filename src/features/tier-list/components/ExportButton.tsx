@@ -59,6 +59,21 @@ export function ExportButton({
     }
 
     try {
+      // Pre-load all images before capture to ensure they're rendered
+      const preloadImages = async (container: HTMLElement) => {
+        const images = container.querySelectorAll("img");
+        const promises = Array.from(images).map((img) => {
+          if (img.complete) return Promise.resolve();
+          return new Promise<void>((resolve) => {
+            img.onload = () => resolve();
+            img.onerror = () => resolve(); // Continue even if image fails
+          });
+        });
+        await Promise.all(promises);
+      };
+
+      await preloadImages(targetRef.current);
+
       // Small delay to ensure UI updates
       await new Promise((resolve) => setTimeout(resolve, 100));
 
@@ -69,8 +84,16 @@ export function ExportButton({
         backgroundColor,
         scale: 2,
         useCORS: true,
+        allowTaint: false,
         logging: false,
-        // Ensure all images are loaded
+        imageTimeout: 30000, // Increase timeout for base64 images
+        // Set window dimensions for consistent capture
+        windowWidth: targetRef.current.scrollWidth,
+        windowHeight: targetRef.current.scrollHeight,
+        // Reset scroll position
+        scrollX: 0,
+        scrollY: -window.scrollY,
+        removeContainer: true,
         onclone: (clonedDoc) => {
           // Ensure theme is applied to cloned document
           const isDark = resolvedTheme === "dark";
@@ -111,6 +134,85 @@ export function ExportButton({
           );
           if (exportTitle) {
             (exportTitle as HTMLElement).style.display = "block";
+          }
+
+          // Enhance item visibility for export
+          const exportTarget = clonedDoc.body.querySelector(
+            "[data-export-target]"
+          );
+          if (exportTarget) {
+            // Hide all delete buttons on items
+            const deleteButtons = exportTarget.querySelectorAll(
+              "[data-tier-item] button"
+            );
+            deleteButtons.forEach((btn) => {
+              (btn as HTMLElement).style.display = "none";
+            });
+
+            // Hide tier settings buttons
+            const settingsButtons = exportTarget.querySelectorAll(
+              "[role='button'][aria-label*='Settings']"
+            );
+            settingsButtons.forEach((btn) => {
+              (btn as HTMLElement).style.display = "none";
+            });
+
+            // Find all tier items and enhance their visibility
+            const tierItems = exportTarget.querySelectorAll("[data-tier-item]");
+            tierItems.forEach((item) => {
+              const el = item as HTMLElement;
+              // Find the inner container (direct child div)
+              const innerContainer = el.querySelector(
+                ":scope > div"
+              ) as HTMLElement | null;
+              if (innerContainer) {
+                // Add strong visible border and shadow for contrast
+                // Light mode needs stronger borders for visibility
+                innerContainer.style.border = isDark
+                  ? "2px solid rgba(255, 255, 255, 0.4)"
+                  : "2px solid rgba(0, 0, 0, 0.25)";
+                innerContainer.style.boxShadow = isDark
+                  ? "0 4px 16px rgba(0, 0, 0, 0.7)"
+                  : "0 2px 10px rgba(0, 0, 0, 0.2)";
+                innerContainer.style.borderRadius = "8px";
+                innerContainer.style.overflow = "hidden";
+
+                // Check if it's a text-only item (no image)
+                const img = innerContainer.querySelector("img");
+                if (img) {
+                  // Image item - ensure solid background and full opacity
+                  innerContainer.style.backgroundColor = isDark
+                    ? "#1a1a1f"
+                    : "#ffffff";
+                  img.style.opacity = "1";
+                  img.style.objectFit = "cover";
+                  img.style.width = "100%";
+                  img.style.height = "100%";
+                } else {
+                  // Text-only item - needs better contrast
+                  const textFallback = innerContainer.querySelector(
+                    "div"
+                  ) as HTMLElement | null;
+                  if (textFallback) {
+                    textFallback.style.backgroundColor = isDark
+                      ? "#2a2a35"
+                      : "#f5f5f5";
+                    textFallback.style.color = isDark ? "#ffffff" : "#1a1a1a";
+                    textFallback.style.fontWeight = "600";
+                  }
+                }
+              }
+            });
+
+            // Enhance tier row content backgrounds for better item visibility
+            const tierContents =
+              exportTarget.querySelectorAll(".grid.min-h-20");
+            tierContents.forEach((tier) => {
+              const el = tier as HTMLElement;
+              el.style.backgroundColor = isDark
+                ? "rgba(255, 255, 255, 0.06)"
+                : "rgba(0, 0, 0, 0.04)";
+            });
           }
         },
       });
