@@ -49,21 +49,12 @@ export const metadata: Metadata = {
     title: "Free Tier List Maker - No Login Required | LibreTier",
     description:
       "Create and share tier lists instantly. No account needed. Works offline. Upload images, drag to rank, export as PNG. Free, open source, privacy-first.",
-    images: [
-      {
-        url: "/og-image.jpg",
-        width: 1200,
-        height: 630,
-        alt: "LibreTier - Free Tier List Maker",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Free Tier List Maker - No Login Required | LibreTier",
     description:
       "Create and share tier lists instantly. No account needed. Works offline. Free, open source, privacy-first tier list creator.",
-    images: ["/og-image.jpg"],
     creator: "@libretier",
   },
   alternates: {
