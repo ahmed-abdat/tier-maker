@@ -1,1 +1,0 @@
-export { InstallPrompt } from "./InstallPrompt";
